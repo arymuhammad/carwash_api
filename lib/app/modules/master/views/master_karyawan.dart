@@ -1,22 +1,21 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:carwash/app/helper/alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:data_table_2/data_table_2.dart';
 
-import '../../home/controllers/auth_controller.dart';
 import '../controllers/master_controller.dart';
 
 class MasterKaryawan extends GetView<MasterController> {
-  MasterKaryawan({super.key});
-
+  MasterKaryawan(this.kode, {super.key});
+  final String kode;
   final masterC = Get.put(MasterController());
-  final authC = Get.put(AuthController());
+  TextEditingController namaLengkap = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot<Object?>>(
-        stream: masterC.streamDataKaryawan(),
+      body: StreamBuilder(
+        stream: masterC.getKaryawan(kode),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -24,13 +23,7 @@ class MasterKaryawan extends GetView<MasterController> {
                 child: CupertinoActivityIndicator(),
               );
             } else {
-              var data = snapshot.data!.docs;
-
-              List<Map<String, dynamic>> list = [];
-              data.map((DocumentSnapshot doc) {
-                list.add((doc.data() as Map<String, dynamic>));
-              }).toList();
-              // print(list);
+              var data = snapshot.data!;
               return DataTable2(
                   columnSpacing: 1,
                   horizontalMargin: 8,
@@ -47,28 +40,27 @@ class MasterKaryawan extends GetView<MasterController> {
                     DataColumn(
                       label: Text('Nama'),
                     ),
-                    DataColumn(
-                      label: Text('Persentase'),
-                    ),
+                    // DataColumn(
+                    //   label: Text('Persentase'),
+                    // ),
                     DataColumn(
                       label: Text('Action'),
                     ),
                   ],
-                  rows: List<DataRow>.generate(list.length, (index) {
-                    masterC.noUrut = list.length + 1;
+                  rows: List<DataRow>.generate(data.length, (index) {
+                    masterC.noUrut.value = data.length + 1;
 
                     return DataRow(cells: [
-                      DataCell(Text(list[index]["cabang"] != ""
-                          ? list[index]["cabang"]
+                      DataCell(Text(data[index].cabang! != ""
+                          ? data[index].cabang!
                           : 'Belum terdaftar dicabang manapun')),
-                      DataCell(Text(list[index]["nama"])),
-                      DataCell(Text(list[index]["persen"].toString())),
+                      DataCell(Text(data[index].nama!)),
+                      // DataCell(Text(data[index]["persen"].toString())),
                       DataCell(Row(
                         children: [
                           IconButton(
                             onPressed: () {
-                              editData(data[index].id, list[index]["nama"],
-                                  list[index]["persen"]);
+                              editData(data[index].id!, data[index].nama!);
                             },
                             icon: const Icon(
                               Icons.edit_note_sharp,
@@ -93,9 +85,14 @@ class MasterKaryawan extends GetView<MasterController> {
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           ElevatedButton(
-                                              onPressed: () {
-                                                masterC.deleteKaryawan(
-                                                    data[index].id);
+                                              onPressed: () async {
+                                                var deleteId = {
+                                                  "id": data[index].id!
+                                                };
+                                                await masterC
+                                                    .deleteKaryawan(deleteId);
+                                                showDefaultDialog2("Sukses",
+                                                    "Data Karyawan berhasil dihapus");
                                               },
                                               child: const Text('Hapus')),
                                           ElevatedButton(
@@ -136,7 +133,7 @@ class MasterKaryawan extends GetView<MasterController> {
     );
   }
 
-  void editData(id, nama, persentase) {
+  void editData(id, nama) {
     Get.defaultDialog(
         radius: 5,
         title: 'Detail Data',
@@ -145,7 +142,7 @@ class MasterKaryawan extends GetView<MasterController> {
             SizedBox(
               height: 45,
               child: TextField(
-                controller: masterC.namaLengkap,
+                controller: namaLengkap,
                 decoration: InputDecoration(
                     hintText: nama, border: const OutlineInputBorder()),
               ),
@@ -153,14 +150,14 @@ class MasterKaryawan extends GetView<MasterController> {
             const SizedBox(
               height: 5,
             ),
-            SizedBox(
-              height: 45,
-              child: TextField(
-                controller: masterC.persentase,
-                decoration: InputDecoration(
-                    hintText: persentase, border: const OutlineInputBorder()),
-              ),
-            ),
+            // SizedBox(
+            //   height: 45,
+            //   child: TextField(
+            //     controller: masterC.persentase,
+            //     decoration: InputDecoration(
+            //         hintText: persentase, border: const OutlineInputBorder()),
+            //   ),
+            // ),
             const SizedBox(
               height: 5,
             ),
@@ -170,10 +167,11 @@ class MasterKaryawan extends GetView<MasterController> {
                 Container(
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                     child: ElevatedButton(
-                      onPressed: () {
-                        masterC.updateKaryawan(id, masterC.namaLengkap.text,
-                            masterC.persentase.text);
-                        Get.back();
+                      onPressed: () async {
+                        var dataKaryawan = {"id": id, "nama": namaLengkap.text};
+                        await masterC.updateKaryawan(dataKaryawan);
+                        showDefaultDialog2(
+                            "Sukses", "Data Karyawan berhasil diupdate");
                       },
                       child: const Text(
                         'Update',
@@ -205,7 +203,7 @@ class MasterKaryawan extends GetView<MasterController> {
           children: [
             const Divider(),
             TextField(
-              controller: masterC.namaLengkap,
+              controller: namaLengkap,
               decoration: const InputDecoration(
                   border: OutlineInputBorder(), label: Text('Nama Lengkap')),
             ),
@@ -213,7 +211,7 @@ class MasterKaryawan extends GetView<MasterController> {
               height: 5,
             ),
             StreamBuilder(
-              stream: masterC.streamDataCabang(),
+              stream: masterC.getCabang(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Obx(
@@ -228,14 +226,10 @@ class MasterKaryawan extends GetView<MasterController> {
                       onChanged: (String? data) {
                         masterC.selectedCabangKaryawan.value = data!;
                       },
-                      items: snapshot.data!.docs.map((DocumentSnapshot doc) {
+                      items: snapshot.data!.map((doc) {
                         return DropdownMenuItem<String>(
-                            value: (doc.data()
-                                    as Map<String, dynamic>)["kode_cabang"]
-                                .toString(),
-                            child: Text(
-                              '${(doc.data() as Map<String, dynamic>)["nama_cabang"]}',
-                            ));
+                            value: doc.kodeCabang!,
+                            child: Text(doc.namaCabang!));
                       }).toList(),
                     ),
                   );
@@ -264,13 +258,15 @@ class MasterKaryawan extends GetView<MasterController> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      masterC.addKaryawan(
-                          masterC.noUrut,
-                          masterC.namaLengkap.text,
-                          masterC.selectedCabangKaryawan.value,
-                          masterC.persentase.text);
+                      var dataKaryawan = {
+                        "cabang": masterC.selectedCabangKaryawan.value,
+                        "nama": namaLengkap.text
+                      };
+                      masterC.addKaryawan(dataKaryawan);
+                      showDefaultDialog2(
+                          "Sukses", "Data Karyawan berhasil ditambahkan");
                       masterC.selectedCabangKaryawan.value == "";
-                      masterC.namaLengkap.clear();
+                      namaLengkap.clear();
                       masterC.persentase.clear();
                     },
                     child: const Text('Simpan')),

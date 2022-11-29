@@ -5,13 +5,15 @@ import 'home_finish.dart';
 import 'home_progress.dart';
 
 class HomeViewTabs extends GetView {
-  HomeViewTabs(this.level, this.kasir, this.cabang, this.namaCabang,
+  const HomeViewTabs(this.namaCabang, this.kodeCabang, this.username,
       this.alamatCabang, this.kotaCabang,
       {super.key});
-  final int level;
-  final String kasir;
-  final String cabang;
+  // final int level;
+  // final String kasir;
+  // final String cabang;
   final String namaCabang;
+  final String kodeCabang;
+  final String username;
   final String alamatCabang;
   final String kotaCabang;
 
@@ -50,9 +52,11 @@ class HomeViewTabs extends GetView {
             // ]),
           ),
           body: TabBarView(children: [
-            HomeProgress(cabang),
+            HomeProgress(kodeCabang),
             HomeFinish(
-                level, kasir, cabang, namaCabang, alamatCabang, kotaCabang)
+                namaCabang, kodeCabang, username, alamatCabang, kotaCabang),
+            // HomeFinish(
+            // level, kasir, cabang, namaCabang, alamatCabang, kotaCabang)
             // LevelView(),
             // UserView(),
           ]),

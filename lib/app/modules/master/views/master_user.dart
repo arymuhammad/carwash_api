@@ -1,23 +1,27 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carwash/app/helper/alert.dart';
 import 'package:get/get.dart';
 import 'package:data_table_2/data_table_2.dart';
 
-import '../../home/controllers/auth_controller.dart';
+// import '../../home/controllers/auth_controller.dart';
+import '../../../model/level_model.dart';
+import '../../../model/user_model.dart';
 import '../controllers/master_controller.dart';
 
 class MasterUsers extends GetView<MasterController> {
-  MasterUsers({super.key});
+  MasterUsers(this.kode, {super.key});
 
+  final String kode;
   final masterC = Get.put(MasterController());
-  final authC = Get.put(AuthController());
+  TextEditingController namaUser = TextEditingController();
+  TextEditingController password = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot<Object?>>(
-        stream: masterC.streamDataUsers(),
+      body: StreamBuilder<List<User>>(
+        stream: masterC.getUsers(kode),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -25,12 +29,11 @@ class MasterUsers extends GetView<MasterController> {
                 child: CupertinoActivityIndicator(),
               );
             } else {
-              var data = snapshot.data!.docs;
-
-              List<Map<String, dynamic>> list = [];
-              data.map((DocumentSnapshot doc) {
-                list.add((doc.data() as Map<String, dynamic>));
-              }).toList();
+              var data = snapshot.data!;
+              // List<Map<String, dynamic>> list = [];
+              // data.map((doc) {
+              //   list.add(doc);
+              // }).toList();
               // print(list);
               return DataTable2(
                   columnSpacing: 1,
@@ -46,10 +49,11 @@ class MasterUsers extends GetView<MasterController> {
                       // size: ColumnSize.S,
                     ),
                     DataColumn(
-                      label: Text('Username'),
+                      label: Text('Kode User'),
+                      // size: ColumnSize.S,
                     ),
                     DataColumn(
-                      label: Text('Nama Lengkap'),
+                      label: Text('Username'),
                     ),
                     DataColumn(
                       label: Text('Level'),
@@ -58,29 +62,26 @@ class MasterUsers extends GetView<MasterController> {
                       label: Text('No Telpon'),
                     ),
                     DataColumn(
+                      label: Text('Status'),
+                    ),
+                    DataColumn(
                       label: Text('Action'),
                     ),
                   ],
-                  rows: List<DataRow>.generate(list.length, (index) {
-                    masterC.noUrut = list.length + 1;
-                    // print(masterC.noUrut);
+                  rows: List<DataRow>.generate(data.length, (index) {
+                    masterC.kodeUser.value = data.length + 1;
                     return DataRow(cells: [
-                      DataCell(Text(list[index]["kode_cabang"] != ""
-                          ? list[index]["kode_cabang"]
+                      DataCell(Text(data[index].kodeCabang! != ""
+                          ? data[index].kodeCabang!
                           : 'Belum terdaftar dicabang manapun')),
-                      DataCell(Text(list[index]["email"])),
-                      DataCell(Text(list[index]["nama"])),
-                      DataCell(StreamBuilder(
-                        stream:
-                            masterC.streamDataLevelByid(list[index]["level"]),
+                      DataCell(Text(data[index].kodeUser!)),
+                      DataCell(Text(data[index].namaUser!)),
+                      DataCell(FutureBuilder<List<Level>>(
+                        future: masterC.getFutureLevel(data[index].idLevel!),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            var level = "";
-                            snapshot.data!.docs.map((DocumentSnapshot e) {
-                              return level =
-                                  (e.data() as Map<String, dynamic>)["nama"];
-                            }).toList();
-                            return Text(level);
+                            var level = snapshot.data!;
+                            return Text(level[0].nama!);
                           } else if (snapshot.hasError) {
                             return Text('${snapshot.error}');
                           }
@@ -89,18 +90,18 @@ class MasterUsers extends GetView<MasterController> {
                           );
                         },
                       )),
-                      DataCell(Text(list[index]["notelp"].toString())),
+                      DataCell(Text(data[index].telp!)),
+                      DataCell(Text(data[index].status!)),
                       DataCell(Row(
                         children: [
                           IconButton(
                             onPressed: () {
                               editData(
-                                  data[index].id,
-                                  list[index]["email"],
-                                  list[index]["nama"],
-                                  list[index]["notelp"],
-                                  list[index]["level"],
-                                  list[index]["kode_cabang"]);
+                                  data[index].kodeUser!,
+                                  data[index].namaUser!,
+                                  data[index].telp!,
+                                  data[index].idLevel!,
+                                  data[index].kodeCabang!);
                             },
                             icon: const Icon(
                               Icons.edit_note_sharp,
@@ -118,7 +119,7 @@ class MasterUsers extends GetView<MasterController> {
                                   content: Column(
                                     children: [
                                       Text(
-                                          'Apakah Anda yakin ingin menghapus data ini?\n${list[index]["nama"]}'),
+                                          'Apakah Anda yakin ingin menghapus data ini?\n${data[index].namaUser}'),
                                       const Divider(),
                                       Row(
                                         mainAxisAlignment:
@@ -126,8 +127,13 @@ class MasterUsers extends GetView<MasterController> {
                                         children: [
                                           ElevatedButton(
                                               onPressed: () {
-                                                masterC
-                                                    .deleteUser(data[index].id);
+                                                var userid = {
+                                                  "kode_user":
+                                                      data[index].kodeUser!
+                                                };
+                                                masterC.deleteUser(userid);
+                                                showDefaultDialog2("Sukses",
+                                                    "User berhasil dihapus");
                                               },
                                               child: const Text('Hapus')),
                                           ElevatedButton(
@@ -168,18 +174,17 @@ class MasterUsers extends GetView<MasterController> {
     );
   }
 
-  editData(id, username, nama, telp, level, cabang) {
+  editData(kodeUser, nama, telp, level, kodeCabang) {
     Get.defaultDialog(
         radius: 5,
-        title: 'Detail Data',
+        title: 'Edit Data User',
         content: Column(
           children: [
             const Divider(),
             TextField(
               readOnly: true,
-              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                hintText: username,
+                hintText: nama,
                 border: const OutlineInputBorder(),
               ),
             ),
@@ -187,9 +192,10 @@ class MasterUsers extends GetView<MasterController> {
               height: 5,
             ),
             TextField(
-              controller: masterC.namaLengkap,
-              decoration: InputDecoration(
-                  border: const OutlineInputBorder(), hintText: nama),
+              obscureText: true,
+              controller: password,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), hintText: '******'),
             ),
             const SizedBox(
               height: 5,
@@ -202,8 +208,8 @@ class MasterUsers extends GetView<MasterController> {
             const SizedBox(
               height: 5,
             ),
-            StreamBuilder(
-              stream: masterC.getLevel(),
+            FutureBuilder(
+              future: masterC.getFutureLevel(""),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Obx(
@@ -218,12 +224,11 @@ class MasterUsers extends GetView<MasterController> {
                         masterC.selectedLevel.value = data!;
                         // print(homeC.selectedItem);
                       },
-                      items: snapshot.data!.docs.map((DocumentSnapshot doc) {
+                      items: snapshot.data!.map((doc) {
                         return DropdownMenuItem<String>(
-                            value: (doc.data() as Map<String, dynamic>)["id"]
-                                .toString(),
+                            value: doc.id!,
                             child: Text(
-                              '${(doc.data() as Map<String, dynamic>)["nama"]}',
+                              doc.nama!,
                             ));
                       }).toList(),
                     ),
@@ -237,8 +242,8 @@ class MasterUsers extends GetView<MasterController> {
               },
             ),
             const SizedBox(height: 5),
-            StreamBuilder(
-              stream: masterC.streamDataCabang(),
+            FutureBuilder(
+              future: masterC.getFutureCabang(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Obx(
@@ -254,13 +259,11 @@ class MasterUsers extends GetView<MasterController> {
                         masterC.selectedCabang.value = data!;
                         // print(homeC.selectedItem);
                       },
-                      items: snapshot.data!.docs.map((DocumentSnapshot doc) {
+                      items: snapshot.data!.map((doc) {
                         return DropdownMenuItem<String>(
-                            value: (doc.data()
-                                    as Map<String, dynamic>)["kode_cabang"]
-                                .toString(),
+                            value: doc.kodeCabang!,
                             child: Text(
-                              '${(doc.data() as Map<String, dynamic>)["nama_cabang"]}',
+                              doc.namaCabang!,
                             ));
                       }).toList(),
                     ),
@@ -280,10 +283,10 @@ class MasterUsers extends GetView<MasterController> {
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                     child: ElevatedButton(
                       onPressed: () {
-                        if (masterC.namaLengkap.text == "") {
-                          masterC.namaLengkap.text = nama;
+                        if (namaUser.text == "") {
+                          namaUser.text = nama;
                         } else {
-                          masterC.namaLengkap.text = masterC.namaLengkap.text;
+                          namaUser.text = namaUser.text;
                         }
                         if (masterC.notelp.text == "") {
                           masterC.notelp.text = telp;
@@ -298,19 +301,19 @@ class MasterUsers extends GetView<MasterController> {
                         }
 
                         if (masterC.selectedCabang.isEmpty) {
-                          masterC.selectedCabang.value = cabang;
+                          masterC.selectedCabang.value = kodeCabang;
                         } else {
                           masterC.selectedCabang.value =
                               masterC.selectedCabang.value;
                         }
-                        masterC.updateUser(
-                            id,
-                            masterC.namaLengkap.text,
-                            masterC.notelp.text,
-                            masterC.selectedLevel.value,
-                            masterC.selectedCabang.value);
+                        // masterC.updateUser(
+                        //     id,
+                        //     masterC.namaUser.text,
+                        //     masterC.notelp.text,
+                        //     masterC.selectedLevel.value,
+                        //     masterC.selectedCabang.value);
                         Get.back();
-                        masterC.namaLengkap.clear();
+                        namaUser.clear();
                         masterC.notelp.clear();
                         masterC.selectedLevel.value = "";
                         masterC.selectedCabang.value = "";
@@ -354,7 +357,7 @@ class MasterUsers extends GetView<MasterController> {
               height: 5,
             ),
             TextField(
-              controller: masterC.password,
+              controller: password,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 label: Text('Password'),
@@ -365,7 +368,7 @@ class MasterUsers extends GetView<MasterController> {
               height: 5,
             ),
             TextField(
-              controller: masterC.nama,
+              controller: namaUser,
               decoration: const InputDecoration(
                   border: OutlineInputBorder(), label: Text('Nama Lengkap')),
             ),
@@ -381,7 +384,7 @@ class MasterUsers extends GetView<MasterController> {
               height: 5,
             ),
             StreamBuilder(
-              stream: masterC.getLevel(),
+              stream: masterC.getLevel(""),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Obx(
@@ -396,12 +399,11 @@ class MasterUsers extends GetView<MasterController> {
                         masterC.selectedLevel.value = data!;
                         // print(homeC.selectedItem);
                       },
-                      items: snapshot.data!.docs.map((DocumentSnapshot doc) {
+                      items: snapshot.data!.map((doc) {
                         return DropdownMenuItem<String>(
-                            value: (doc.data() as Map<String, dynamic>)["id"]
-                                .toString(),
+                            value: doc.id!,
                             child: Text(
-                              '${(doc.data() as Map<String, dynamic>)["nama"]}',
+                              doc.nama!,
                             ));
                       }).toList(),
                     ),
@@ -416,7 +418,7 @@ class MasterUsers extends GetView<MasterController> {
             ),
             const SizedBox(height: 5),
             StreamBuilder(
-              stream: masterC.streamDataCabang(),
+              stream: masterC.getCabang(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Obx(
@@ -432,13 +434,11 @@ class MasterUsers extends GetView<MasterController> {
                         masterC.selectedCabang.value = data!;
                         // print(homeC.selectedItem);
                       },
-                      items: snapshot.data!.docs.map((DocumentSnapshot doc) {
+                      items: snapshot.data!.map((doc) {
                         return DropdownMenuItem<String>(
-                            value: (doc.data()
-                                    as Map<String, dynamic>)["kode_cabang"]
-                                .toString(),
+                            value: doc.kodeCabang!,
                             child: Text(
-                              '${(doc.data() as Map<String, dynamic>)["nama_cabang"]}',
+                              doc.namaCabang!,
                             ));
                       }).toList(),
                     ),
@@ -460,7 +460,7 @@ class MasterUsers extends GetView<MasterController> {
                       if (masterC.email.text == "") {
                         showDefaultDialog(
                             "Perhatian", "Username tidak boleh kosong");
-                      } else if (masterC.password.text == "") {
+                      } else if (password.text == "") {
                         showDefaultDialog(
                             "Perhatian", "Password tidak boleh kosong");
                       } else if (masterC.selectedLevel.value == "") {
@@ -470,21 +470,37 @@ class MasterUsers extends GetView<MasterController> {
                         showDefaultDialog(
                             "Perhatian", "Harap pilih nama cabang");
                       } else {
-                        Get.defaultDialog(
-                            barrierDismissible: false,
-                            title: '',
-                            content: Column(
-                              children: const [
-                                Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                Text('Loading data...')
-                              ],
-                            ));
-                        await masterC.signUp();
+                        // Get.defaultDialog(
+                        //     barrierDismissible: false,
+                        //     title: '',
+                        //     content: Column(
+                        //       children: const [
+                        //         Center(
+                        //           child: CircularProgressIndicator(),
+                        //         ),
+                        //         SizedBox(
+                        //           height: 8,
+                        //         ),
+                        //         Text('Loading data...')
+                        //       ],
+                        //     ));
+                        var dataUser = {
+                          "kode_cabang": masterC.selectedCabang.value,
+                          "kode_user": "00${masterC.kodeUser.value}",
+                          "username": namaUser.text,
+                          "password": password.text,
+                          "level": masterC.selectedLevel.value,
+                          "notelp": masterC.notelp.text,
+                          // "status":
+                        };
+                        await masterC.addUser(dataUser);
+                        showDefaultDialog2(
+                            "Sukse", "User baru berhasil ditambahkan");
+                        masterC.selectedCabang.value = "";
+                        masterC.selectedLevel.value = "";
+                        namaUser.clear();
+                        password.clear();
+                        masterC.notelp.clear();
                       }
                     },
                     child: const Text('Simpan')),

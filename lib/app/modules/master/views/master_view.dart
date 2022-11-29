@@ -10,8 +10,9 @@ import 'master_level.dart';
 import 'master_user.dart';
 
 class MasterViewTabs extends GetView {
-  MasterViewTabs({super.key});
+  MasterViewTabs(this.kode, {super.key});
 
+  final String kode;
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -64,8 +65,8 @@ class MasterViewTabs extends GetView {
           ),
           body: TabBarView(children: [
             MasterCabang(),
-            MasterUsers(),
-            MasterKaryawan(),
+            MasterUsers(kode),
+            MasterKaryawan(kode),
             MasterLevel(),
             MasterKendaraan(),
             ServicesView(),

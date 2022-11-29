@@ -6,15 +6,15 @@ environment:
   sdk: '>=2.19.0-171.0.dev <3.0.0'
 
 dependencies: 
-  auth: 8.1.0
+  # auth: 8.1.0
   barcode_widget: ^2.0.3
-  cloud_firestore: 3.5.1
+  # cloud_firestore: 3.5.1
   cupertino_icons: ^1.0.2
   data_table_2: ^2.3.7
   easy_sidemenu: ^0.4.0
-  firebase: 9.0.3
-  firebase_auth: ^3.11.2
-  firebase_core: ^1.24.0
+  # firebase: 9.0.3
+  # firebase_auth: ^3.11.2
+  # firebase_core: ^1.24.0
   flutter_tts: ^3.5.3
   fluttertoast: ^8.0.9
   get: 4.6.5
@@ -31,6 +31,7 @@ dependencies:
   assets_audio_player: ^3.0.5
   ota_update: 4.0.2
   flutter_speed_dial: 6.2.0
+  shared_preferences: 2.0.15
   flutter: 
     sdk: flutter
 

@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carwash/app/helper/alert.dart';
@@ -15,8 +15,8 @@ class MasterLevel extends GetView<MasterController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot<Object?>>(
-        stream: masterC.streamDataLevel(),
+      body: StreamBuilder(
+        stream: masterC.getLevel(""),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -24,13 +24,7 @@ class MasterLevel extends GetView<MasterController> {
                 child: CupertinoActivityIndicator(),
               );
             } else {
-              var data = snapshot.data!.docs;
-
-              List<Map<String, dynamic>> list = [];
-              data.map((DocumentSnapshot doc) {
-                list.add((doc.data() as Map<String, dynamic>));
-              }).toList();
-              // print(list);
+              var data = snapshot.data!;
               return DataTable2(
                   columnSpacing: 1,
                   horizontalMargin: 8,
@@ -51,16 +45,16 @@ class MasterLevel extends GetView<MasterController> {
                       label: Text('Action'),
                     ),
                   ],
-                  rows: List<DataRow>.generate(list.length, (index) {
-                    masterC.idLevel = list[index]["id"] + 1;
+                  rows: List<DataRow>.generate(data.length, (index) {
+                    masterC.idLevel = data.length + 1;
                     return DataRow(cells: [
-                      DataCell(Text(list[index]["id"].toString())),
-                      DataCell(Text(list[index]["nama"])),
+                      DataCell(Text(data[index].id!)),
+                      DataCell(Text(data[index].nama!)),
                       DataCell(Row(
                         children: [
                           IconButton(
                             onPressed: () {
-                              editData(data[index].id, list[index]["nama"]);
+                              editData(data[index].id!, data[index].nama!);
                             },
                             icon: const Icon(
                               Icons.edit_note_sharp,
@@ -91,8 +85,12 @@ class MasterLevel extends GetView<MasterController> {
                                                   minimumSize:
                                                       const Size(75, 45)),
                                               onPressed: () {
-                                                masterC.deleteLevel(
-                                                    data[index].id);
+                                                var idLevel = {
+                                                  "id": data[index].id!
+                                                };
+                                                masterC.deleteLevel(idLevel);
+                                                showDefaultDialog2("Sukses",
+                                                    "level berhasil dihapus");
                                               },
                                               child: const Text(
                                                 'Ya',
@@ -175,8 +173,13 @@ class MasterLevel extends GetView<MasterController> {
                         if (masterC.namaLevel.text == "") {
                           masterC.namaLevel.text = nama;
                         }
-                        masterC.updateLevel(id, masterC.namaLevel.text);
-                        Get.back();
+                        var dataUpdate = {
+                          "id": id,
+                          "nama": masterC.namaLevel.text
+                        };
+                        masterC.addLevel(dataUpdate);
+                        showDefaultDialog2(
+                            "Sukses", "Data berhasil diperbarui");
                         masterC.namaLevel.clear();
                       },
                       child: const Text(
@@ -236,8 +239,10 @@ class MasterLevel extends GetView<MasterController> {
                         if (masterC.namaLevel.text == "") {
                           showSnackbar("Error", "Data tidak boleh kosong!");
                         } else {
-                          masterC.addLevel(id, masterC.namaLevel.text);
-                          Get.back();
+                          var dataInput = {"nama": masterC.namaLevel.text};
+                          masterC.addLevel(dataInput);
+                          showDefaultDialog2(
+                              "Sukses", "Level baru berhasil di daftarkan");
                           masterC.namaLevel.clear();
                         }
                       },

@@ -1,5 +1,5 @@
 import 'package:barcode_widget/barcode_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,18 +9,21 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import '../../../helper/printer_kasir.dart';
+import '../../../model/services_model.dart';
 import '../../home/controllers/home_controller.dart';
+import '../controllers/home_web_controller.dart';
 
 class HomeFinish extends GetView<HomeController> {
-  HomeFinish(this.level, this.kasir, this.cabang, this.namaCabang,
-      this.alamatCabang, this.kotaCabang,
+  HomeFinish(this.namaCabang, this.kodeCabang, this.username, this.alamatCabang,
+      this.kotaCabang,
       {super.key});
 
-  final homeC = Get.put(HomeController());
-  final int level;
-  final String kasir;
-  final String cabang;
+  final homeC = Get.put(HomeWebController());
+  // final int level;
+  // final String kasir;
   final String namaCabang;
+  final String kodeCabang;
+  final String username;
   final String alamatCabang;
   final String kotaCabang;
 
@@ -30,23 +33,23 @@ class HomeFinish extends GetView<HomeController> {
   var date = DateFormat('yyyy-MM-dd').format(DateTime.now());
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot<Object?>>(
-      stream: homeC.streamDataFinish(cabang, date),
+    return StreamBuilder(
+      stream: homeC.getDatatrx(kodeCabang, date, "1,2"),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           // print(snapshot.hasData);
           // print(alamatCabang);
-          // print(level);
+          // print(username);
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CupertinoActivityIndicator(),
             );
           } else {
-            var data = snapshot.data!.docs;
-            List<Map<String, dynamic>> list = [];
-            data.map((DocumentSnapshot doc) {
-              list.add((doc.data() as Map<String, dynamic>));
-            }).toList();
+            // var data = snapshot.data!.docs;
+            var dataTrx = snapshot.data!;
+            // data.map((DocumentSnapshot doc) {
+            //   list.add((doc.data() as Map<String, dynamic>));
+            // }).toList();
             // print(list);
 
             return DataTable2(
@@ -58,92 +61,61 @@ class HomeFinish extends GetView<HomeController> {
                 headingRowColor: MaterialStateProperty.resolveWith(
                     (states) => Colors.lightBlue),
                 columns: const [
-                  DataColumn(
+                  DataColumn2(
                     label: Text('No Transaksi'),
-                    // size: ColumnSize.S,
+                    size: ColumnSize.L,
                   ),
-                  DataColumn(
-                    label: Text('No Kendaraan'),
-                  ),
+                  DataColumn2(label: Text('No Kendaraan'), fixedWidth: 100),
                   DataColumn(
                     label: Text('Kendaraan'),
                   ),
-                  DataColumn(
-                    label: Text('Masuk'),
-                  ),
-                  DataColumn(
-                    label: Text('Mulai'),
-                  ),
-                  DataColumn(
-                    label: Text('Selesai'),
-                  ),
+                  DataColumn2(label: Text('Masuk'), fixedWidth: 80),
+                  DataColumn2(label: Text('Mulai'), fixedWidth: 80),
+                  DataColumn2(label: Text('Selesai'), fixedWidth: 80),
                   DataColumn(
                     label: Text('Service'),
                   ),
                   DataColumn(
                     label: Text('Petugas'),
                   ),
-                  DataColumn(
-                    label: Text('Status'),
-                  ),
-                  DataColumn(
-                    label: Text('Action'),
-                  ),
+                  DataColumn2(label: Text('Status'), fixedWidth: 70),
+                  DataColumn2(label: Text('Action'), fixedWidth: 100),
                 ],
-                rows: List<DataRow>.generate(list.length, (index) {
-                  var serviceType = [];
-                  for (int i = 0; i < list[index]["services"].length; i++) {
-                    var serviceTypeData = {
-                      "id_service": list[index]["services"][i]["id_service"],
-                      "harga": list[index]["services"][i]["harga"]
-                    };
-                    serviceType.add(serviceTypeData);
-                  }
-                  var userLst = [];
-                  for (int i = 0; i < list[index]["petugas"].length; i++) {
-                    userLst.add(list[index]["petugas"][i]["nama_petugas"]);
-                  }
+                rows: List<DataRow>.generate(dataTrx.length, (index) {
+                  // var serviceType = [];
+                  // for (int i = 0; i < list[index]["services"].length; i++) {
+                  //   var serviceTypeData = {
+                  //     "id_service": list[index]["services"][i]["id_service"]
+                  //   };
+                  //   serviceType.add(serviceTypeData);
+                  // }
+                  // var userLst = [];
+                  // for (int i = 0; i < list[index]["petugas"].length; i++) {
+                  //   userLst.add(list[index]["petugas"][i]["nama_petugas"]);
+                  // }
 
                   return DataRow(cells: [
-                    DataCell(Text(list[index]["no_trx"])),
-                    DataCell(Text(list[index]["no_polisi"])),
-                    DataCell(Text(list[index]["kendaraan"])),
-                    DataCell(Text(list[index]["jam_masuk"] != ""
-                        ? list[index]["jam_masuk"]
+                    DataCell(Text(dataTrx[index].notrx!)),
+                    DataCell(Text(dataTrx[index].nopol!)),
+                    DataCell(Text(dataTrx[index].kendaraan!)),
+                    DataCell(Text(dataTrx[index].masuk! != ""
+                        ? dataTrx[index].masuk!
                         : "not set")),
-                    DataCell(Text(list[index]["jam_mulai"] != ""
-                        ? list[index]["jam_mulai"]
-                        : "not set")),
-                    DataCell(Text(list[index]["jam_selesai"] != ""
-                        ? list[index]["jam_selesai"]
-                        : "not set")),
-                    DataCell(StreamBuilder<QuerySnapshot<Object?>>(
-                      stream: homeC.servicesById(serviceType
-                          .map((service) => service["id_service"])
-                          .toList()),
+                    DataCell(Text(dataTrx[index].mulai! != ""
+                        ? dataTrx[index].mulai!
+                        : "-:-:-")),
+                    DataCell(Text(dataTrx[index].selesai! != ""
+                        ? dataTrx[index].selesai!
+                        : "-:-:-")),
+                    DataCell(FutureBuilder<List<Services>>(
+                      future: homeC.servicesById(dataTrx[index].services!),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          var serviceId = snapshot.data!.docs;
-                          var sr = [];
-                          serviceId.map((DocumentSnapshot doc) {
-                            sr.add((doc.data() as Map<String, dynamic>));
-                          }).toList();
-
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CupertinoActivityIndicator(),
-                            );
-                          } else {
-                            var nama = [];
-                            var idServe = [];
-                            for (var i in sr) {
-                              nama.add(i["nama"]);
-                              idServe.add(i["id"]);
-                            }
-                            homeC.servicepaid = idServe;
-                            return Text(nama.join(', ').toString());
-                          }
+                          var srv = snapshot.data!;
+                          return Text(srv
+                              .map((e) => e.serviceName!)
+                              .join(', ')
+                              .toString());
                         } else if (snapshot.hasError) {
                           return Text('${snapshot.error}');
                         }
@@ -152,73 +124,72 @@ class HomeFinish extends GetView<HomeController> {
                         );
                       },
                     )),
-                    DataCell(Text(userLst.isNotEmpty
-                        ? userLst.join(', ').toString()
-                        : 'not set')),
+                    DataCell(Text(dataTrx[index].petugas! != ""
+                        ? dataTrx[index].petugas!
+                        : "not set")),
                     DataCell(Text(
-                      list[index]["paid"] == 1 ? "PAID" : "UNPAID",
+                      dataTrx[index].paid! == "0" ? "UNPAID" : "PAID",
                       style: TextStyle(
-                          color: list[index]["paid"] == 1
-                              ? Colors.greenAccent[700]
-                              : Colors.redAccent[700]),
+                          color: dataTrx[index].paid! == "0"
+                              ? Colors.redAccent[700]
+                              : Colors.greenAccent[700]),
                     )),
                     DataCell(Row(
                       children: [
-                        if (level != 1)
-                          IconButton(
-                            onPressed: list[index]["paid"] != 1
-                                ? () {
-                                    var itemServ = [];
-                                    for (int i = 0;
-                                        i < list[index]["services"].length;
-                                        i++) {
-                                      itemServ.add(list[index]["services"][i]
-                                          ["id_service"]);
-                                    }
-
-                                    bayar(
-                                        data[index].id,
-                                        kasir,
-                                        list[index]["no_trx"],
-                                        list[index]["kode_cabang"],
-                                        namaCabang,
-                                        alamatCabang,
-                                        kotaCabang,
-                                        list[index]["tanggal"],
-                                        list[index]["no_polisi"],
-                                        list[index]["kendaraan"],
-                                        list[index]["jam_masuk"],
-                                        list[index]["jam_selesai"],
-                                        itemServ,
-                                        userLst);
-                                  }
-                                : null,
-                            icon: Icon(
-                              list[index]["paid"] != 1
-                                  ? Icons.payments_outlined
-                                  : Icons.payments_outlined,
-                              size: 30,
-                              color: list[index]["paid"] != 1
-                                  ? Colors.lightBlue
-                                  : Colors.grey,
-                            ),
-                            splashRadius: 20,
-                          )
-                        else
-                          Container(),
                         IconButton(
-                          onPressed: list[index]["paid"] != 1
+                          onPressed: dataTrx[index].paid! != "1"
                               ? () {
-                                  playSound(list[index]["id_jenis"],
-                                      list[index]["no_polisi"]);
+                                  // var itemServ = [];
+                                  // for (int i = 0;
+                                  //     i < list[index]["services"].length;
+                                  //     i++) {
+                                  //   itemServ.add(list[index]["services"][i]
+                                  //       ["id_service"]);
+                                  // }
+
+                                  bayar(
+                                      // data[index].id,
+                                      username,
+                                      dataTrx[index].notrx!,
+                                      // list[index]["kode_cabang"],
+                                      // namaCabang,
+                                      // alamatCabang,
+                                      // kotaCabang,
+                                      dataTrx[index].tanggal!,
+                                      dataTrx[index].nopol!,
+                                      dataTrx[index].kendaraan!,
+                                      dataTrx[index].masuk!,
+                                      dataTrx[index].selesai!,
+                                      dataTrx[index].services!,
+                                      // dataTrx[index].harga!,
+                                      dataTrx[index].petugas!);
                                 }
                               : null,
                           icon: Icon(
-                            list[index]["paid"] != 1
+                            Icons.payments_outlined,
+                            size: 30,
+                            color: dataTrx[index].paid! != "1"
+                                ? Colors.lightBlue
+                                : Colors.grey,
+                          ),
+                          splashRadius: 20,
+                        )
+                        // else
+                        //   Container(),
+                        ,
+                        IconButton(
+                          onPressed: dataTrx[index].paid! != "1"
+                              ? () {
+                                  playSound(int.parse(dataTrx[index].idJenis!),
+                                      dataTrx[index].nopol!);
+                                }
+                              : null,
+                          icon: Icon(
+                            dataTrx[index].paid! != "1"
                                 ? Icons.speaker
                                 : Icons.speaker,
                             size: 30,
-                            color: list[index]["paid"] != 1
+                            color: dataTrx[index].paid! != "1"
                                 ? Colors.lightBlue
                                 : Colors.grey,
                           ),
@@ -237,247 +208,280 @@ class HomeFinish extends GetView<HomeController> {
     );
   }
 
-  bayar(id, kasir, noTrx, kodeCabang, namaCabang, alamatCabang, kotaCabang,
-      tanggal, noPol, kendaraan, masuk, selesai, serviceItem, userLst) {
+  bayar(kasir, noTrx, tanggal, noPol, kendaraan, masuk, selesai, serviceItem,
+      petugas) {
     Get.defaultDialog(
-        radius: 5,
-        title: 'Konfirmasi Pembayaran',
-        content: StreamBuilder<QuerySnapshot<Object?>>(
-            stream: homeC.servicesById(serviceItem),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                var serviceId = snapshot.data!.docs;
-                var sr = [];
-                serviceId.map((DocumentSnapshot doc) {
-                  sr.add((doc.data() as Map<String, dynamic>));
-                }).toList();
+      radius: 5,
+      title: 'Konfirmasi Pembayaran',
+      content:
+          // StreamBuilder(
+          //     stream: homeC.servicesById(serviceItem),
+          //     builder: (context, snapshot) {
+          //       if (snapshot.hasData) {
+          //         var serviceData = snapshot.data!;
+          //         var sr = [];
+          //         // serviceId.map((DocumentSnapshot doc) {
+          //         //   sr.add((doc.data() as Map<String, dynamic>));
+          //         // }).toList();
 
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CupertinoActivityIndicator(),
-                  );
-                } else {
-                  var nama = [];
-                  var harga = [];
-                  var hargat = [];
-                  for (var i in sr) {
-                    nama.add(i["nama"]);
-                    hargat.add(i["harga"]);
-                    harga.add(NumberFormat.simpleCurrency(
-                            locale: 'in', decimalDigits: 0)
-                        .format(i["harga"]));
-                    int total = hargat.fold(
-                        0, (hargat, element) => hargat + element as int);
-                    homeC.totalHarga.value = total;
-                    // totalharga.add(i["harga"]);
-                  }
+          //         if (snapshot.connectionState == ConnectionState.waiting) {
+          //           return const Center(
+          //             child: CupertinoActivityIndicator(),
+          //           );
+          //         } else {
+          // var nama = [];
+          // var harga = [];
+          // var hargat = [];
+          // for (var i in serviceData) {
+          // nama.add(i.nama);
+          // hargat.add(i.harga);
+          // harga.add(NumberFormat.simpleCurrency(
+          //         locale: 'in', decimalDigits: 0)
+          //     .format(i.harga));
 
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        BarcodeWidget(
-                            barcode: Barcode.code128(),
-                            data: noTrx,
-                            height: 100,
-                            width: 320,
-                            style: const TextStyle(fontSize: 20)),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                                  child: const Text(
-                                    "Petugas",
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                )),
-                            Expanded(
-                              flex: 8,
-                              child: Row(
-                                children: [
-                                  Text(userLst.join(' \n'),
-                                      style: const TextStyle(fontSize: 17)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                                  child: const Text(
-                                    "Tanggal",
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                )),
-                            Expanded(
-                              flex: 8,
-                              child: SizedBox(
-                                  height: 21,
-                                  child: Text(
-                                      '${DateFormat('dd/MM/yyyy').format(DateTime.parse(tanggal))} $masuk',
-                                      style: const TextStyle(fontSize: 17))),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                                  child: const Text(
-                                    "Nomor Kendaraan",
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                )),
-                            Expanded(
-                              flex: 8,
-                              child: SizedBox(
-                                  height: 21,
-                                  child: Text(noPol,
-                                      style: const TextStyle(fontSize: 17))),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                                  child: const Text(
-                                    "Jenis",
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                )),
-                            Expanded(
-                              flex: 8,
-                              child: SizedBox(
-                                  height: 21,
-                                  child: Text(kendaraan,
-                                      style: const TextStyle(fontSize: 17))),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                                  child: const Text(
-                                    "Services",
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                )),
-                            Expanded(
-                                flex: 8,
-                                child: Row(
-                                  children: [
-                                    Text('${nama.join(' -\n')} -'),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(harga.join('\n')),
-                                  ],
-                                )
-                                //
-                                ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                                  child: const Text(
-                                    "Total",
-                                    style: TextStyle(fontSize: 17),
-                                  ),
-                                )),
-                            Expanded(
-                              flex: 8,
-                              child: SizedBox(
-                                height: 21,
-                                child: Text(
-                                  NumberFormat.simpleCurrency(
-                                          locale: 'in', decimalDigits: 0)
-                                      .format(homeC.totalHarga.value)
-                                      .toString(),
-                                  style: const TextStyle(fontSize: 17),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Divider(),
-                        ElevatedButton(
-                            onPressed: () {
-                              checkOut(
-                                  id,
-                                  kasir,
-                                  noTrx,
-                                  kodeCabang,
-                                  namaCabang,
-                                  alamatCabang,
-                                  kotaCabang,
-                                  tanggal,
-                                  noPol,
-                                  kendaraan,
-                                  masuk,
-                                  selesai,
-                                  nama,
-                                  harga,
-                                  userLst);
-                            },
+          // totalharga.add(i["harga"]);
+          // }
+
+          // return
+          FutureBuilder<List<Services>>(
+        future: homeC.servicesById(serviceItem),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var srv = snapshot.data!;
+            var service = srv.map((e) => e.serviceName!);
+            var harga = [];
+            var hargat = [];
+            srv.map((e) {
+              harga.add(
+                  NumberFormat.simpleCurrency(locale: 'in', decimalDigits: 0)
+                      .format(int.parse(e.harga!)));
+              hargat.add(int.parse(e.harga!));
+
+              int total = hargat.fold(0, (hargat, e) => hargat + e as int);
+              homeC.totalHarga.value = total;
+            }).toList();
+            return SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  BarcodeWidget(
+                      barcode: Barcode.code128(),
+                      data: noTrx,
+                      height: 100,
+                      width: 320,
+                      style: const TextStyle(fontSize: 20)),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                          flex: 5,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                             child: const Text(
-                              'Checkout',
-                              style: TextStyle(fontSize: 15),
-                            ))
-                      ],
-                    ),
-                  );
-                }
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-              return const Center(
-                child: CupertinoActivityIndicator(),
-              );
-            }));
+                              "Petugas",
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          )),
+                      Expanded(
+                        flex: 8,
+                        child: Row(
+                          children: [
+                            Text(petugas, style: const TextStyle(fontSize: 17)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                          flex: 5,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                            child: const Text(
+                              "Tanggal",
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          )),
+                      Expanded(
+                        flex: 8,
+                        child: SizedBox(
+                            height: 21,
+                            child: Text(
+                                '${DateFormat('dd/MM/yyyy').format(DateTime.parse(tanggal))} $masuk',
+                                style: const TextStyle(fontSize: 17))),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                          flex: 5,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                            child: const Text(
+                              "Nomor Kendaraan",
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          )),
+                      Expanded(
+                        flex: 8,
+                        child: SizedBox(
+                            height: 21,
+                            child: Text(noPol,
+                                style: const TextStyle(fontSize: 17))),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                          flex: 5,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                            child: const Text(
+                              "Jenis",
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          )),
+                      Expanded(
+                        flex: 8,
+                        child: SizedBox(
+                            height: 21,
+                            child: Text(kendaraan,
+                                style: const TextStyle(fontSize: 17))),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                          flex: 5,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                            child: const Text(
+                              "Services",
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          )),
+                      Expanded(
+                          flex: 8,
+                          child: Row(
+                            children: [
+                              // FutureBuilder<List<Services>>(
+                              //   future: homeC.servicesById(serviceItem),
+                              //   builder: (context, snapshot) {
+                              //     if (snapshot.hasData) {
+                              //       var srv = snapshot.data!;
+                              //       return
+                              Text(service.join('\n')),
+                              //     } else if (snapshot.hasError) {
+                              //       return Text('${snapshot.error}');
+                              //     }
+                              //     return const Center(
+                              //       child: CupertinoActivityIndicator(),
+                              //     );
+                              //   },
+                              // ),
+                              const SizedBox(
+                                width: 25,
+                              ),
+                              Text(harga.join(' \n')),
+                            ],
+                          )
+                          //
+                          ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                          flex: 5,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                            child: const Text(
+                              "Total",
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          )),
+                      Expanded(
+                        flex: 8,
+                        child: SizedBox(
+                          height: 21,
+                          child: Text(
+                            NumberFormat.simpleCurrency(
+                                    locale: 'in', decimalDigits: 0)
+                                .format(homeC.totalHarga.value)
+                                .toString(),
+                            style: const TextStyle(fontSize: 17),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(),
+                  ElevatedButton(
+                      onPressed: () {
+                        checkOut(
+                            // id,
+                            kasir,
+                            noTrx,
+                            kodeCabang,
+                            // namaCabang,
+                            // alamatCabang,
+                            // kotaCabang,
+                            tanggal,
+                            noPol,
+                            kendaraan,
+                            masuk,
+                            service,
+                            // nama,
+                            harga,
+                            petugas);
+                      },
+                      child: const Text(
+                        'Checkout',
+                        style: TextStyle(fontSize: 15),
+                      ))
+                ],
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          }
+          return const Center(
+            child: CupertinoActivityIndicator(),
+          );
+        },
+      ),
+      //   }
+      // } else if (snapshot.hasError) {
+      //   return Text('${snapshot.error}');
+      // }
+      // return const Center(
+      //   child: CupertinoActivityIndicator(),
+      // );
+      // })
+    );
   }
 
-  checkOut(id, kasir, noTrx, kodeCabang, namaCabang, alamatCabang, kotaCabang,
-      tanggal, noPol, kendaraan, masuk, selesai, nama, harga, userLst) {
+  checkOut(kasir, noTrx, kodeCabang, tanggal, noPol, kendaraan, masuk, service,
+      harga, petugas) {
     Get.defaultDialog(
         radius: 5,
         title: 'Pembayaran',
@@ -634,12 +638,16 @@ class HomeFinish extends GetView<HomeController> {
                         if (homeC.bayar.text == "") {
                           showSnackbar("Error", "Pembayaran Rp.0");
                         }
-                        homeC.updateTrx(
-                            id,
-                            homeC.paySelected.value,
-                            homeC.totalHarga,
-                            homeC.bayar.text,
-                            homeC.kembali.value);
+                        var dataTrx = {
+                          "notrx": noTrx,
+                          "paid": "1",
+                          "grandTotal": homeC.totalHarga.value.toString(),
+                          "bayar": homeC.bayar.text,
+                          "kembali": homeC.kembali.value.toString(),
+                          "payment": homeC.paySelected.value,
+                          "status": "2"
+                        };
+                        homeC.updateDataTrx(dataTrx);
                         // var item = [];
                         // for (var i in srvc) {
                         // var nominal = harga.join(',');
@@ -662,9 +670,9 @@ class HomeFinish extends GetView<HomeController> {
                               .format(DateTime.now()),
                           "nopol": noPol,
                           "kendaraan": kendaraan,
-                          "service_name": nama.join('\n'),
+                          "service_name": service.join('\n'),
                           "harga": harga.join('\n'),
-                          "petugas": userLst.join('\n   '),
+                          "petugas": petugas,
                           "grand_total": homeC.totalHarga.value,
                           "pembayaran": homeC.paySelected.value,
                           "bayar": homeC.byr,

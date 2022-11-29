@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,8 +14,8 @@ class MasterKendaraan extends GetView<MasterController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot<Object?>>(
-        stream: masterC.streamDataMerk(),
+      body: FutureBuilder(
+        future: masterC.getKendaraan(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -23,13 +23,8 @@ class MasterKendaraan extends GetView<MasterController> {
                 child: CupertinoActivityIndicator(),
               );
             } else {
-              var data = snapshot.data!.docs;
+              var data = snapshot.data!;
 
-              List<Map<String, dynamic>> list = [];
-              data.map((DocumentSnapshot doc) {
-                list.add((doc.data() as Map<String, dynamic>));
-              }).toList();
-              // print(list);
               return DataTable2(
                   columnSpacing: 1,
                   horizontalMargin: 8,
@@ -42,7 +37,7 @@ class MasterKendaraan extends GetView<MasterController> {
                     DataColumn2(
                         label: Text('No '),
                         // size: ColumnSize.S,
-                        fixedWidth: 30),
+                        fixedWidth: 45),
                     DataColumn(
                       label: Text('Nama Kendaraan'),
                     ),
@@ -53,19 +48,19 @@ class MasterKendaraan extends GetView<MasterController> {
                       label: Text('Action'),
                     ),
                   ],
-                  rows: List<DataRow>.generate(list.length, (index) {
-                    masterC.idKendaraan = list[index]["id"] + 1;
+                  rows: List<DataRow>.generate(data.length, (index) {
+                    masterC.idKendaraan = data.length + 1;
 
                     return DataRow(cells: [
-                      DataCell(Text(list[index]["id"].toString())),
-                      DataCell(Text(list[index]["nama"])),
+                      DataCell(Text(data[index].id!)),
+                      DataCell(Text(data[index].nama!)),
                       DataCell(Text(
-                          list[index]["id_jenis"] == 1 ? "Motor" : "Mobil")),
+                          data[index].idJenis! == "1" ? "Motor" : "Mobil")),
                       DataCell(Row(
                         children: [
                           IconButton(
                             onPressed: () {
-                              editData(data[index].id, list[index]["nama"]);
+                              editData(data[index].id, data[index].nama!);
                             },
                             icon: const Icon(
                               Icons.edit_note_sharp,
@@ -90,8 +85,8 @@ class MasterKendaraan extends GetView<MasterController> {
                                         children: [
                                           ElevatedButton(
                                               onPressed: () {
-                                                masterC
-                                                    .deleteMerk(data[index].id);
+                                                masterC.deleteMerk(
+                                                    data[index].id!);
                                               },
                                               child: const Text('Hapus')),
                                           ElevatedButton(
@@ -157,7 +152,7 @@ class MasterKendaraan extends GetView<MasterController> {
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                     child: ElevatedButton(
                       onPressed: () {
-                        masterC.updateMerk(id, masterC.namaMerk.text);
+                        // masterC.updateMerk(id, masterC.namaMerk.text);
                         masterC.namaMerk.clear();
                         Get.back();
                       },
@@ -189,42 +184,42 @@ class MasterKendaraan extends GetView<MasterController> {
         title: 'Tambah Data Kendaraan',
         content: Column(
           children: [
-            StreamBuilder(
-              stream: masterC.streamDatajk(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Obx(
-                    () => DropdownButtonFormField(
-                      decoration: const InputDecoration(
-                          hintText: 'Jenis Kendaraan',
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)))),
-                      value: masterC.selectedjenisKendaraan.value == ""
-                          ? null
-                          : masterC.selectedjenisKendaraan.value,
-                      // isDense: true,
-                      onChanged: (String? data) {
-                        masterC.selectedjenisKendaraan.value = data!;
-                      },
-                      items: snapshot.data!.docs.map((DocumentSnapshot doc) {
-                        return DropdownMenuItem<String>(
-                            value: (doc.data() as Map<String, dynamic>)["id"]
-                                .toString(),
-                            child: Text(
-                              '${(doc.data() as Map<String, dynamic>)["jenis"]}',
-                            ));
-                      }).toList(),
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-                return const Center(
-                  child: CupertinoActivityIndicator(),
-                );
-              },
-            ),
+            // StreamBuilder(
+            //   stream: masterC.streamDatajk(),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.hasData) {
+            //       return Obx(
+            //         () => DropdownButtonFormField(
+            //           decoration: const InputDecoration(
+            //               hintText: 'Jenis Kendaraan',
+            //               border: OutlineInputBorder(
+            //                   borderRadius:
+            //                       BorderRadius.all(Radius.circular(20)))),
+            //           value: masterC.selectedjenisKendaraan.value == ""
+            //               ? null
+            //               : masterC.selectedjenisKendaraan.value,
+            //           // isDense: true,
+            //           onChanged: (String? data) {
+            //             masterC.selectedjenisKendaraan.value = data!;
+            //           },
+            //           items: snapshot.data!.docs.map((DocumentSnapshot doc) {
+            //             return DropdownMenuItem<String>(
+            //                 value: (doc.data() as Map<String, dynamic>)["id"]
+            //                     .toString(),
+            //                 child: Text(
+            //                   '${(doc.data() as Map<String, dynamic>)["jenis"]}',
+            //                 ));
+            //           }).toList(),
+            //         ),
+            //       );
+            //     } else if (snapshot.hasError) {
+            //       return Text('${snapshot.error}');
+            //     }
+            //     return const Center(
+            //       child: CupertinoActivityIndicator(),
+            //     );
+            //   },
+            // ),
             const SizedBox(
               height: 5,
             ),
@@ -248,10 +243,10 @@ class MasterKendaraan extends GetView<MasterController> {
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                     child: ElevatedButton(
                       onPressed: () {
-                        masterC.addMerk(
-                            id,
-                            int.parse(masterC.selectedjenisKendaraan.value),
-                            masterC.namaMerk.text);
+                        // masterC.addMerk(
+                        //     id,
+                        //     int.parse(masterC.selectedjenisKendaraan.value),
+                        //     masterC.namaMerk.text);
                         Get.back();
                         masterC.namaMerk.clear();
                         masterC.selectedjenisKendaraan.value = "";

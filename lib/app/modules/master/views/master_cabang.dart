@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carwash/app/helper/alert.dart';
@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 
+import '../../../model/cabang_model.dart';
 import '../controllers/master_controller.dart';
 
 class MasterCabang extends GetView<MasterController> {
@@ -16,8 +17,8 @@ class MasterCabang extends GetView<MasterController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot<Object?>>(
-        stream: masterC.streamDataCabang(),
+      body: StreamBuilder(
+        stream: masterC.getCabang(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -25,13 +26,7 @@ class MasterCabang extends GetView<MasterController> {
                 child: CupertinoActivityIndicator(),
               );
             } else {
-              var data = snapshot.data!.docs;
-
-              List<Map<String, dynamic>> list = [];
-              data.map((DocumentSnapshot doc) {
-                list.add((doc.data() as Map<String, dynamic>));
-              }).toList();
-              // print(list);
+              var data = snapshot.data!;
               return DataTable2(
                   columnSpacing: 1,
                   horizontalMargin: 8,
@@ -41,16 +36,13 @@ class MasterCabang extends GetView<MasterController> {
                   headingRowColor: MaterialStateProperty.resolveWith(
                       (states) => Colors.lightBlue),
                   columns: const [
-                    DataColumn(
-                      label: Text('No '),
-                      // size: ColumnSize.S,
-                    ),
+                    DataColumn2(label: Text('Kode '), fixedWidth: 50
+                        // size: ColumnSize.S,
+                        ),
                     DataColumn(
                       label: Text('Cabang'),
                     ),
-                    DataColumn(
-                      label: Text('Kota'),
-                    ),
+                    DataColumn2(label: Text('Kota'), fixedWidth: 70),
                     DataColumn(
                       label: Text('Alamat'),
                     ),
@@ -67,9 +59,7 @@ class MasterCabang extends GetView<MasterController> {
                       label: Text('Action'),
                     ),
                   ],
-                  rows: List<DataRow>.generate(list.length, (index) {
-                    var users = [];
-                    var karyawans = [];
+                  rows: List<DataRow>.generate(data.length, (index) {
                     // var userCab = [];
                     // for (int i = 0; i < list[index]["users"].length; i++) {
                     //   var user = list[index]["users"][i]["nama"];
@@ -83,31 +73,29 @@ class MasterCabang extends GetView<MasterController> {
                     // }
                     // print(karyawanCab);
                     // masterC.user.value = userCab;
-                    if (list[index]["id"] == "") {
-                      masterC.noUrut = masterC.noUrut;
+                    if (data.isEmpty) {
+                      masterC.noUrut.value = masterC.noUrut.value;
                     } else {
-                      masterC.noUrut = list.length + 1;
+                      masterC.noUrut.value = data.length + 1;
                     }
 
                     return DataRow(cells: [
-                      DataCell(Text(list[index]["kode_cabang"])),
-                      DataCell(Text(list[index]["nama_cabang"])),
-                      DataCell(Text(list[index]["kota"])),
-                      DataCell(Text(list[index]["alamat"] != ""
-                          ? list[index]["alamat"]
+                      DataCell(Text(data[index].kodeCabang!)),
+                      DataCell(Text(data[index].namaCabang!)),
+                      DataCell(Text(data[index].kota!)),
+                      DataCell(Text(data[index].alamat! != ""
+                          ? data[index].alamat!
                           : "alamat belum di isi")),
-                      DataCell(Text(list[index]["telp"] != ""
-                          ? list[index]["telp"]
+                      DataCell(Text(data[index].telp! != ""
+                          ? data[index].telp!
                           : "Telpon belum di isi")),
-                      DataCell(StreamBuilder(
-                          stream: masterC.streamDataUserByCabang(
-                              list[index]["kode_cabang"]),
-                          builder: ((context, snapshot) {
+                      DataCell(FutureBuilder(
+                          future: masterC.futureUsers(data[index].kodeCabang!),
+                          builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               var users = [];
-                              snapshot.data!.docs
-                                  .map((e) => users.add((e.data()
-                                      as Map<String, dynamic>)["nama"]))
+                              snapshot.data!
+                                  .map((e) => users.add(e.namaUser!))
                                   .toList();
 
                               return Text(users.isNotEmpty
@@ -119,15 +107,15 @@ class MasterCabang extends GetView<MasterController> {
                             return const Center(
                               child: CupertinoActivityIndicator(),
                             );
-                          }))),
-                      DataCell(StreamBuilder(
-                          stream: masterC.streamDataKaryawanByCabang(
-                              list[index]["kode_cabang"]),
-                          builder: ((context, snapshot) {
+                          })),
+                      DataCell(FutureBuilder(
+                          future:
+                              masterC.futureKaryawan(data[index].kodeCabang!),
+                          builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              snapshot.data!.docs
-                                  .map((e) => karyawans.add((e.data()
-                                      as Map<String, dynamic>)["nama"]))
+                              var karyawans = [];
+                              snapshot.data!
+                                  .map((e) => karyawans.add(e.nama!))
                                   .toList();
 
                               return Text(karyawans.isNotEmpty
@@ -139,18 +127,18 @@ class MasterCabang extends GetView<MasterController> {
                             return const Center(
                               child: CupertinoActivityIndicator(),
                             );
-                          }))),
+                          })),
                       DataCell(Row(
                         children: [
                           IconButton(
                             onPressed: () {
                               editData(
-                                  data[index].id,
-                                  list[index]["kode_cabang"],
-                                  list[index]["nama_cabang"],
-                                  list[index]["kota"],
-                                  list[index]["alamat"],
-                                  list[index]["telp"]);
+                                data[index].kodeCabang!,
+                                data[index].namaCabang!,
+                                data[index].kota!,
+                                data[index].alamat!,
+                                data[index].telp!,
+                              );
                             },
                             icon: const Icon(
                               Icons.edit_note_sharp,
@@ -174,12 +162,19 @@ class MasterCabang extends GetView<MasterController> {
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           ElevatedButton(
-                                              onPressed: () {
-                                                masterC.deleteCabang(
-                                                    data[index].id);
-                                                masterC.removeUserCabang(users);
-                                                masterC.removeKaryawanCabang(
-                                                    karyawans);
+                                              onPressed: () async {
+                                                var idCabang = {
+                                                  "kode":
+                                                      data[index].kodeCabang!
+                                                };
+                                                masterC.deleteCabang(idCabang);
+                                                await showDefaultDialog(
+                                                    "Sukses",
+                                                    "Data berhasil dihapus");
+                                                // Get.back();
+                                                // masterC.removeUserCabang(users);
+                                                // masterC.removeKaryawanCabang(
+                                                //     karyawans);
                                               },
                                               child: const Text('Hapus')),
                                           ElevatedButton(
@@ -220,7 +215,7 @@ class MasterCabang extends GetView<MasterController> {
     );
   }
 
-  editData(id, kode, nama, kota, alamat, telpon) {
+  editData(kode, nama, kota, alamat, telpon) {
     Get.defaultDialog(
         radius: 5,
         title: 'Edit Data Cabang',
@@ -380,8 +375,8 @@ class MasterCabang extends GetView<MasterController> {
 
                         // print(masterC.karyawanList);
 
-                        masterC.updateDataCabang(
-                            id, namaCab, kotaCab, alamatCab, telponCab);
+                        // masterC.updateDataCabang(
+                        // id, namaCab, kotaCab, alamatCab, telponCab);
                         // masterC.updateUserCabang(kode, users);
                         // masterC.updateKaryawanCabang(kode, karyawan);
                         // print(kode);
@@ -471,25 +466,32 @@ class MasterCabang extends GetView<MasterController> {
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         minimumSize: const Size(45, 45)),
-                    onPressed: () {
+                    onPressed: () async {
                       if (masterC.alamatCabang.text == "") {
                         showSnackbar('Error', 'alamat tidak boleh kosong');
                       } else if (masterC.namaCabang.text == "") {
                         showSnackbar('Error', 'nama cabang tidak boleh kosong');
                       } else {
-                        var kodeCabang = '00${masterC.noUrut}';
-                        masterC.addCabang(
-                            masterC.noUrut,
-                            kodeCabang,
-                            masterC.namaCabang.text,
-                            masterC.kotaCabang.text,
-                            masterC.alamatCabang.text,
-                            masterC.telpCabang.text);
+                        var kodeCabang = '00${masterC.noUrut.value}';
+                        var data = {
+                          "kode": kodeCabang,
+                          "nama": masterC.namaCabang.text,
+                          "kota": masterC.kotaCabang.text,
+                          "alamat": masterC.alamatCabang.text,
+                          "telp": masterC.telpCabang.text,
+                        };
 
+                        masterC.addCabang(data);
+                        await showDefaultDialog(
+                            "Sukses", "Cabang baru berhasil ditambahkan");
+                        Future.delayed(const Duration(seconds: 1), () {
+                          Get.back();
+                        });
                         masterC.alamatCabang.clear();
                         masterC.namaCabang.clear();
                         masterC.kotaCabang.clear();
                         masterC.telpCabang.clear();
+                        masterC.noUrut++;
                       }
                     },
                     child: const Text(

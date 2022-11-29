@@ -1,23 +1,27 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:carwash/app/modules/home/controllers/auth_controller.dart';
+// import 'package:carwash/app/modules/home/controllers/auth_controller.dart';
 import 'package:carwash/app/modules/home_web/views/home_tab.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../helper/alert.dart';
 import '../../laporan/views/laporan_view.dart';
+import '../../login/controllers/login_controller.dart';
 import '../../master/views/master_view.dart';
 import '../controllers/home_web_controller.dart';
 
 class HomeWebView extends GetView<HomeWebController> {
-  HomeWebView({super.key, this.user});
-  final String? user;
+  HomeWebView({super.key, this.kodeCabang, this.username});
+  final String? kodeCabang;
+  final String? username;
   PageController page = PageController(initialPage: 0, keepPage: false);
   final homeC = Get.put(HomeWebController());
+  final loginC = Get.put(LoginController());
 
-  final auth = Get.find<AuthController>();
+  // final auth = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,16 +29,19 @@ class HomeWebView extends GetView<HomeWebController> {
           title: const Text('Selamat datang di Halaman Admin Saputra Car Wash'),
           centerTitle: true,
         ),
-        body: StreamBuilder(
-          stream: homeC.streamDataUser(user),
+        // );
+        body: FutureBuilder(
+          future: homeC.streamDataUser(username),
           builder: ((context, snapshot) {
             if (snapshot.hasData) {
-              var email = snapshot.data!.docs;
-              var cabang = [];
-              email
-                  .map((DocumentSnapshot doc) =>
-                      cabang.add((doc.data() as Map<String, dynamic>)))
-                  .toList();
+              // var email = snapshot.data!;
+              // var cabang = [];
+              // email
+              //     .map((doc) =>
+              //         cabang.add((doc.data() as Map<String, dynamic>)))
+              //     .toList();
+              // print(snapshot.data!.level);
+
               return Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -44,6 +51,7 @@ class HomeWebView extends GetView<HomeWebController> {
                     //   print(mode);
                     // },
                     style: SideMenuStyle(
+                        openSideMenuWidth: 230,
                         displayMode: SideMenuDisplayMode.auto,
                         hoverColor: Colors.blue[100],
                         selectedColor: Colors.lightBlue,
@@ -69,7 +77,7 @@ class HomeWebView extends GetView<HomeWebController> {
                               // mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                cabang.isNotEmpty
+                                username != ""
                                     ? const CircleAvatar(
                                         backgroundColor: Colors.grey,
                                         backgroundImage:
@@ -79,9 +87,9 @@ class HomeWebView extends GetView<HomeWebController> {
                                 const SizedBox(
                                   width: 4,
                                 ),
-                                cabang.isNotEmpty
+                                username != ""
                                     ? Text(
-                                        ' ${cabang[0]["nama"]}',
+                                        ' ${username!}\n${snapshot.data![0].level}',
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 17),
@@ -99,129 +107,95 @@ class HomeWebView extends GetView<HomeWebController> {
                     ),
                     footer: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: cabang[0]["level"] != 1
-                            ? StreamBuilder(
-                                stream: homeC.streamDataCabang(
-                                    cabang[0]["kode_cabang"] != ""
-                                        ? cabang[0]["kode_cabang"]
-                                        : ""),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    var cab = [];
-                                    snapshot.data!.docs
-                                        .map((DocumentSnapshot doc) {
-                                      cab.add(
-                                          (doc.data() as Map<String, dynamic>));
-                                    }).toList();
-                                    homeC.namaCabang = cab[0]["nama_cabang"];
-                                    homeC.alamatCabang = cab[0]["alamat"];
-                                    homeC.kotaCabang = cab[0]["kota"];
-
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Row(
-                                          children: <Widget>[
-                                            Expanded(
-                                                flex: 2,
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8, right: 12),
-                                                  child: const Icon(
-                                                      Icons
-                                                          .maps_home_work_outlined,
-                                                      color: Color.fromARGB(
-                                                          255, 73, 72, 72)),
-                                                )),
-                                            Expanded(
-                                              flex: 8,
-                                              child: SizedBox(
-                                                height: 20,
-                                                child: Text(
-                                                  '${cab[0]["nama_cabang"]}',
-                                                  style: const TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Color.fromARGB(
-                                                          255, 73, 72, 72)),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                        child: snapshot.data![0].level != "Owner"
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                          flex: 2,
+                                          child: Container(
+                                            padding: const EdgeInsets.only(
+                                                left: 8, right: 12),
+                                            child: const Icon(
+                                                Icons.maps_home_work_outlined,
+                                                color: Color.fromARGB(
+                                                    255, 73, 72, 72)),
+                                          )),
+                                      Expanded(
+                                        flex: 8,
+                                        child: SizedBox(
+                                          height: 20,
+                                          child: Text(
+                                            '${snapshot.data![0].namaCabang}',
+                                            style: const TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color.fromARGB(
+                                                    255, 73, 72, 72)),
+                                          ),
                                         ),
-                                        Row(
-                                          children: <Widget>[
-                                            Expanded(
-                                                flex: 2,
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8, right: 12),
-                                                  child: const Icon(
-                                                      Icons.map_sharp,
-                                                      color: Color.fromARGB(
-                                                          255, 73, 72, 72)),
-                                                )),
-                                            Expanded(
-                                              flex: 8,
-                                              child: SizedBox(
-                                                height: 20,
-                                                child: Text(
-                                                  '${cab[0]["kota"]}',
-                                                  style: const TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Color.fromARGB(
-                                                          255, 73, 72, 72)),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                          flex: 2,
+                                          child: Container(
+                                            padding: const EdgeInsets.only(
+                                                left: 8, right: 12),
+                                            child: const Icon(Icons.map_sharp,
+                                                color: Color.fromARGB(
+                                                    255, 73, 72, 72)),
+                                          )),
+                                      Expanded(
+                                        flex: 8,
+                                        child: SizedBox(
+                                          height: 20,
+                                          child: Text(
+                                            '${snapshot.data![0].kota}',
+                                            style: const TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color.fromARGB(
+                                                    255, 73, 72, 72)),
+                                          ),
                                         ),
-                                        Row(
-                                          children: <Widget>[
-                                            Expanded(
-                                                flex: 2,
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8, right: 12),
-                                                  child: const Icon(Icons.call,
-                                                      color: Color.fromARGB(
-                                                          255, 73, 72, 72)),
-                                                )),
-                                            Expanded(
-                                              flex: 8,
-                                              child: SizedBox(
-                                                height: 20,
-                                                child: Text(
-                                                  '${cab[0]["telp"]}',
-                                                  style: const TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Color.fromARGB(
-                                                          255, 73, 72, 72)),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                          flex: 2,
+                                          child: Container(
+                                            padding: const EdgeInsets.only(
+                                                left: 8, right: 12),
+                                            child: const Icon(Icons.call,
+                                                color: Color.fromARGB(
+                                                    255, 73, 72, 72)),
+                                          )),
+                                      Expanded(
+                                        flex: 8,
+                                        child: SizedBox(
+                                          height: 20,
+                                          child: Text(
+                                            '${snapshot.data![0].telp}',
+                                            style: const TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color.fromARGB(
+                                                    255, 73, 72, 72)),
+                                          ),
                                         ),
-                                      ],
-                                    );
-                                  } else if (snapshot.hasError) {
-                                    return Text('${snapshot.error}');
-                                  }
-                                  return const Center(
-                                    child: CupertinoActivityIndicator(),
-                                  );
-                                },
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               )
                             : Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -255,7 +229,7 @@ class HomeWebView extends GetView<HomeWebController> {
                         priority: 1,
                         title: 'Data Master',
                         onTap: () {
-                          if (cabang[0]["level"] != 3) {
+                          if (snapshot.data![0].level != "3") {
                             page.jumpToPage(1);
                           } else {
                             Get.defaultDialog(
@@ -325,7 +299,15 @@ class HomeWebView extends GetView<HomeWebController> {
                                         ElevatedButton(
                                             onPressed: () async {
                                               // userCtr.loguser.clear();
-                                              auth.logout();
+                                              // auth.logout();
+                                              SharedPreferences pref =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              await pref.remove("kode");
+                                              await pref.setBool(
+                                                  "is_login", false);
+                                              loginC.isLogin.value = false;
+                                              loginC.isLoading.value = false;
                                               Get.back();
                                               showSnackbar('Sukses',
                                                   'Anda berhasil logout');
@@ -364,20 +346,22 @@ class HomeWebView extends GetView<HomeWebController> {
                       controller: page,
                       children: [
                         HomeViewTabs(
-                            cabang[0]["level"],
-                            cabang[0]["nama"],
-                            cabang[0]["kode_cabang"] != ""
-                                ? cabang[0]["kode_cabang"]
-                                : "",
-                            homeC.namaCabang,
-                            homeC.alamatCabang,
-                            homeC.kotaCabang),
-                        MasterViewTabs(),
-                        LaporanView(
-                            cabang[0]["kode_cabang"] != ""
-                                ? cabang[0]["kode_cabang"]
-                                : "",
-                            cabang[0]["level"]),
+                            // cabang[0]["level"],
+                            // cabang[0]["nama"],
+                            // cabang[0]["kode_cabang"] != ""
+                            //     ? cabang[0]["kode_cabang"]
+                            //     : "",
+                            snapshot.data![0].namaCabang!,
+                            snapshot.data![0].kodeCabang!,
+                            username!,
+                            snapshot.data![0].alamat!,
+                            snapshot.data![0].kota!),
+                        MasterViewTabs(snapshot.data![0].kodeCabang!),
+                        // LaporanView(
+                        //     cabang[0]["kode_cabang"] != ""
+                        //         ? cabang[0]["kode_cabang"]
+                        //         : "",
+                        //     cabang[0]["level"]),
 
                         // DistOutView(),
                         // SettingsView(),

@@ -26,3 +26,16 @@ showDefaultDialog(title, message) {
       textConfirm: 'OK',
       confirmTextColor: Colors.white);
 }
+
+showDefaultDialog2(title, message) {
+  Get.defaultDialog(
+      radius: 5,
+      title: title,
+      middleText: message,
+      onConfirm: () {
+        Get.back();
+        Get.back();
+      },
+      textConfirm: 'OK',
+      confirmTextColor: Colors.white);
+}

@@ -57,7 +57,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.MASTER,
-      page: () => MasterViewTabs(),
+      page: () => MasterViewTabs(""),
       binding: MasterBinding(),
     ),
     GetPage(

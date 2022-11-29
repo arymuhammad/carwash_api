@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,27 +7,23 @@ import 'package:carwash/app/helper/alert.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../master/controllers/master_controller.dart';
 import '../controllers/services_controller.dart';
 
 class ServicesView extends GetView<ServicesController> {
   ServicesView({Key? key}) : super(key: key);
 
-  final serviceC = Get.put(ServicesController());
-
+  final masterC = Get.put(MasterController());
+  TextEditingController namaService = TextEditingController();
+  TextEditingController harga = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot<Object?>>(
-        stream: serviceC.getServices(),
+      body: StreamBuilder(
+        stream: masterC.getServices(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            var data = snapshot.data!.docs;
-            List<Map<String, dynamic>> list = [];
-            data.map((DocumentSnapshot doc) {
-              list.add((doc.data() as Map<String, dynamic>));
-              // print((doc.data() as Map<String, dynamic>)["no_polisi"]);
-            }).toList();
-
+            var data = snapshot.data!;
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CupertinoActivityIndicator());
             } else {
@@ -49,21 +45,21 @@ class ServicesView extends GetView<ServicesController> {
                     DataColumn2(label: Text('Harga'), size: ColumnSize.S),
                     DataColumn2(label: Text('Action'), size: ColumnSize.S),
                   ],
-                  rows: List<DataRow>.generate(list.length, (index) {
-                    serviceC.id = list[index]["id"] + 1;
+                  rows: List<DataRow>.generate(data.length, (index) {
+                    masterC.idService = data.length + 1;
                     return DataRow(cells: [
-                      DataCell(Text(list[index]["id"].toString())),
-                      DataCell(Text(list[index]["nama"])),
+                      DataCell(Text(data[index].id!)),
+                      DataCell(Text(data[index].serviceName!)),
                       DataCell(Text(NumberFormat.simpleCurrency(
                               locale: 'in', decimalDigits: 0)
-                          .format(list[index]["harga"])
+                          .format(int.parse(data[index].harga!))
                           .toString())),
                       DataCell(Row(
                         children: [
                           IconButton(
                             onPressed: () {
-                              editData(data[index].id, list[index]["nama"],
-                                  list[index]["harga"]);
+                              editData(data[index].id!,
+                                  data[index].serviceName!, data[index].harga!);
                             },
                             icon: const Icon(
                               Icons.edit_note_sharp,
@@ -74,7 +70,7 @@ class ServicesView extends GetView<ServicesController> {
                           ),
                           IconButton(
                             onPressed: () {
-                              deleteData(data[index].id);
+                              deleteData(data[index].id!);
                             },
                             icon: const Icon(
                               Icons.delete_outline_outlined,
@@ -98,7 +94,7 @@ class ServicesView extends GetView<ServicesController> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          addData(serviceC.id);
+          addData(masterC.idService);
         },
         child: const Icon(Icons.add),
       ),
@@ -115,7 +111,7 @@ class ServicesView extends GetView<ServicesController> {
             SizedBox(
               height: 45,
               child: TextField(
-                controller: serviceC.nama,
+                controller: namaService,
                 decoration: InputDecoration(
                     hintText: nama, border: const OutlineInputBorder()),
               ),
@@ -126,11 +122,12 @@ class ServicesView extends GetView<ServicesController> {
             SizedBox(
               height: 45,
               child: TextField(
-                controller: serviceC.harga,
+                controller: harga,
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                    hintText: harga.toString(), border: const OutlineInputBorder()),
+                    hintText: harga.toString(),
+                    border: const OutlineInputBorder()),
               ),
             ),
             const Divider(),
@@ -139,16 +136,16 @@ class ServicesView extends GetView<ServicesController> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      if (serviceC.nama.text == "") {
-                        serviceC.nama.text = nama;
-                      } else if (serviceC.harga.text == "") {
-                        serviceC.harga.text = harga;
+                      if (namaService.text == "") {
+                        namaService.text = nama;
+                      } else if (harga.text == "") {
+                        harga.text = harga;
                       }
-                      serviceC.updateService(id, serviceC.nama.text,
-                          int.parse(serviceC.harga.text));
+                      // serviceC.updateService(id, serviceC.nama.text,
+                      //     int.parse(serviceC.harga.text));
                       Get.back();
-                      serviceC.nama.clear();
-                      serviceC.harga.clear();
+                      namaService.clear();
+                      harga.clear();
                     },
                     child: const Text('Update')),
                 ElevatedButton(
@@ -177,7 +174,7 @@ class ServicesView extends GetView<ServicesController> {
               children: [
                 ElevatedButton(
                     onPressed: () async {
-                      await serviceC.deleteService(id);
+                      // await serviceC.deleteService(id);
                       Get.back();
                     },
                     child: const Text('Hapus')),
@@ -202,7 +199,7 @@ class ServicesView extends GetView<ServicesController> {
             SizedBox(
               height: 45,
               child: TextField(
-                controller: serviceC.nama,
+                controller: namaService,
                 decoration: const InputDecoration(
                     hintText: 'Nama Service',
                     border: OutlineInputBorder(
@@ -215,7 +212,7 @@ class ServicesView extends GetView<ServicesController> {
             SizedBox(
               height: 45,
               child: TextField(
-                controller: serviceC.harga,
+                controller: harga,
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -230,15 +227,14 @@ class ServicesView extends GetView<ServicesController> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      if (serviceC.nama.text == "" &&
-                          serviceC.harga.text == "") {
+                      if (namaService.text == "" && harga.text == "") {
                         showSnackbar("Error", "Data tidak boleh kosong");
                       } else {
-                        serviceC.addService(id, serviceC.nama.text,
-                            int.parse(serviceC.harga.text));
+                        // serviceC.addService(id, serviceC.nama.text,
+                        //     int.parse(serviceC.harga.text));
                         Get.back();
-                        serviceC.nama.clear();
-                        serviceC.harga.clear();
+                        namaService.clear();
+                        harga.clear();
                       }
                     },
                     child: const Text('Simpan')),

@@ -5,17 +5,17 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../../helper/alert.dart';
-import '../../home/controllers/auth_controller.dart';
 import '../controllers/login_controller.dart';
 
+// ignore: must_be_immutable
 class LoginView extends GetView<LoginController> {
   LoginView({Key? key}) : super(key: key);
+
+  final loginC = Get.put(LoginController());
 
   TextEditingController user = TextEditingController();
   TextEditingController pass = TextEditingController();
 
-  final authC = Get.find<AuthController>();
-  final loginC = Get.put(LoginController());
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -24,9 +24,7 @@ class LoginView extends GetView<LoginController> {
         await Get.defaultDialog(
             radius: 5,
             title: 'Peringatan',
-            content: Container(
-              child: const Text('Anda yakin ingin keluar dari aplikasi ini?'),
-            ),
+            content: const Text('Anda yakin ingin keluar dari aplikasi ini?'),
             confirm: ElevatedButton(
                 onPressed: () {
                   Get.back();
@@ -67,14 +65,6 @@ class LoginView extends GetView<LoginController> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Stack(
-                  //   children: const [
-                  //     Text('Log In',
-                  //         style: TextStyle(
-                  //             fontSize: 25, fontWeight: FontWeight.bold))
-                  //   ],
-                  // ),
-
                   const Text(
                     'Log In',
                     style: TextStyle(
@@ -104,7 +94,8 @@ class LoginView extends GetView<LoginController> {
                         } else if (pass.text.isEmpty) {
                           showSnackbar('Error', 'Password belum di isi');
                         } else {
-                          authC.login(user.text, pass.text);
+                          loginC.login(user.text, pass.text);
+
                           showSnackbar('Sukses', 'Selamat Datang ${user.text}');
                           user.clear();
                           pass.clear();
@@ -138,7 +129,7 @@ class LoginView extends GetView<LoginController> {
                               textColor: Colors.white,
                               fontSize: 16.0);
                         } else {
-                          authC.login(user.text, pass.text);
+                          loginC.login(user.text, pass.text);
                           Fluttertoast.showToast(
                               msg:
                                   "Sukses, Anda berhasil Login.\nSedang Mengalihkan ke Home",
@@ -176,7 +167,7 @@ class LoginView extends GetView<LoginController> {
                         } else if (password.isEmpty) {
                           showSnackbar('Error', 'Password belum di isi');
                         } else {
-                          authC.login(user.text, pass.text);
+                          loginC.login(user.text, pass.text);
                           // showSnackbar('Sukses', 'Selamat Datang ${user.text}');
                           user.clear();
                           pass.clear();
@@ -210,7 +201,7 @@ class LoginView extends GetView<LoginController> {
                               textColor: Colors.white,
                               fontSize: 16.0);
                         } else {
-                          authC.login(user.text, pass.text);
+                          loginC.login(user.text, pass.text);
                           Fluttertoast.showToast(
                               msg:
                                   "Sukses, Anda berhasil Login.\nSedang Mengalihkan ke Home",
@@ -234,24 +225,24 @@ class LoginView extends GetView<LoginController> {
                       onPressed: () {
                         if (kIsWeb) {
                           if (pass.text.isEmpty && user.text.isEmpty) {
-                            authC.isLoading.value = false;
+                            loginC.isLoading.value = false;
                             showSnackbar('Error',
                                 'Username dan Password tidak boleh kosong');
                           } else if (user.text.isEmpty) {
-                            authC.isLoading.value = false;
+                            loginC.isLoading.value = false;
                             showSnackbar('Error', 'Username belum di isi');
                           } else if (pass.text.isEmpty) {
-                            authC.isLoading.value = false;
+                            loginC.isLoading.value = false;
                             showSnackbar('Error', 'Password belum di isi');
                           } else {
-                            authC.isLoading.value = true;
-                            authC.login(user.text, pass.text);
+                            loginC.login(user.text, pass.text);
+                            loginC.isLoading.value = true;
                             showSnackbar(
                                 'Sukses', 'Selamat Datang ${user.text}');
                           }
                         } else {
                           if (pass.text.isEmpty && user.text.isEmpty) {
-                            authC.isLoading.value = false;
+                            loginC.isLoading.value = false;
                             Fluttertoast.showToast(
                                 msg: "Error, Username dan Password kosong.",
                                 toastLength: Toast.LENGTH_SHORT,
@@ -261,7 +252,7 @@ class LoginView extends GetView<LoginController> {
                                 textColor: Colors.white,
                                 fontSize: 16.0);
                           } else if (user.text.isEmpty) {
-                            authC.isLoading.value = false;
+                            loginC.isLoading.value = false;
                             Fluttertoast.showToast(
                                 msg: "Error, Username kosong.",
                                 toastLength: Toast.LENGTH_SHORT,
@@ -271,7 +262,7 @@ class LoginView extends GetView<LoginController> {
                                 textColor: Colors.white,
                                 fontSize: 16.0);
                           } else if (pass.text.isEmpty) {
-                            authC.isLoading.value = false;
+                            loginC.isLoading.value = false;
                             Fluttertoast.showToast(
                                 msg: "Error, Password kosong.",
                                 toastLength: Toast.LENGTH_SHORT,
@@ -281,8 +272,8 @@ class LoginView extends GetView<LoginController> {
                                 textColor: Colors.white,
                                 fontSize: 16.0);
                           } else {
-                            authC.isLoading.value = true;
-                            authC.login(user.text, pass.text);
+                            loginC.isLoading.value = true;
+                            loginC.login(user.text, pass.text);
                           }
                         }
                       },
@@ -291,7 +282,7 @@ class LoginView extends GetView<LoginController> {
                           fixedSize: const Size(100, 40),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50))),
-                      child: authC.isLoading.value
+                      child: loginC.isLoading.value
                           ? const SizedBox(
                               height: 25,
                               width: 25,
@@ -311,21 +302,6 @@ class LoginView extends GetView<LoginController> {
                   const SizedBox(
                     height: 25,
                   ),
-                  // Row(
-                  //   children: [
-                  //     const Text('Lupa Password?'),
-                  //     const SizedBox(
-                  //       width: 5,
-                  //     ),
-                  //     InkWell(
-                  //       onTap: () {},
-                  //       child: const Text(
-                  //         'Klik disini',
-                  //         style: TextStyle(color: Colors.lightBlue),
-                  //       ),
-                  //     )
-                  //   ],
-                  // ),
                 ],
               ),
             )),

@@ -89,7 +89,7 @@ class PrintKasirState extends State<PrintKasir> {
               pw.Expanded(flex: 1, child: pw.Text('Kasir')),
               pw.Expanded(flex: 3, child: pw.Text(' : ${dataPrint!["kasir"]}'))
             ]),
-            pw.SizedBox(height: 35),
+            pw.SizedBox(height: 25),
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
@@ -157,9 +157,9 @@ class PrintKasirState extends State<PrintKasir> {
                 ]),
             pw.SizedBox(height: 15),
             pw.Text(dataPrint!["pembayaran"]),
-            pw.SizedBox(height: 35),
+            pw.SizedBox(height: 25),
             pw.Text('-- Terima Kasih --'),
-            pw.SizedBox(height: 35),
+            pw.SizedBox(height: 15),
             pw.Text(dataPrint!["alamat"], textAlign: pw.TextAlign.center),
             // pw.Text(dataPrint!["kota"]),
             // }

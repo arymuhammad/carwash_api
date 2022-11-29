@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'app_exceptions.dart';
 
 class BaseClient {
-  static const int TIME_OUT_DURATION = 5;
+  static const int TIME_OUT_DURATION = 15;
   //GET
   Future<dynamic> get(String baseUrl, String api) async {
     var uri = Uri.parse(baseUrl + api);
@@ -25,12 +25,12 @@ class BaseClient {
   }
 
   //POST
-  Future<dynamic> post(String baseUrl, String api, dynamic payloadObj) async {
+  Future<dynamic> post(String baseUrl, String api, dynamic dataParam) async {
     var uri = Uri.parse(baseUrl + api);
-    var payload = json.encode(payloadObj);
+    var data = dataParam;
     try {
       var response = await http
-          .post(uri, body: payload)
+          .post(uri, body: data)
           .timeout(const Duration(seconds: TIME_OUT_DURATION));
       return _processResponse(response);
     } on SocketException {

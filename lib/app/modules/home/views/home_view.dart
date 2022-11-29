@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -40,53 +40,53 @@ class HomeView extends GetView<HomeController> {
                     height: 8,
                   ),
                   Expanded(
-                    child: StreamBuilder<QuerySnapshot<Object?>>(
-                        stream: homeC.streamDataMobil(),
+                    child: StreamBuilder(
+                        // stream: homeC.streamDataMobil(),
                         builder: (context, snapshot) {
                           // print(snapshot.data!.docs[0].data());
                           if (snapshot.hasData) {
                             if (snapshot.connectionState ==
                                 ConnectionState.active) {
-                              var data = snapshot.data!.docs;
-                              return ListView.builder(
-                                  itemCount: data.length,
-                                  itemBuilder: (context, index) => Container(
-                                        decoration: BoxDecoration(
-                                            color: (data[index].data() as Map<
-                                                        String,
-                                                        dynamic>)["status"] ==
-                                                    1
-                                                ? Colors.amberAccent[700]
-                                                : Colors.transparent),
-                                        child: ListTile(
-                                          title: Text(
-                                            '${(data[index].data() as Map<String, dynamic>)["no_polisi"]}',
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20),
-                                          ),
-                                          subtitle: Text(
-                                              '${(data[index].data() as Map<String, dynamic>)["kendaraan"]}',
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20)),
-                                          trailing: Text(
-                                            (data[index].data() as Map<String,
-                                                        dynamic>)["status"] ==
-                                                    0
-                                                ? 'Menunggu'
-                                                : 'Proses',
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20),
-                                          ),
-                                          dense: true,
-                                          minVerticalPadding: 0.9,
-                                        ),
-                                      ));
+                              // var data = snapshot.data!.docs;
+                              // return ListView.builder(
+                              //     itemCount: data.length,
+                              //     itemBuilder: (context, index) => Container(
+                              //           decoration: BoxDecoration(
+                              //               color: (data[index].data() as Map<
+                              //                           String,
+                              //                           dynamic>)["status"] ==
+                              //                       1
+                              //                   ? Colors.amberAccent[700]
+                              //                   : Colors.transparent),
+                              //           child: ListTile(
+                              //             title: Text(
+                              //               '${(data[index].data() as Map<String, dynamic>)["no_polisi"]}',
+                              //               style: const TextStyle(
+                              //                   color: Colors.white,
+                              //                   fontWeight: FontWeight.bold,
+                              //                   fontSize: 20),
+                              //             ),
+                              //             subtitle: Text(
+                              //                 '${(data[index].data() as Map<String, dynamic>)["kendaraan"]}',
+                              //                 style: const TextStyle(
+                              //                     color: Colors.white,
+                              //                     fontWeight: FontWeight.bold,
+                              //                     fontSize: 20)),
+                              //             trailing: Text(
+                              //               (data[index].data() as Map<String,
+                              //                           dynamic>)["status"] ==
+                              //                       0
+                              //                   ? 'Menunggu'
+                              //                   : 'Proses',
+                              //               style: const TextStyle(
+                              //                   color: Colors.white,
+                              //                   fontWeight: FontWeight.bold,
+                              //                   fontSize: 20),
+                              //             ),
+                              //             dense: true,
+                              //             minVerticalPadding: 0.9,
+                              //           ),
+                              //         ));
                             } else {
                               return const Center(
                                 child: CircularProgressIndicator(
@@ -129,53 +129,53 @@ class HomeView extends GetView<HomeController> {
                     height: 8,
                   ),
                   Expanded(
-                    child: StreamBuilder<QuerySnapshot<Object?>>(
-                        stream: homeC.streamDataMotor(),
+                    child: StreamBuilder(
+                        // stream: homeC.streamDataMotor(),
                         builder: (context, snapshot) {
                           // print(snapshot.data!.docs[0].data());
                           if (snapshot.hasData) {
                             if (snapshot.connectionState ==
                                 ConnectionState.active) {
-                              var data = snapshot.data!.docs;
-                              return ListView.builder(
-                                  itemCount: data.length,
-                                  itemBuilder: (context, index) => Container(
-                                        decoration: BoxDecoration(
-                                            color: (data[index].data() as Map<
-                                                        String,
-                                                        dynamic>)["status"] ==
-                                                    1
-                                                ? Colors.amberAccent[700]
-                                                : Colors.transparent),
-                                        child: ListTile(
-                                          title: Text(
-                                            '${(data[index].data() as Map<String, dynamic>)["no_polisi"]}',
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20),
-                                          ),
-                                          subtitle: Text(
-                                              '${(data[index].data() as Map<String, dynamic>)["kendaraan"]}',
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20)),
-                                          trailing: Text(
-                                            (data[index].data() as Map<String,
-                                                        dynamic>)["status"] ==
-                                                    0
-                                                ? 'Menunggu'
-                                                : 'Proses',
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20),
-                                          ),
-                                          dense: true,
-                                          minVerticalPadding: 0.9,
-                                        ),
-                                      ));
+                              // var data = snapshot.data!.docs;
+                              // return ListView.builder(
+                              //     itemCount: data.length,
+                              //     itemBuilder: (context, index) => Container(
+                              //           decoration: BoxDecoration(
+                              //               color: (data[index].data() as Map<
+                              //                           String,
+                              //                           dynamic>)["status"] ==
+                              //                       1
+                              //                   ? Colors.amberAccent[700]
+                              //                   : Colors.transparent),
+                              //           child: ListTile(
+                              //             title: Text(
+                              //               '${(data[index].data() as Map<String, dynamic>)["no_polisi"]}',
+                              //               style: const TextStyle(
+                              //                   color: Colors.white,
+                              //                   fontWeight: FontWeight.bold,
+                              //                   fontSize: 20),
+                              //             ),
+                              //             subtitle: Text(
+                              //                 '${(data[index].data() as Map<String, dynamic>)["kendaraan"]}',
+                              //                 style: const TextStyle(
+                              //                     color: Colors.white,
+                              //                     fontWeight: FontWeight.bold,
+                              //                     fontSize: 20)),
+                              //             trailing: Text(
+                              //               (data[index].data() as Map<String,
+                              //                           dynamic>)["status"] ==
+                              //                       0
+                              //                   ? 'Menunggu'
+                              //                   : 'Proses',
+                              //               style: const TextStyle(
+                              //                   color: Colors.white,
+                              //                   fontWeight: FontWeight.bold,
+                              //                   fontSize: 20),
+                              //             ),
+                              //             dense: true,
+                              //             minVerticalPadding: 0.9,
+                              //           ),
+                              //         ));
                             } else {
                               return const Center(
                                 child: CircularProgressIndicator(
@@ -206,82 +206,82 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     SizedBox(
                         height: Get.mediaQuery.size.height / 1,
-                        child: StreamBuilder<QuerySnapshot<Object?>>(
-                            stream: homeC.streamStatus(),
+                        child: StreamBuilder(
+                            // stream: homeC.streamStatus(),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
-                                var status = snapshot.data!.docs;
-                                playSound(
-                                    (status[0].data()
-                                        as Map<String, dynamic>)['id_jenis'],
-                                    (status[0].data()
-                                        as Map<String, dynamic>)['kendaraan'],
-                                    (status[0].data()
-                                        as Map<String, dynamic>)['no_polisi']);
+                                // var status = snapshot.data!.docs;
+                                // playSound(
+                                //     (status[0].data()
+                                //         as Map<String, dynamic>)['id_jenis'],
+                                //     (status[0].data()
+                                //         as Map<String, dynamic>)['kendaraan'],
+                                //     (status[0].data()
+                                //         as Map<String, dynamic>)['no_polisi']);
 
                                 Future.delayed(
                                     const Duration(
                                         seconds: 1, milliseconds: 450), () {
-                                  playSoundEnglish(
-                                      (status[0].data()
-                                          as Map<String, dynamic>)['id_jenis'],
-                                      (status[0].data()
-                                          as Map<String, dynamic>)['kendaraan'],
-                                      (status[0].data() as Map<String,
-                                          dynamic>)['no_polisi']);
+                                  // playSoundEnglish(
+                                  //     (status[0].data()
+                                  //         as Map<String, dynamic>)['id_jenis'],
+                                  //     (status[0].data()
+                                  //         as Map<String, dynamic>)['kendaraan'],
+                                  //     (status[0].data() as Map<String,
+                                  //         dynamic>)['no_polisi']);
                                 });
                                 // print('length $status');
-                                if (status.isEmpty) {
-                                  return Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Lottie.asset('assets/car-wash.json',
-                                          width: Get.mediaQuery.size.width / 2,
-                                          height:
-                                              Get.mediaQuery.size.width / 3),
-                                      const Text('Waiting...',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 34))
-                                    ],
-                                  );
-                                } else {
-                                  return Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        alignment: Alignment.center,
-                                        width: Get.mediaQuery.size.width / 1.6,
-                                        height: Get.mediaQuery.size.height / 2,
-                                        decoration: const BoxDecoration(
-                                            color: Colors.black),
-                                        child: Text(
-                                          '${(status[0].data() as Map<String, dynamic>)['no_polisi']}',
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 80),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      Container(
-                                        decoration: const BoxDecoration(
-                                            color: Colors.white),
-                                        height: Get.mediaQuery.size.height / 2,
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          '${(status[0].data() as Map<String, dynamic>)['kendaraan']}',
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 80),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }
+                                // if (status.isEmpty) {
+                                //   return Column(
+                                //     mainAxisAlignment: MainAxisAlignment.center,
+                                //     children: [
+                                //       Lottie.asset('assets/car-wash.json',
+                                //           width: Get.mediaQuery.size.width / 2,
+                                //           height:
+                                //               Get.mediaQuery.size.width / 3),
+                                //       const Text('Waiting...',
+                                //           style: TextStyle(
+                                //               color: Colors.white,
+                                //               fontWeight: FontWeight.bold,
+                                //               fontSize: 34))
+                                //     ],
+                                //   );
+                                // } else {
+                                //   return Column(
+                                //     mainAxisAlignment: MainAxisAlignment.start,
+                                //     children: [
+                                //       Container(
+                                //         alignment: Alignment.center,
+                                //         width: Get.mediaQuery.size.width / 1.6,
+                                //         height: Get.mediaQuery.size.height / 2,
+                                //         decoration: const BoxDecoration(
+                                //             color: Colors.black),
+                                //         child: Text(
+                                //           '${(status[0].data() as Map<String, dynamic>)['no_polisi']}',
+                                //           style: const TextStyle(
+                                //               color: Colors.white,
+                                //               fontWeight: FontWeight.bold,
+                                //               fontSize: 80),
+                                //           textAlign: TextAlign.center,
+                                //         ),
+                                //       ),
+                                //       Container(
+                                //         decoration: const BoxDecoration(
+                                //             color: Colors.white),
+                                //         height: Get.mediaQuery.size.height / 2,
+                                //         alignment: Alignment.center,
+                                //         child: Text(
+                                //           '${(status[0].data() as Map<String, dynamic>)['kendaraan']}',
+                                //           style: const TextStyle(
+                                //               color: Colors.black,
+                                //               fontWeight: FontWeight.bold,
+                                //               fontSize: 80),
+                                //           textAlign: TextAlign.start,
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   );
+                                // }
                               } else if (snapshot.hasError) {
                                 return Text('${snapshot.error}');
                               }
