@@ -172,6 +172,8 @@ class MasterLevel extends GetView<MasterController> {
                       onPressed: () {
                         if (masterC.namaLevel.text == "") {
                           masterC.namaLevel.text = nama;
+                        } else {
+                          masterC.namaLevel.text = masterC.namaLevel.text;
                         }
                         var dataUpdate = {
                           "id": id,

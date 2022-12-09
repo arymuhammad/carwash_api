@@ -1,3 +1,4 @@
+import 'package:carwash/app/helper/alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -59,7 +60,7 @@ class MasterKendaraan extends GetView<MasterController> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              editData(data[index].id, data[index].nama!);
+                              editData(data[index].id!, data[index].nama!);
                             },
                             icon: const Icon(
                               Icons.edit_note_sharp,
@@ -150,10 +151,21 @@ class MasterKendaraan extends GetView<MasterController> {
                 Container(
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                     child: ElevatedButton(
-                      onPressed: () {
-                        // masterC.updateMerk(id, masterC.namaMerk.text);
+                      onPressed: () async {
+                        if (masterC.namaMerk.text == "") {
+                          masterC.namaMerk.text = nama;
+                        } else {
+                          masterC.namaMerk.text = masterC.namaMerk.text;
+                        }
+                        var data = {
+                          "id": id,
+                          "nama": masterC.namaMerk.text,
+                          "sts": "update"
+                        };
+                        await masterC.addUpdateMerk(data);
+                        showDefaultDialog2(
+                            "Sukses", "Data berhasil diperbarui");
                         masterC.namaMerk.clear();
-                        Get.back();
                       },
                       child: const Text(
                         'Update',
@@ -223,12 +235,15 @@ class MasterKendaraan extends GetView<MasterController> {
                 Container(
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                     child: ElevatedButton(
-                      onPressed: () {
-                        // masterC.addMerk(
-                        //     id,
-                        //     int.parse(masterC.selectedjenisKendaraan.value),
-                        //     masterC.namaMerk.text);
-                        Get.back();
+                      onPressed: () async {
+                        var data = {
+                          "id_jenis": masterC.selectedjenisKendaraan.value,
+                          "nama": masterC.namaMerk.text,
+                          "sts": "add"
+                        };
+                        await masterC.addUpdateMerk(data);
+                        showDefaultDialog2(
+                            "Sukses", "Data Kendaraan berhasil ditambahkan");
                         masterC.namaMerk.clear();
                         masterC.selectedjenisKendaraan.value = "";
                       },

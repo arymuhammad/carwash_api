@@ -250,4 +250,10 @@ class MasterController extends GetxController {
             "https://saputracarwash.online/api/master/delete_services.php"),
         body: data);
   }
+
+  addUpdateMerk(data) async {
+    var response = await http.post(
+        Uri.parse("https://saputracarwash.online/api/merk/addupdate_merk.php"),
+        body: data);
+  }
 }
