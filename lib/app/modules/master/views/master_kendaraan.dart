@@ -85,8 +85,10 @@ class MasterKendaraan extends GetView<MasterController> {
                                         children: [
                                           ElevatedButton(
                                               onPressed: () {
-                                                masterC.deleteMerk(
-                                                    data[index].id!);
+                                                var idMerk = {
+                                                  "id": data[index].id!
+                                                };
+                                                masterC.deleteMerk(idMerk);
                                               },
                                               child: const Text('Hapus')),
                                           ElevatedButton(

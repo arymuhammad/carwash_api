@@ -235,7 +235,11 @@ class MasterController extends GetxController {
         body: data);
   }
 
-  void deleteMerk(String? id) {}
+  deleteMerk(data) async {
+    var response = await http.post(
+        Uri.parse("https://saputracarwash.online/api/merk/delete_merk.php"),
+        body: data);
+  }
 
   addService(data) async {
     var response = await http.post(
