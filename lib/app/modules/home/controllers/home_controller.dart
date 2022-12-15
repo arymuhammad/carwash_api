@@ -4,18 +4,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ota_update/ota_update.dart';
 
-import '../../../helper/app_exceptions.dart';
-import '../../../helper/alert.dart';
 import '../../../helper/base_client.dart';
 import '../../../model/cabang_model.dart';
 import '../../../model/karyawan_model.dart';
 import '../../../model/merk_model.dart';
 import '../../../model/trx_count_model.dart';
-import 'package:http/http.dart' as http;
-
 import '../../../model/trx_model.dart';
 
 class HomeController extends GetxController {
@@ -67,7 +64,7 @@ class HomeController extends GetxController {
     getCabang(kode, level);
     getMerkById(id);
     getTrx(kode, kode, date);
-    getKaryawan();
+    getKaryawan(kode);
   }
 
   Future<List<Cabang>> getCabang(kode, level) async {
@@ -100,14 +97,22 @@ class HomeController extends GetxController {
     }
   }
 
-  Stream<List<Trx>> getDatatrx(date, status, idJenis) async* {
+  Stream<List<Trx>> getDatatrx(kodeCabang, date, status, idJenis) async* {
     while (running) {
       await Future.delayed(const Duration(seconds: 1));
       var response = await BaseClient().get("https://saputracarwash.online/api",
-          "/transaksi/getTrxStatus.php?kode_cabang=&tanggal=$date&status=$status&id_jenis=$idJenis");
+          "/transaksi/getTrxStatus.php?kode_cabang=$kodeCabang&tanggal=$date&status=$status&id_jenis=$idJenis");
       List<dynamic> trx = json.decode(response)['rows'];
       List<Trx> dtTrx = trx.map((e) => Trx.fromJson(e)).toList();
       yield dtTrx;
+    }
+  }
+
+  Stream<String> getDate() async* {
+    while (running) {
+      await Future<void>.delayed(const Duration(seconds: 1));
+      DateTime now = DateTime.now();
+      yield "${DateFormat('dd/MM/yyyy').format(now)} ${now.hour} : ${now.minute} : ${now.second}";
     }
   }
 
@@ -142,7 +147,7 @@ class HomeController extends GetxController {
           ));
       OtaUpdate()
           .execute(
-        'https://saputracarwash.online/apk/carwash.apk',
+        'http://103.112.139.155/apk/carwash.apk',
         destinationFilename: 'carwash.apk',
       )
           .listen(
@@ -154,9 +159,9 @@ class HomeController extends GetxController {
     } catch (e) {}
   }
 
-  Future<List<Karyawan>> getKaryawan() async {
-    var response = await BaseClient()
-        .get('https://saputracarwash.online/api', '/master/get_karyawan.php');
+  Future<List<Karyawan>> getKaryawan(kode) async {
+    var response = await BaseClient().get('https://saputracarwash.online/api',
+        '/master/get_karyawan.php?cabang=$kode');
     List<dynamic> dtKaryawan = json.decode(response)['rows'];
     List<Karyawan> karyawan =
         dtKaryawan.map((e) => Karyawan.fromJson(e)).toList();

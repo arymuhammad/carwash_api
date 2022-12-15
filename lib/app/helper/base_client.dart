@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'app_exceptions.dart';
 
 class BaseClient {
-  static const int TIME_OUT_DURATION = 15;
+  static const int TIME_OUT_DURATION = 20;
   //GET
   Future<dynamic> get(String baseUrl, String api) async {
     var uri = Uri.parse(baseUrl + api);

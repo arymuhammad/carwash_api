@@ -1,17 +1,16 @@
+import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:carwash/app/helper/printer.dart';
-import 'package:carwash/app/modules/home/controllers/home_controller.dart';
-
-import 'package:get/get.dart';
-import 'package:barcode_widget/barcode_widget.dart';
-import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../helper/alert.dart';
+import '../../../helper/printer.dart';
 import '../../login/controllers/login_controller.dart';
+import '../controllers/home_controller.dart';
 
 class HomeAdd extends GetView<HomeController> {
   HomeAdd(
@@ -188,7 +187,7 @@ class HomeAdd extends GetView<HomeController> {
                             homeC.noPolisi.add(snapshot.data![i].nopol!);
                           }
                           homeC.listnopol = homeC.noPolisi.toSet().toList();
-                          print(homeC.listnopol);
+                          // print(homeC.listnopol);
                           return Obx(
                             () => BarcodeWidget(
                                 barcode: Barcode.code128(),
@@ -223,11 +222,21 @@ class HomeAdd extends GetView<HomeController> {
                     Expanded(
                       flex: 8,
                       child: SizedBox(
-                          height: 20,
-                          child: Obx(
-                            () => Text(homeC.tglReg.value,
-                                style: const TextStyle(fontSize: 17)),
-                          )),
+                        height: 20,
+                        child: StreamBuilder(
+                            stream: homeC.getDate(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(snapshot.data!,
+                                    style: const TextStyle(fontSize: 17));
+                              } else if (snapshot.hasError) {
+                                return Text('${snapshot.error}');
+                              }
+                              return const Center(
+                                child: CupertinoActivityIndicator(),
+                              );
+                            }),
+                      ),
                     ),
                   ],
                 ),
@@ -383,26 +392,36 @@ class HomeAdd extends GetView<HomeController> {
                                                   context,
                                               void Function(String) onSelected,
                                               Iterable<String> options) {
-                                            return Material(
+                                            return Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Material(
+                                                  child: SizedBox(
+                                                width: 170,
+                                                height: 150,
                                                 child: ListView.builder(
-                                              itemCount: options.length,
-                                              itemBuilder: (context, index) =>
-                                                  Column(
-                                                children: options.map((opt) {
-                                                  return InkWell(
-                                                      onTap: () {
-                                                        onSelected(opt);
-                                                      },
-                                                      child: Container(
-                                                        width: double.infinity,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(10),
-                                                        child: Text(opt),
-                                                      ));
-                                                }).toList(),
-                                              ),
-                                            ));
+                                                  itemCount: options.length,
+                                                  itemBuilder:
+                                                      (context, index) =>
+                                                          Column(
+                                                    children:
+                                                        options.map((opt) {
+                                                      return InkWell(
+                                                          onTap: () {
+                                                            onSelected(opt);
+                                                          },
+                                                          child: Container(
+                                                            width:
+                                                                double.infinity,
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(10),
+                                                            child: Text(opt),
+                                                          ));
+                                                    }).toList(),
+                                                  ),
+                                                ),
+                                              )),
+                                            );
                                           },
                                         )),
                                   ),
@@ -507,7 +526,7 @@ class HomeAdd extends GetView<HomeController> {
                       child: SizedBox(
                           height: 99,
                           child: FutureBuilder(
-                              future: homeC.getKaryawan(),
+                              future: homeC.getKaryawan(kodeCabang),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) {
                                   return const Center(

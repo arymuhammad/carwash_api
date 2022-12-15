@@ -1,9 +1,10 @@
-import 'package:carwash/app/helper/alert.dart';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:data_table_2/data_table_2.dart';
 
+import '../../../helper/alert.dart';
+import '../../../model/kendaraan_model.dart';
 import '../controllers/master_controller.dart';
 
 class MasterKendaraan extends GetView<MasterController> {
@@ -14,8 +15,8 @@ class MasterKendaraan extends GetView<MasterController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: masterC.getKendaraan(),
+      body: StreamBuilder(
+        stream: masterC.getKendaraan(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -24,94 +25,37 @@ class MasterKendaraan extends GetView<MasterController> {
               );
             } else {
               var data = snapshot.data!;
-
-              return DataTable2(
-                  columnSpacing: 1,
-                  horizontalMargin: 8,
-                  minWidth: 600,
-                  showBottomBorder: true,
-                  headingTextStyle: const TextStyle(color: Colors.white),
+              var masterKendaraan = <Kendaraan>[];
+              data.map((e) => masterKendaraan.add(e)).toList();
+              return PaginatedDataTable2(
                   headingRowColor: MaterialStateProperty.resolveWith(
                       (states) => Colors.lightBlue),
+                  showFirstLastButtons: true,
                   columns: const [
                     DataColumn2(
-                        label: Text('No '),
-                        // size: ColumnSize.S,
-                        fixedWidth: 45),
+                        label: Text(
+                          'No',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        size: ColumnSize.S,
+                        fixedWidth: 60),
                     DataColumn(
-                      label: Text('Nama Kendaraan'),
-                    ),
+                        label: Text(
+                      'Nama Kendaraan',
+                      style: TextStyle(color: Colors.white),
+                    )),
                     DataColumn(
-                      label: Text('Jenis Kendaraan'),
-                    ),
+                        label: Text(
+                      'Jenis Kendaraan',
+                      style: TextStyle(color: Colors.white),
+                    )),
                     DataColumn(
-                      label: Text('Action'),
-                    ),
+                        label: Text(
+                      'Action',
+                      style: TextStyle(color: Colors.white),
+                    )),
                   ],
-                  rows: List<DataRow>.generate(data.length, (index) {
-                    masterC.idKendaraan = data.length + 1;
-
-                    return DataRow(cells: [
-                      DataCell(Text(data[index].id!)),
-                      DataCell(Text(data[index].nama!)),
-                      DataCell(Text(
-                          data[index].idJenis! == "1" ? "Motor" : "Mobil")),
-                      DataCell(Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              editData(data[index].id!, data[index].nama!);
-                            },
-                            icon: const Icon(
-                              Icons.edit_note_sharp,
-                              size: 30,
-                              color: Colors.lightBlue,
-                            ),
-                            splashRadius: 20,
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Get.defaultDialog(
-                                  radius: 5,
-                                  title: 'Peringatan',
-                                  content: Column(
-                                    children: [
-                                      const Text(
-                                          'Anda yakin ingin menghapus data ini?'),
-                                      const Divider(),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                var idMerk = {
-                                                  "id": data[index].id!
-                                                };
-                                                masterC.deleteMerk(idMerk);
-                                              },
-                                              child: const Text('Hapus')),
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                Get.back();
-                                              },
-                                              child: const Text('Batal')),
-                                        ],
-                                      )
-                                    ],
-                                  ));
-                            },
-                            icon: const Icon(
-                              Icons.delete,
-                              size: 30,
-                              color: Colors.lightBlue,
-                            ),
-                            splashRadius: 20,
-                          ),
-                        ],
-                      )),
-                    ]);
-                  }));
+                  source: DataKendaraan(dtKendaraan: masterKendaraan));
             }
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
@@ -121,74 +65,15 @@ class MasterKendaraan extends GetView<MasterController> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            addkendaraan(masterC.idKendaraan);
-          },
-          child: const Icon(Icons.add)),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 50),
+        child: FloatingActionButton(
+            onPressed: () {
+              addkendaraan(masterC.idKendaraan);
+            },
+            child: const Icon(Icons.add)),
+      ),
     );
-  }
-
-  void editData(id, nama) {
-    Get.defaultDialog(
-        radius: 5,
-        title: 'Edit Data Kendaraan',
-        content: Column(
-          children: [
-            SizedBox(
-                height: 45,
-                child: TextField(
-                  controller: masterC.namaMerk,
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.car_rental),
-                      hintText: nama,
-                      border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20)))),
-                )),
-            const SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: <Widget>[
-                Container(
-                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (masterC.namaMerk.text == "") {
-                          masterC.namaMerk.text = nama;
-                        } else {
-                          masterC.namaMerk.text = masterC.namaMerk.text;
-                        }
-                        var data = {
-                          "id": id,
-                          "nama": masterC.namaMerk.text,
-                          "sts": "update"
-                        };
-                        await masterC.addUpdateMerk(data);
-                        showDefaultDialog2(
-                            "Sukses", "Data berhasil diperbarui");
-                        masterC.namaMerk.clear();
-                      },
-                      child: const Text(
-                        'Update',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                    )),
-                Container(
-                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      child: const Text(
-                        'Batal',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                    )),
-              ],
-            ),
-          ],
-        ));
   }
 
   addkendaraan(int id) {
@@ -251,6 +136,167 @@ class MasterKendaraan extends GetView<MasterController> {
                       },
                       child: const Text(
                         'Simpan',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    )),
+                Container(
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: const Text(
+                        'Batal',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    )),
+              ],
+            ),
+          ],
+        ));
+  }
+}
+
+class DataKendaraan extends DataTableSource {
+  DataKendaraan({required List<Kendaraan> dtKendaraan})
+      : _kendaraan = dtKendaraan,
+        assert(dtKendaraan != null);
+
+  final List<Kendaraan> _kendaraan;
+  final masterC = Get.put(MasterController());
+  @override
+  DataRow? getRow(int index) {
+    assert(index >= 0);
+
+    if (index >= _kendaraan.length) {
+      return null;
+    }
+    final _data = _kendaraan[index];
+    return DataRow.byIndex(
+      index: index,
+      cells: <DataCell>[
+        DataCell(Text('${_data.id}')),
+        DataCell(Text('${_data.nama}')),
+        DataCell(Text(_data.idJenis == "1" ? "Motor" : "Mobil")),
+        DataCell(Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                editData(_data.id, _data.nama);
+              },
+              icon: const Icon(
+                Icons.edit_note_sharp,
+                size: 30,
+                color: Colors.lightBlue,
+              ),
+              splashRadius: 20,
+            ),
+            IconButton(
+              onPressed: () {
+                Get.defaultDialog(
+                    radius: 5,
+                    title: 'Peringatan',
+                    content: Column(
+                      children: [
+                        const Text('Anda yakin ingin menghapus data ini?'),
+                        const Divider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ElevatedButton(
+                                onPressed: () async {
+                                  var idMerk = {"id": _data.id!};
+                                  await masterC.deleteMerk(idMerk);
+                                  showDefaultDialog2(
+                                      "Sukses", "Data berhasil dihapus");
+                                },
+                                child: const Text('Hapus')),
+                            ElevatedButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: const Text('Batal')),
+                          ],
+                        )
+                      ],
+                    ));
+              },
+              icon: const Icon(
+                Icons.delete,
+                size: 30,
+                color: Colors.lightBlue,
+              ),
+              splashRadius: 20,
+            ),
+          ],
+        )),
+      ],
+    );
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => _kendaraan.length;
+
+  @override
+  int get selectedRowCount => 0;
+
+  void sort<T>(Comparable<T> Function(Kendaraan d) getField, bool ascending) {
+    _kendaraan.sort((a, b) {
+      final aValue = getField(a);
+      final bValue = getField(b);
+      return ascending
+          ? Comparable.compare(aValue, bValue)
+          : Comparable.compare(bValue, aValue);
+    });
+
+    notifyListeners();
+  }
+
+  editData(id, nama) {
+    Get.defaultDialog(
+        radius: 5,
+        title: 'Edit Data Kendaraan',
+        content: Column(
+          children: [
+            SizedBox(
+                height: 45,
+                child: TextField(
+                  controller: masterC.namaMerk,
+                  decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.car_rental),
+                      hintText: nama,
+                      border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)))),
+                )),
+            const SizedBox(
+              height: 5,
+            ),
+            Row(
+              children: <Widget>[
+                Container(
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (masterC.namaMerk.text == "") {
+                          masterC.namaMerk.text = nama;
+                        } else {
+                          masterC.namaMerk.text = masterC.namaMerk.text;
+                        }
+                        var data = {
+                          "id": id,
+                          "nama": masterC.namaMerk.text,
+                          "sts": "update"
+                        };
+                        await masterC.addUpdateMerk(data);
+                        showDefaultDialog2(
+                            "Sukses", "Data berhasil diperbarui");
+                        masterC.namaMerk.clear();
+                      },
+                      child: const Text(
+                        'Update',
                         style: TextStyle(fontSize: 15),
                       ),
                     )),

@@ -1,12 +1,13 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:carwash/app/helper/alert.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:assets_audio_player/assets_audio_player.dart';
+
+import '../../../helper/alert.dart';
 import '../../../helper/printer_kasir.dart';
 import '../../../model/services_model.dart';
 import '../../home/controllers/home_controller.dart';
@@ -182,15 +183,23 @@ class HomeFinish extends GetView<HomeController> {
             var service = srv.map((e) => e.serviceName!);
             var harga = [];
             var hargat = [];
+
+            // print(idService.length);
             srv.map((e) {
+              var qty = serviceItem
+                  .toString()
+                  .split(',')
+                  .where((data) => data == e.id!)
+                  .length;
               harga.add(
                   NumberFormat.simpleCurrency(locale: 'in', decimalDigits: 0)
-                      .format(int.parse(e.harga!)));
-              hargat.add(int.parse(e.harga!));
+                      .format(int.parse(e.harga!) * qty));
+              hargat.add(int.parse(e.harga!) * qty);
 
               int total = hargat.fold(0, (hargat, e) => hargat + e as int);
               homeC.totalHarga.value = total;
             }).toList();
+
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(
@@ -595,7 +604,6 @@ class HomeFinish extends GetView<HomeController> {
       jK = "Mobil";
     }
     var nopol = text.split('');
-    // print(nopol);
     await flutterTts.awaitSpeakCompletion(true);
     await flutterTts.setLanguage("id-ID");
     await flutterTts.setVolume(1.0);

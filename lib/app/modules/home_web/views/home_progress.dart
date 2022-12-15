@@ -1,18 +1,17 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:carwash/app/modules/master/controllers/master_controller.dart';
-import 'package:get/get.dart';
-import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
 import '../../../helper/alert.dart';
 import '../../../model/services_model.dart';
 import '../../../model/trx_model.dart';
 import '../../home/controllers/home_controller.dart';
-import 'package:multiselect_formfield/multiselect_formfield.dart';
-
+import '../../master/controllers/master_controller.dart';
 import '../controllers/home_web_controller.dart';
 
 class HomeProgress extends GetView<HomeController> {
@@ -96,7 +95,10 @@ class HomeProgress extends GetView<HomeController> {
                         if (snapshot.hasData) {
                           var srv = snapshot.data!;
                           return Text(srv
-                              .map((e) => e.serviceName!)
+                              .map((e) {
+                                // homeC.selectedService.add(e.serviceName!);
+                                return e.serviceName!;
+                              })
                               .join(', ')
                               .toString());
                         } else if (snapshot.hasError) {
@@ -306,7 +308,7 @@ class HomeProgress extends GetView<HomeController> {
     await flutterTts.speak("Have a safe trip.");
   }
 
-  void editData(notrx, tanggal, nopol, kendaraan, masuk, service, petugas) {
+  editData(notrx, tanggal, nopol, kendaraan, masuk, service, petugas) {
     Get.defaultDialog(
         radius: 5,
         title: 'Detail Data',
@@ -425,10 +427,21 @@ class HomeProgress extends GetView<HomeController> {
                     if (snapshot.hasData) {
                       var merk = snapshot.data!;
                       List<String> merkKendaraan = <String>[];
+                      var dataKendaraan = [];
 
                       merk.map((doc) {
                         merkKendaraan.add(doc.serviceName.toString());
                       }).toList();
+
+                      // merk.map((doc) {
+                      for (int i = 0; i < merk.length; i++) {
+                        dataKendaraan.add(Services(
+                            id: merk[i].id.toString(),
+                            serviceName: merk[i].serviceName.toString()));
+                      }
+                      // print(dataKendaraan);
+
+                      // }).toList();
 
                       return Column(
                         children: [
@@ -440,7 +453,7 @@ class HomeProgress extends GetView<HomeController> {
                                     padding: const EdgeInsets.fromLTRB(
                                         12, 10, 12, 10),
                                     child: const Text(
-                                      "Merk Kendaraan",
+                                      "Pilih Services",
                                       style: TextStyle(fontSize: 17),
                                     ),
                                   )),
@@ -468,9 +481,8 @@ class HomeProgress extends GetView<HomeController> {
                                         }
                                       },
                                       onSelected: (String selection) {
-                                        // homeC.selectedService
-                                        //     .add(Services(id: selection));
-                                        // print();
+                                        // homeC.selectedService.add(selection);
+                                        // print(homeC.selectedService);
                                       },
                                       fieldViewBuilder: (BuildContext context,
                                           mk,
@@ -478,41 +490,59 @@ class HomeProgress extends GetView<HomeController> {
                                           VoidCallback onFieldSubmitted) {
                                         return TextField(
                                           decoration: const InputDecoration(
-                                              border: OutlineInputBorder()),
+                                              border: OutlineInputBorder(),
+                                              hintText:
+                                                  'ketik nama service (Cuci Motor)'),
                                           controller: mk,
                                           focusNode: focusNode,
                                           onSubmitted: (String value) {
-                                            homeC.selectedService
-                                                .add(Services(id: value));
-                                            // print(homeC.selectedService[0].id);
+                                            for (int i = 0;
+                                                i < dataKendaraan.length;
+                                                i++) {
+                                              if (dataKendaraan[i]
+                                                      .serviceName ==
+                                                  value) {
+                                                homeC.serviceItem
+                                                    .add(dataKendaraan[i].id);
+                                                print(homeC.serviceItem);
+                                              }
+                                            }
+                                            homeC.selectedService.add(value);
                                             mk.clear();
+                                            focusNode.requestFocus();
                                           },
                                         );
                                       },
                                       optionsViewBuilder: (BuildContext context,
                                           void Function(String) onSelected,
                                           Iterable<String> options) {
-                                        return Material(
+                                        return Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Material(
+                                              child: SizedBox(
+                                            width: 255,
+                                            height: 150,
                                             child: ListView.builder(
-                                          itemCount: options.length,
-                                          itemBuilder: (context, index) =>
-                                              Column(
-                                            children: options.map((opt) {
-                                              return InkWell(
-                                                  onTap: () {
-                                                    onSelected(opt);
-                                                  },
-                                                  child: Container(
-                                                    // color: const Colors.red,
-                                                    width: double.infinity,
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            10),
-                                                    child: Text(opt),
-                                                  ));
-                                            }).toList(),
-                                          ),
-                                        ));
+                                              itemCount: options.length,
+                                              itemBuilder: (context, index) =>
+                                                  Column(
+                                                children: options.map((opt) {
+                                                  return InkWell(
+                                                      onTap: () {
+                                                        onSelected(opt);
+                                                      },
+                                                      child: Container(
+                                                        width: double.infinity,
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(10),
+                                                        child: Text(opt),
+                                                      ));
+                                                }).toList(),
+                                              ),
+                                            ),
+                                          )),
+                                        );
                                       },
                                     )),
                               ),
@@ -528,62 +558,40 @@ class HomeProgress extends GetView<HomeController> {
                       child: CupertinoActivityIndicator(),
                     );
                   }),
-              FutureBuilder<List<Services>>(
-                future: homeC.servicesById(""),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CupertinoActivityIndicator(),
-                    );
-                  } else {
-                    var listSrvc = snapshot.data!;
-
-                    return MultiSelectFormField(
-                        autovalidate: AutovalidateMode.disabled,
-                        chipBackGroundColor: Colors.blue,
-                        chipLabelStyle: const TextStyle(color: Colors.white),
-                        dialogTextStyle:
-                            const TextStyle(fontWeight: FontWeight.bold),
-                        checkBoxActiveColor: Colors.blue,
-                        checkBoxCheckColor: Colors.white,
-                        dialogShapeBorder: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0))),
-                        title: const Text(
-                          "Pilih Service",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        hintWidget: const Text(''),
-                        validator: (value) {
-                          if (value == null || value.length == 0) {
-                            return showSnackbar("Error", "Select Services");
-                          }
-
-                          return null;
-                        },
-                        dataSource: [
-                          for (var i in listSrvc)
-                            {
-                              "display": i.serviceName!,
-                              "value": i.id!,
-                            }
-                        ],
-                        textField: 'display',
-                        valueField: 'value',
-                        okButtonLabel: 'OK',
-                        cancelButtonLabel: 'CANCEL',
-                        initialValue: const [],
-                        onSaved: (value) {
-                          if (value == null) return;
-
-                          homeC.serviceItem.value = value;
-                        });
-                  }
-                },
-              ),
               const SizedBox(
-                height: 5,
+                height: 15,
               ),
+              Obx(() => Row(
+                    children: [
+                      Expanded(
+                          flex: 5,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                            child: Container(),
+                          )),
+                      Expanded(
+                          flex: 8,
+                          child:
+                              // GridView.builder(
+                              //   gridDelegate:
+                              //       const SliverGridDelegateWithMaxCrossAxisExtent(
+                              //           maxCrossAxisExtent: 200,
+                              //           childAspectRatio: 3 / 2,
+                              //           crossAxisSpacing: 20,
+                              //           mainAxisSpacing: 20),
+                              //   itemCount: homeC.selectedService.length,
+                              //   shrinkWrap: true,
+                              //   scrollDirection: Axis.vertical,
+                              //   itemBuilder: (context, index) {
+                              // return
+                              Text(
+                            homeC.selectedService.toSet().toList().join(', '),
+                            // maxLines: 2,
+                          ))
+                      //   },
+                      // )),
+                    ],
+                  )),
               const SizedBox(
                 height: 5,
               ),
@@ -593,20 +601,22 @@ class HomeProgress extends GetView<HomeController> {
                   Container(
                       padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                       child: ElevatedButton(
-                        onPressed: () {
-                          var servicess = "";
+                        onPressed: () async {
                           if (homeC.serviceItem.isEmpty) {
-                            servicess = service;
+                            homeC.serviceItem.value =
+                                service.toString().split(',').cast();
                           } else {
-                            servicess = homeC.serviceItem.join(',').toString();
+                            homeC.serviceItem = homeC.serviceItem;
                           }
 
                           var data = {
                             "notrx": notrx,
-                            "services": servicess,
+                            "services": homeC.serviceItem.join(','),
                           };
-                          homeC.updateDataTrx(data);
-                          Get.back();
+                          await homeC.updateDataTrx(data);
+                          showDefaultDialog2(
+                              "Sukses", "Data berhasil diperbarui");
+                          homeC.selectedService.clear();
                           homeC.serviceItem.clear();
                         },
                         style: ElevatedButton.styleFrom(
@@ -621,6 +631,8 @@ class HomeProgress extends GetView<HomeController> {
                       child: ElevatedButton(
                         onPressed: () {
                           Get.back();
+                          homeC.selectedService.clear();
+                          homeC.serviceItem.clear();
                         },
                         style: ElevatedButton.styleFrom(
                             minimumSize: const Size(45, 40)),

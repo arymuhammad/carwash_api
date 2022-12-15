@@ -1,14 +1,13 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'app/modules/home/views/home_add.dart';
-import 'app/modules/home/views/home_view.dart';
 import 'app/modules/home_web/views/home_web_view.dart';
 import 'app/modules/login/controllers/login_controller.dart';
 import 'app/modules/login/views/login_view.dart';
-
-import 'package:get/get.dart';
 import 'app/routes/app_pages.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,10 +39,12 @@ void main() async {
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(fontFamily: 'Nunito'),
-    title: "Mobile Car Wash Online",
+    title: "Saputra Car Wash Online",
     home: Obx(() => auth.isLogin.value
         ? kIsWeb
-            ? HomeWebView(
+            ?
+            //  HomeView()
+            HomeWebView(
                 kodeCabang: auth.kodeCabang.value,
                 username: auth.userName.value)
             : HomeAdd(

@@ -2,10 +2,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -42,7 +40,7 @@ class HomeView extends GetView<HomeController> {
                   ),
                   Expanded(
                     child: StreamBuilder(
-                        stream: homeC.getDatatrx(date, 0, 2),
+                        stream: homeC.getDatatrx("001", date, "3", 2),
                         builder: (context, snapshot) {
                           // print(snapshot.data!.docs[0].data());
                           if (snapshot.hasData) {
@@ -116,10 +114,11 @@ class HomeView extends GetView<HomeController> {
                     SizedBox(
                         height: Get.mediaQuery.size.height / 1,
                         child: StreamBuilder(
-                            stream: homeC.getDatatrx(date, 1, ""),
+                            stream: homeC.getDatatrx("001", date, 1, ""),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 var status = snapshot.data!;
+                                // print(status);
                                 // playSound(
                                 //     (status[0].data()
                                 //         as Map<String, dynamic>)['id_jenis'],
@@ -222,7 +221,7 @@ class HomeView extends GetView<HomeController> {
                   ),
                   Expanded(
                     child: StreamBuilder(
-                        stream: homeC.getDatatrx(date, 0, 1),
+                        stream: homeC.getDatatrx("001", date, "3", 1),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             if (snapshot.connectionState ==
@@ -284,38 +283,4 @@ class HomeView extends GetView<HomeController> {
       ),
     );
   }
-
-  // playSound(int jenis, String kendaraan, String text) async {
-  //   var jK = "";
-  //   if (jenis == 1) {
-  //     jK = "Motor";
-  //   } else {
-  //     jK = "Mobil";
-  //   }
-  //   await flutterTts.awaitSpeakCompletion(true);
-  //   await flutterTts.setLanguage("id-ID");
-  //   await flutterTts.setVolume(1.0);
-  //   await flutterTts.setPitch(1.0);
-  //   await flutterTts.isLanguageAvailable("id-ID");
-  //   await flutterTts.setSpeechRate(0.9);
-  //   await flutterTts.speak(
-  //       'Di informasikan, kepada pemilik $jK $kendaraan.  dengan nomor polisi.  $text .  sudah selesai. Silahkan melakukan pembayaran.  Periksa kembali barang bawaan anda.  Semoga selamat sampai tujuan.');
-  // }
-
-  // playSoundEnglish(int jenis, String kendaraan, String text) async {
-  //   var jK = "";
-  //   if (jenis == 1) {
-  //     jK = "Motor";
-  //   } else {
-  //     jK = "Car";
-  //   }
-  //   await flutterTts.awaitSpeakCompletion(true);
-  //   await flutterTts.setLanguage("en-US");
-  //   await flutterTts.setVolume(1.0);
-  //   await flutterTts.setPitch(1.0);
-  //   await flutterTts.isLanguageAvailable("en-US");
-  //   await flutterTts.setSpeechRate(0.9);
-  //   await flutterTts.speak(
-  //       "Informed, to the owner of $jK $kendaraan.  with a police number.  $text .  it's finished. Please make payment. Check your belongings again. Have a safe trip.");
-  // }
 }
