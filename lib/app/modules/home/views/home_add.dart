@@ -20,11 +20,9 @@ class HomeAdd extends GetView<HomeController> {
       required this.level});
   final homeC = Get.put(HomeController());
   final loginC = Get.put(LoginController());
-  // final authC = Get.put(AuthController());
   final String kodeCabang;
   final String kodeUser;
   final String level;
-  // var noUrutTrx = 1;
   var date = DateFormat('yyyy-MM-dd').format(DateTime.now());
   var dateNow = DateFormat('ddMMyy').format(DateTime.now());
   TextEditingController mk = TextEditingController();
@@ -33,7 +31,6 @@ class HomeAdd extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    // print(dateNow);
     return WillPopScope(
       onWillPop: () async {
         bool willLeave = false;
@@ -134,14 +131,13 @@ class HomeAdd extends GetView<HomeController> {
                           children: [
                             ElevatedButton(
                                 onPressed: () async {
-                                  //  saveSession() async {
                                   SharedPreferences pref =
                                       await SharedPreferences.getInstance();
                                   await pref.remove("kode");
                                   await pref.setBool("is_login", false);
                                   loginC.isLogin.value = false;
                                   loginC.isLoading.value = false;
-                                  // }
+
                                   Fluttertoast.showToast(
                                       msg: "Sukses, Anda berhasil Logout.",
                                       toastLength: Toast.LENGTH_SHORT,
@@ -187,7 +183,6 @@ class HomeAdd extends GetView<HomeController> {
                             homeC.noPolisi.add(snapshot.data![i].nopol!);
                           }
                           homeC.listnopol = homeC.noPolisi.toSet().toList();
-                          // print(homeC.listnopol);
                           return Obx(
                             () => BarcodeWidget(
                                 barcode: Barcode.code128(),
@@ -396,8 +391,8 @@ class HomeAdd extends GetView<HomeController> {
                                               alignment: Alignment.topLeft,
                                               child: Material(
                                                   child: SizedBox(
-                                                width: 170,
-                                                height: 150,
+                                                width: 210,
+                                                height: 170,
                                                 child: ListView.builder(
                                                   itemCount: options.length,
                                                   itemBuilder:
@@ -525,8 +520,8 @@ class HomeAdd extends GetView<HomeController> {
                       flex: 8,
                       child: SizedBox(
                           height: 99,
-                          child: FutureBuilder(
-                              future: homeC.getKaryawan(kodeCabang),
+                          child: StreamBuilder(
+                              stream: homeC.getKaryawan(kodeCabang),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) {
                                   return const Center(

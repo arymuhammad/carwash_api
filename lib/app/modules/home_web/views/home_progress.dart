@@ -504,7 +504,7 @@ class HomeProgress extends GetView<HomeController> {
                                                   value) {
                                                 homeC.serviceItem
                                                     .add(dataKendaraan[i].id);
-                                                print(homeC.serviceItem);
+                                                // print(homeC.serviceItem);
                                               }
                                             }
                                             homeC.selectedService.add(value);
@@ -571,25 +571,21 @@ class HomeProgress extends GetView<HomeController> {
                           )),
                       Expanded(
                           flex: 8,
-                          child:
-                              // GridView.builder(
-                              //   gridDelegate:
-                              //       const SliverGridDelegateWithMaxCrossAxisExtent(
-                              //           maxCrossAxisExtent: 200,
-                              //           childAspectRatio: 3 / 2,
-                              //           crossAxisSpacing: 20,
-                              //           mainAxisSpacing: 20),
-                              //   itemCount: homeC.selectedService.length,
-                              //   shrinkWrap: true,
-                              //   scrollDirection: Axis.vertical,
-                              //   itemBuilder: (context, index) {
-                              // return
-                              Text(
-                            homeC.selectedService.toSet().toList().join(', '),
-                            // maxLines: 2,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            width: 70,
+                            child: Column(
+                              children: [
+                                Text(
+                                  homeC.selectedService
+                                      .toSet()
+                                      .toList()
+                                      .join(', '),
+                                  // maxLines: 2,
+                                ),
+                              ],
+                            ),
                           ))
-                      //   },
-                      // )),
                     ],
                   )),
               const SizedBox(

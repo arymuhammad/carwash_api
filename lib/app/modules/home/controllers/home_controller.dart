@@ -159,14 +159,17 @@ class HomeController extends GetxController {
     } catch (e) {}
   }
 
-  Future<List<Karyawan>> getKaryawan(kode) async {
-    var response = await BaseClient().get('https://saputracarwash.online/api',
-        '/master/get_karyawan.php?cabang=$kode');
-    List<dynamic> dtKaryawan = json.decode(response)['rows'];
-    List<Karyawan> karyawan =
-        dtKaryawan.map((e) => Karyawan.fromJson(e)).toList();
-    // print(dtKaryawan);
-    listKaryawan.value = karyawan;
-    return listKaryawan;
+  Stream<List<Karyawan>> getKaryawan(kode) async* {
+    while (running) {
+      Future.delayed(const Duration(seconds: 1));
+      var response = await BaseClient().get('https://saputracarwash.online/api',
+          '/master/get_karyawan.php?cabang=$kode');
+      List<dynamic> dtKaryawan = json.decode(response)['rows'];
+      List<Karyawan> karyawan =
+          dtKaryawan.map((e) => Karyawan.fromJson(e)).toList();
+      // print(dtKaryawan);
+      listKaryawan.value = karyawan;
+      yield listKaryawan;
+    }
   }
 }
