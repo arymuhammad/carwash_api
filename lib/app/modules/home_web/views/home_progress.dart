@@ -96,7 +96,6 @@ class HomeProgress extends GetView<HomeController> {
                           var srv = snapshot.data!;
                           return Text(srv
                               .map((e) {
-                                // homeC.selectedService.add(e.serviceName!);
                                 return e.serviceName!;
                               })
                               .join(', ')
@@ -433,15 +432,11 @@ class HomeProgress extends GetView<HomeController> {
                         merkKendaraan.add(doc.serviceName.toString());
                       }).toList();
 
-                      // merk.map((doc) {
                       for (int i = 0; i < merk.length; i++) {
                         dataKendaraan.add(Services(
                             id: merk[i].id.toString(),
                             serviceName: merk[i].serviceName.toString()));
                       }
-                      // print(dataKendaraan);
-
-                      // }).toList();
 
                       return Column(
                         children: [
@@ -480,10 +475,7 @@ class HomeProgress extends GetView<HomeController> {
                                           return matches;
                                         }
                                       },
-                                      onSelected: (String selection) {
-                                        // homeC.selectedService.add(selection);
-                                        // print(homeC.selectedService);
-                                      },
+                                      onSelected: (String selection) {},
                                       fieldViewBuilder: (BuildContext context,
                                           mk,
                                           FocusNode focusNode,
@@ -504,7 +496,6 @@ class HomeProgress extends GetView<HomeController> {
                                                   value) {
                                                 homeC.serviceItem
                                                     .add(dataKendaraan[i].id);
-                                                // print(homeC.serviceItem);
                                               }
                                             }
                                             homeC.selectedService.add(value);
