@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ota_update/ota_update.dart';
 
+import '../../../helper/app_exceptions.dart';
 import '../../../helper/base_client.dart';
 import '../../../model/cabang_model.dart';
 import '../../../model/karyawan_model.dart';
@@ -18,14 +19,11 @@ import '../../../model/trx_model.dart';
 class HomeController extends GetxController {
   late OtaEvent currentEvent;
   var dataNoPol = [].obs;
-  // final List<String> selected = ["", "1"].obs;
-  // var selectedItem = ''.obs;
   var url = "";
   late TextEditingController noPol1 = TextEditingController();
   late TextEditingController noPol2 = TextEditingController();
   late TextEditingController noPol3 = TextEditingController();
 
-  // FirebaseFirestore firestore = FirebaseFirestore.instance;
   var tglReg =
       DateFormat('dd/MM/yyyy HH:mm:ss').format(DateTime.now()).toString().obs;
   var selectedItem = "".obs;
@@ -170,6 +168,56 @@ class HomeController extends GetxController {
       // print(dtKaryawan);
       listKaryawan.value = karyawan;
       yield listKaryawan;
+    }
+  }
+
+  handleError(error, kodeCabang, kodeUser, kode, level) {
+    // hideLoading();
+    if (error is BadRequestException) {
+      var message = error.message;
+      // DialogHelper().showErroDialog(description: message);
+      Get.defaultDialog(
+          title: 'Error',
+          content: Text(message.toString()),
+          confirm: ElevatedButton.icon(
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retry'),
+              onPressed: () {
+                getTrx(kodeCabang, kodeUser, date);
+                getCabang(kode, level);
+                getKaryawan(kode);
+                Get.back();
+              }));
+    } else if (error is FetchDataException) {
+      var message = error.message;
+      // DialogHelper().showErroDialog(description: message);
+      Get.defaultDialog(
+          title: 'Error',
+          content: Text(message.toString()),
+          confirm: ElevatedButton.icon(
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retry'),
+              onPressed: () {
+                getTrx(kodeCabang, kodeUser, date);
+                getCabang(kode, level);
+                getKaryawan(kode);
+                Get.back();
+              }));
+    } else if (error is ApiNotRespondingException) {
+      // DialogHelper()
+      //     .showErroDialog(description: 'Oops! It took longer to respond.');
+      Get.defaultDialog(
+          title: 'Error',
+          content: const Text('Oops! It took longer to respond.'),
+          confirm: ElevatedButton.icon(
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retry'),
+              onPressed: () {
+                getTrx(kodeCabang, kodeUser, date);
+                getCabang(kode, level);
+                getKaryawan(kode);
+                Get.back();
+              }));
     }
   }
 }

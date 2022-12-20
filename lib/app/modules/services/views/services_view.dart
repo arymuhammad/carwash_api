@@ -121,7 +121,8 @@ class ServicesView extends GetView<ServicesController> {
                       } else {
                         var data = {
                           "nama": namaService.text,
-                          "harga": harga.text
+                          "harga": harga.text,
+                          "sts": "add"
                         };
                         await masterC.addService(data);
                         showDefaultDialog2(
@@ -280,7 +281,8 @@ class DataService extends DataTableSource {
                       var data = {
                         "id": id,
                         "nama": namaService.text,
-                        "harga": harga.text
+                        "harga": harga.text,
+                        "sts": "update"
                       };
                       masterC.addService(data);
                       showDefaultDialog2(

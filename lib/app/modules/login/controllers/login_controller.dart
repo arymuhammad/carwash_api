@@ -19,6 +19,7 @@ class LoginController extends GetxController {
   var kodeUser = "".obs;
   var userName = "".obs;
   var levelUser = "".obs;
+  final bool running = true;
 
   Future<Login> login(username, password) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -69,6 +70,14 @@ class LoginController extends GetxController {
     }
 
     return dtUser;
+  }
+
+  logout() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.remove("kode");
+    await pref.setBool("is_login", false);
+    isLogin.value = false;
+    isLoading.value = false;
   }
 
   handleError(error) {

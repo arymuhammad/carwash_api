@@ -222,6 +222,10 @@ class HomeAdd extends GetView<HomeController> {
                             stream: homeC.getDate(),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
+                                var today = DateTime.now();
+                                if (today.hour == 23 && today.minute == 00) {
+                                  loginC.logout();
+                                }
                                 return Text(snapshot.data!,
                                     style: const TextStyle(fontSize: 17));
                               } else if (snapshot.hasError) {
