@@ -12,12 +12,12 @@ class LaporanController extends GetxController {
   var date1 = "".obs;
   var date2 = "".obs;
   var selectedItem = "".obs;
-  var cabang = "";
+  var selectedCabang = "".obs;
   var tempSummService = [].obs;
   var tempJenisKendaraan = [].obs;
   var detailData = [].obs;
-  TextEditingController dateInputAwal = TextEditingController();
-  TextEditingController dateInputAkhir = TextEditingController();
+  late TextEditingController dateInputAwal;
+  late TextEditingController dateInputAkhir;
   var dateNow1 = DateFormat('yyyy-MM-dd').format(DateTime.now());
   var dateNow2 = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
@@ -26,11 +26,20 @@ class LaporanController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    dateInputAwal = TextEditingController();
+    dateInputAkhir = TextEditingController();
   }
 
-  Future<List<Laporan>> getSummary(dateAwal, dateAkhir, idJenis) async {
+  @override
+  void onClose() {
+    super.dispose();
+    dateInputAwal.dispose();
+    dateInputAkhir.dispose();
+  }
+
+  Future<List<Laporan>> getSummary(dateAwal, dateAkhir, idJenis, cabang) async {
     var response = await BaseClient().get("https://saputracarwash.online/api",
-        "/laporan/get_laporan.php?date1=$date1&date2=$dateAkhir&id_jenis=$idJenis");
+        "/laporan/get_laporan.php?date1=$dateAwal&date2=$dateAkhir&id_jenis=$idJenis&cabang=$cabang");
     List<dynamic> dataLaporan = json.decode(response)['rows'];
     List<Laporan> laporan =
         dataLaporan.map((e) => Laporan.fromJson(e)).toList();

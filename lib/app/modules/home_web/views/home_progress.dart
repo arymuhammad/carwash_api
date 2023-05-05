@@ -47,6 +47,7 @@ class HomeProgress extends GetView<HomeController> {
                 headingTextStyle: const TextStyle(color: Colors.white),
                 headingRowColor: MaterialStateProperty.resolveWith(
                     (states) => Colors.lightBlue),
+                empty: const Center(child: Text('Belum ada data'),),
                 columns: const [
                   DataColumn2(
                     label: Text('No Transaksi'),

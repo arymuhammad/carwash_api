@@ -5,6 +5,7 @@ class Laporan {
   late String? grandTotal;
   late String? services;
   late String? payment;
+  late String? kodeCabang;
 
   Laporan(
       {this.idJenis,
@@ -12,7 +13,9 @@ class Laporan {
       this.nopol,
       this.grandTotal,
       this.services,
-      this.payment});
+      this.payment,
+      this.kodeCabang,
+      });
   Laporan.fromJson(Map<String, dynamic> json) {
     idJenis = json['idJenis'];
     kendaraan = json['kendaraan'];
@@ -20,5 +23,6 @@ class Laporan {
     grandTotal = json['grandTotal'];
     services = json['services'];
     payment = json['payment'];
+    kodeCabang = json['kode_cabang'];
   }
 }

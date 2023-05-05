@@ -60,6 +60,17 @@ class HomeAdd extends GetView<HomeController> {
           centerTitle: true,
           leading: const Icon(Icons.account_circle),
           actions: [
+            // IconButton(
+            //     onPressed: () async {
+            //       homeC.getTrx(kodeCabang, kodeUser, date);
+            //       homeC.getDate();
+            //       homeC.getCabang(kodeCabang, level);
+            //       homeC.getMerkById(homeC.selectedItem.value != ""
+            //           ? homeC.selectedItem.value
+            //           : "1");
+            //       homeC.getKaryawan(kodeCabang);
+            //     },
+            //     icon: const Icon(Icons.refresh_rounded)),
             PopupMenuButton<int>(
               itemBuilder: (context) => [
                 // PopupMenuItem 1

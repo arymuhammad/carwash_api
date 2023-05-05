@@ -1,3 +1,4 @@
+import 'package:carwash/app/modules/laporan/controllers/laporan_controller.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +19,13 @@ class HomeWebView extends GetView<HomeWebController> {
   PageController page = PageController(initialPage: 0, keepPage: false);
   final homeC = Get.put(HomeWebController());
   final loginC = Get.put(LoginController());
+  final lapC = Get.put(LaporanController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Selamat datang di Halaman Admin Saputra Car Wash'),
+        title: const Text('Saputra Car Wash'),
         centerTitle: true,
       ),
       body: FutureBuilder(
@@ -234,7 +236,13 @@ class HomeWebView extends GetView<HomeWebController> {
                               context: context,
                               builder: (BuildContext ctx) {
                                 return AlertDialog(
-                                  title: const Text('Info'),
+                                  title: Row(
+                                    children: const [
+                                      Icon(Icons.info_outline_rounded),
+                                      SizedBox(width: 5),
+                                      Text('Info'),
+                                    ],
+                                  ),
                                   content:
                                       const Text('Anda yakin ingin Logout?'),
                                   actions: [
@@ -250,6 +258,7 @@ class HomeWebView extends GetView<HomeWebController> {
                                               await pref.remove("kode");
                                               await pref.setBool(
                                                   "is_login", false);
+                                              lapC.selectedCabang.value = "";
                                               loginC.isLogin.value = false;
                                               loginC.isLoading.value = false;
                                               Get.back();
@@ -286,10 +295,10 @@ class HomeWebView extends GetView<HomeWebController> {
                         MasterViewTabs(snapshot.data![0].kodeCabang!,
                             snapshot.data![0].idLevel!),
                         LaporanView(
-                          snapshot.data![0].kodeCabang! != ""
-                              ? snapshot.data![0].kodeCabang!
-                              : "",
-                        ),
+                            snapshot.data![0].kodeCabang! != ""
+                                ? snapshot.data![0].kodeCabang!
+                                : "",
+                            snapshot.data![0].idLevel!),
                       ],
                     ),
                   )

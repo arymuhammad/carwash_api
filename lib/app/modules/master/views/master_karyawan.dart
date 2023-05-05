@@ -131,8 +131,8 @@ class MasterKaryawan extends GetView<MasterController> {
   }
 
   void editData(id, nama, cabang) {
-    print(cabang);
-    print(level);
+    // print(cabang);
+    // print(level);
     Get.defaultDialog(
         radius: 5,
         title: 'Detail Data',

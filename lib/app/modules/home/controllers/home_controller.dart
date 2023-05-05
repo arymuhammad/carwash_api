@@ -171,11 +171,10 @@ class HomeController extends GetxController {
     }
   }
 
-  handleError(error, kodeCabang, kodeUser, kode, level) {
+  handleError(error) {
     // hideLoading();
     if (error is BadRequestException) {
       var message = error.message;
-      // DialogHelper().showErroDialog(description: message);
       Get.defaultDialog(
           title: 'Error',
           content: Text(message.toString()),
@@ -183,14 +182,14 @@ class HomeController extends GetxController {
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
               onPressed: () {
-                getTrx(kodeCabang, kodeUser, date);
-                getCabang(kode, level);
-                getKaryawan(kode);
+                // getTrx(kode, kode, kode);
+                // getCabang(kode, level);
+                // getKaryawan(kode);
+                // getMerkById(kode);
                 Get.back();
               }));
     } else if (error is FetchDataException) {
       var message = error.message;
-      // DialogHelper().showErroDialog(description: message);
       Get.defaultDialog(
           title: 'Error',
           content: Text(message.toString()),
@@ -198,9 +197,10 @@ class HomeController extends GetxController {
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
               onPressed: () {
-                getTrx(kodeCabang, kodeUser, date);
-                getCabang(kode, level);
-                getKaryawan(kode);
+                // getTrx(kode, kode, date);
+                // getCabang(kode, level);
+                // getKaryawan(kode);
+                // getMerkById(kode);
                 Get.back();
               }));
     } else if (error is ApiNotRespondingException) {
@@ -212,10 +212,11 @@ class HomeController extends GetxController {
           confirm: ElevatedButton.icon(
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
-              onPressed: () {
-                getTrx(kodeCabang, kodeUser, date);
-                getCabang(kode, level);
-                getKaryawan(kode);
+              onPressed: () async {
+                // getTrx(kode, kode, date);
+                // getCabang(kode, level);
+                // getKaryawan(kode);
+                // getMerkById(kode);
                 Get.back();
               }));
     }

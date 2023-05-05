@@ -50,6 +50,9 @@ class HomeFinish extends GetView<HomeController> {
                 horizontalMargin: 8,
                 minWidth: 800,
                 rowsPerPage: 20,
+                empty: const Center(
+                  child: Text('Belum ada data'),
+                ),
                 columns: const [
                   DataColumn(
                       label: Text('No Transaksi',
@@ -93,124 +96,6 @@ class HomeFinish extends GetView<HomeController> {
                 source: DataFinished(
                     namaCabang, kodeCabang, username, alamatCabang, kotaCabang,
                     dtFinished: finished));
-            // return DataTable2(
-            //     columnSpacing: 10,
-            //     horizontalMargin: 8,
-            //     minWidth: 800,
-            //     showBottomBorder: true,
-            //     headingTextStyle: const TextStyle(color: Colors.white),
-            //     headingRowColor: MaterialStateProperty.resolveWith(
-            //         (states) => Colors.lightBlue),
-            //     columns: const [
-            //       DataColumn2(
-            //         label: Text('No Transaksi'),
-            //         size: ColumnSize.L,
-            //       ),
-            //       DataColumn2(label: Text('No Kendaraan'), fixedWidth: 100),
-            //       DataColumn(
-            //         label: Text('Kendaraan'),
-            //       ),
-            //       DataColumn2(label: Text('Masuk'), fixedWidth: 80),
-            //       DataColumn2(label: Text('Mulai'), fixedWidth: 80),
-            //       DataColumn2(label: Text('Selesai'), fixedWidth: 80),
-            //       DataColumn(
-            //         label: Text('Service'),
-            //       ),
-            //       DataColumn(
-            //         label: Text('Petugas'),
-            //       ),
-            //       DataColumn2(label: Text('Status'), fixedWidth: 70),
-            //       DataColumn2(label: Text('Action'), fixedWidth: 100),
-            //     ],
-            //     rows: List<DataRow>.generate(dataTrx.length, (index) {
-            //       return DataRow(cells: [
-            //         DataCell(Text(dataTrx[index].notrx!)),
-            //         DataCell(Text(dataTrx[index].nopol!)),
-            //         DataCell(Text(dataTrx[index].kendaraan!)),
-            //         DataCell(Text(dataTrx[index].masuk! != ""
-            //             ? dataTrx[index].masuk!
-            //             : "not set")),
-            //         DataCell(Text(dataTrx[index].mulai! != ""
-            //             ? dataTrx[index].mulai!
-            //             : "-:-:-")),
-            //         DataCell(Text(dataTrx[index].selesai! != ""
-            //             ? dataTrx[index].selesai!
-            //             : "-:-:-")),
-            //         DataCell(FutureBuilder<List<Services>>(
-            //           future: homeC.servicesById(dataTrx[index].services!),
-            //           builder: (context, snapshot) {
-            //             if (snapshot.hasData) {
-            //               var srv = snapshot.data!;
-            //               return Text(srv
-            //                   .map((e) => e.serviceName!)
-            //                   .join(', ')
-            //                   .toString());
-            //             } else if (snapshot.hasError) {
-            //               return Text('${snapshot.error}');
-            //             }
-            //             return const Center(
-            //               child: CupertinoActivityIndicator(),
-            //             );
-            //           },
-            //         )),
-            //         DataCell(Text(dataTrx[index].petugas! != ""
-            //             ? dataTrx[index].petugas!
-            //             : "not set")),
-            //         DataCell(Text(
-            //           dataTrx[index].paid! == "0" ? "UNPAID" : "PAID",
-            //           style: TextStyle(
-            //               color: dataTrx[index].paid! == "0"
-            //                   ? Colors.redAccent[700]
-            //                   : Colors.greenAccent[700]),
-            //         )),
-            //         DataCell(Row(
-            //           children: [
-            //             IconButton(
-            //               onPressed: dataTrx[index].paid! != "1"
-            //                   ? () {
-            //                       bayar(
-            //                           username,
-            //                           dataTrx[index].notrx!,
-            //                           dataTrx[index].tanggal!,
-            //                           dataTrx[index].nopol!,
-            //                           dataTrx[index].kendaraan!,
-            //                           dataTrx[index].masuk!,
-            //                           dataTrx[index].selesai!,
-            //                           dataTrx[index].services!,
-            //                           dataTrx[index].petugas!);
-            //                     }
-            //                   : null,
-            //               icon: Icon(
-            //                 Icons.payments_outlined,
-            //                 size: 30,
-            //                 color: dataTrx[index].paid! != "1"
-            //                     ? Colors.lightBlue
-            //                     : Colors.grey,
-            //               ),
-            //               splashRadius: 20,
-            //             ),
-            //             IconButton(
-            //               onPressed: dataTrx[index].paid! != "1"
-            //                   ? () {
-            //                       playSound(int.parse(dataTrx[index].idJenis!),
-            //                           dataTrx[index].nopol!);
-            //                     }
-            //                   : null,
-            //               icon: Icon(
-            //                 dataTrx[index].paid! != "1"
-            //                     ? Icons.speaker
-            //                     : Icons.speaker,
-            //                 size: 30,
-            //                 color: dataTrx[index].paid! != "1"
-            //                     ? Colors.lightBlue
-            //                     : Colors.grey,
-            //               ),
-            //               splashRadius: 20,
-            //             )
-            //           ],
-            //         )),
-            //       ]);
-            //     }));
           }
         } else if (snapshot.hasError) {
           return const Center(child: Text('Belum ada data masuk'));

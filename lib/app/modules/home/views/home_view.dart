@@ -1,4 +1,3 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -8,8 +7,9 @@ import 'package:intl/intl.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
-  HomeView({Key? key}) : super(key: key);
+  HomeView({super.key, this.kodeCabang});
 
+  final String? kodeCabang;
   final TextEditingController input = TextEditingController();
   final homeC = Get.put(HomeController());
   FlutterTts flutterTts = FlutterTts();
@@ -40,9 +40,8 @@ class HomeView extends GetView<HomeController> {
                   ),
                   Expanded(
                     child: StreamBuilder(
-                        stream: homeC.getDatatrx("001", date, "3", 2),
+                        stream: homeC.getDatatrx(kodeCabang, date, "3", 2),
                         builder: (context, snapshot) {
-                          // print(snapshot.data!.docs[0].data());
                           if (snapshot.hasData) {
                             if (snapshot.connectionState ==
                                 ConnectionState.active) {
@@ -105,7 +104,6 @@ class HomeView extends GetView<HomeController> {
           Expanded(
               flex: 7,
               child: Container(
-                // height: 700,
                 width: Get.mediaQuery.size.width,
                 decoration: const BoxDecoration(color: Colors.black),
                 child: Column(
@@ -114,31 +112,10 @@ class HomeView extends GetView<HomeController> {
                     SizedBox(
                         height: Get.mediaQuery.size.height / 1,
                         child: StreamBuilder(
-                            stream: homeC.getDatatrx("001", date, 1, ""),
+                            stream: homeC.getDatatrx(kodeCabang, date, 1, ""),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 var status = snapshot.data!;
-                                // print(status);
-                                // playSound(
-                                //     (status[0].data()
-                                //         as Map<String, dynamic>)['id_jenis'],
-                                //     (status[0].data()
-                                //         as Map<String, dynamic>)['kendaraan'],
-                                //     (status[0].data()
-                                //         as Map<String, dynamic>)['no_polisi']);
-
-                                // Future.delayed(
-                                //     const Duration(seconds: 1, milliseconds: 450),
-                                //     () {
-                                // playSoundEnglish(
-                                //     (status[0].data()
-                                //         as Map<String, dynamic>)['id_jenis'],
-                                //     (status[0].data()
-                                //         as Map<String, dynamic>)['kendaraan'],
-                                //     (status[0].data() as Map<String,
-                                //         dynamic>)['no_polisi']);
-                                // });
-                                // print('length $status');
                                 if (status.isEmpty) {
                                   return Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -221,7 +198,7 @@ class HomeView extends GetView<HomeController> {
                   ),
                   Expanded(
                     child: StreamBuilder(
-                        stream: homeC.getDatatrx("001", date, "3", 1),
+                        stream: homeC.getDatatrx(kodeCabang, date, "3", 1),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             if (snapshot.connectionState ==

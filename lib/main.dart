@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/modules/home/views/home_add.dart';
+import 'app/modules/home/views/home_view.dart';
 import 'app/modules/home_web/views/home_web_view.dart';
 import 'app/modules/login/controllers/login_controller.dart';
 import 'app/modules/login/views/login_view.dart';
@@ -43,7 +44,7 @@ void main() async {
     home: Obx(() => auth.isLogin.value
         ? kIsWeb
             ?
-            //  HomeView()
+            //  HomeView(kodeCabang: auth.kodeCabang.value)
             HomeWebView(
                 kodeCabang: auth.kodeCabang.value,
                 username: auth.userName.value)

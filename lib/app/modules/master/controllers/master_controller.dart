@@ -52,6 +52,7 @@ class MasterController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    getFutureCabang();
   }
 
   Stream<List<Cabang>> getCabang(kode, level) async* {

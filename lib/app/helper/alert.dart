@@ -39,3 +39,20 @@ showDefaultDialog2(title, message) {
       textConfirm: 'OK',
       confirmTextColor: Colors.white);
 }
+
+showLoading() {
+  Get.defaultDialog(
+      barrierDismissible: false,
+      title: '',
+      content: Column(
+        children: const [
+          Center(
+            child: CircularProgressIndicator(),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Text('Loading data...')
+        ],
+      ));
+}
