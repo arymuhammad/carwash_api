@@ -30,7 +30,7 @@ class ServicesView extends GetView<ServicesController> {
             } else {
               return PaginatedDataTable2(
                   headingRowColor: MaterialStateProperty.resolveWith(
-                      (states) => Colors.lightBlue),
+                      (states) => Colors.indigo),
                   showFirstLastButtons: true,
                   columns: const [
                     DataColumn2(
@@ -61,8 +61,15 @@ class ServicesView extends GetView<ServicesController> {
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
-          return const Center(
-            child: CupertinoActivityIndicator(),
+          return Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                CupertinoActivityIndicator(),
+                SizedBox(width: 5),
+                Text('Sedang memuat ....')
+              ],
+            ),
           );
         },
       ),

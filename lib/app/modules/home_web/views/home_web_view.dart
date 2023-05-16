@@ -26,7 +26,7 @@ class HomeWebView extends GetView<HomeWebController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Saputra Car Wash'),
-        centerTitle: true,
+        backgroundColor: Colors.indigo,
       ),
       body: FutureBuilder(
           future: homeC.streamDataUser(username),
@@ -40,13 +40,15 @@ class HomeWebView extends GetView<HomeWebController> {
                     style: SideMenuStyle(
                         openSideMenuWidth: 230,
                         displayMode: SideMenuDisplayMode.auto,
-                        hoverColor: Colors.blue[100],
-                        selectedColor: Colors.lightBlue,
+                        hoverColor: Colors.indigo[300],
+                        selectedColor: Colors.white,
+                        unselectedIconColor: Colors.white,
                         selectedTitleTextStyle:
+                            TextStyle(color: Colors.grey[700]),
+                        unselectedTitleTextStyle:
                             const TextStyle(color: Colors.white),
-                        selectedIconColor: Colors.white,
-                        backgroundColor:
-                            const Color.fromARGB(255, 201, 203, 204)),
+                        selectedIconColor: Colors.grey[700],
+                        backgroundColor: Colors.indigo),
                     title: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -74,8 +76,7 @@ class HomeWebView extends GetView<HomeWebController> {
                                     ? Text(
                                         ' ${username!.capitalizeFirst}\n ${snapshot.data![0].level!.capitalizeFirst}',
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 17),
+                                            fontSize: 17, color: Colors.white),
                                       )
                                     : Container(),
                               ],
@@ -105,8 +106,7 @@ class HomeWebView extends GetView<HomeWebController> {
                                                 left: 8, right: 12),
                                             child: const Icon(
                                                 Icons.maps_home_work_outlined,
-                                                color: Color.fromARGB(
-                                                    255, 73, 72, 72)),
+                                                color: Colors.white),
                                           )),
                                       Expanded(
                                         flex: 8,
@@ -116,9 +116,7 @@ class HomeWebView extends GetView<HomeWebController> {
                                             '${snapshot.data![0].namaCabang}',
                                             style: const TextStyle(
                                                 fontSize: 17,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color.fromARGB(
-                                                    255, 73, 72, 72)),
+                                                color: Colors.white),
                                           ),
                                         ),
                                       ),
@@ -132,8 +130,7 @@ class HomeWebView extends GetView<HomeWebController> {
                                             padding: const EdgeInsets.only(
                                                 left: 8, right: 12),
                                             child: const Icon(Icons.map_sharp,
-                                                color: Color.fromARGB(
-                                                    255, 73, 72, 72)),
+                                                color: Colors.white),
                                           )),
                                       Expanded(
                                         flex: 8,
@@ -143,9 +140,7 @@ class HomeWebView extends GetView<HomeWebController> {
                                             '${snapshot.data![0].kota}',
                                             style: const TextStyle(
                                                 fontSize: 17,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color.fromARGB(
-                                                    255, 73, 72, 72)),
+                                                color: Colors.white),
                                           ),
                                         ),
                                       ),
@@ -159,8 +154,7 @@ class HomeWebView extends GetView<HomeWebController> {
                                             padding: const EdgeInsets.only(
                                                 left: 8, right: 12),
                                             child: const Icon(Icons.call,
-                                                color: Color.fromARGB(
-                                                    255, 73, 72, 72)),
+                                                color: Colors.white),
                                           )),
                                       Expanded(
                                         flex: 8,
@@ -170,9 +164,7 @@ class HomeWebView extends GetView<HomeWebController> {
                                             '${snapshot.data![0].telp}',
                                             style: const TextStyle(
                                                 fontSize: 17,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color.fromARGB(
-                                                    255, 73, 72, 72)),
+                                                color: Colors.white),
                                           ),
                                         ),
                                       ),
@@ -190,9 +182,7 @@ class HomeWebView extends GetView<HomeWebController> {
                                       'OWNER',
                                       style: TextStyle(
                                           fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Color.fromARGB(255, 73, 72, 72)),
+                                          color: Colors.white),
                                     ))
                                   ])),
                     items: [
@@ -202,7 +192,7 @@ class HomeWebView extends GetView<HomeWebController> {
                         onTap: () {
                           page.jumpToPage(0);
                         },
-                        icon: const Icon(Icons.home),
+                        icon: const Icon(Icons.home_rounded),
                       ),
                       SideMenuItem(
                         priority: 1,
@@ -217,7 +207,7 @@ class HomeWebView extends GetView<HomeWebController> {
                                     'fitur ini hanya untuk administrator'));
                           }
                         },
-                        icon: const Icon(Icons.storefront),
+                        icon: const Icon(Icons.developer_board_rounded),
                       ),
                       SideMenuItem(
                         priority: 2,
@@ -225,7 +215,7 @@ class HomeWebView extends GetView<HomeWebController> {
                         onTap: () {
                           page.jumpToPage(2);
                         },
-                        icon: const Icon(Icons.system_update_tv),
+                        icon: const Icon(Icons.assignment),
                       ),
                       SideMenuItem(
                         priority: 4,

@@ -32,11 +32,6 @@ class MasterUsers extends GetView<MasterController> {
               );
             } else {
               var data = snapshot.data!;
-              // List<Map<String, dynamic>> list = [];
-              // data.map((doc) {
-              //   list.add(doc);
-              // }).toList();
-              // print(list);
               return DataTable2(
                   columnSpacing: 1,
                   horizontalMargin: 8,
@@ -44,7 +39,7 @@ class MasterUsers extends GetView<MasterController> {
                   showBottomBorder: true,
                   headingTextStyle: const TextStyle(color: Colors.white),
                   headingRowColor: MaterialStateProperty.resolveWith(
-                      (states) => Colors.lightBlue),
+                      (states) => Colors.indigo),
                   columns: const [
                     DataColumn(
                       label: Text('Kode Cabang'),
@@ -163,9 +158,16 @@ class MasterUsers extends GetView<MasterController> {
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
-          return const Center(
-            child: CupertinoActivityIndicator(),
-          );
+           return Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              CupertinoActivityIndicator(),
+              SizedBox(width: 5),
+              Text('Sedang memuat ....')
+            ],
+          ),
+        );
         },
       ),
       floatingActionButton: FloatingActionButton(

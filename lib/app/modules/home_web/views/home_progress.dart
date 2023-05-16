@@ -46,8 +46,10 @@ class HomeProgress extends GetView<HomeController> {
                 showBottomBorder: true,
                 headingTextStyle: const TextStyle(color: Colors.white),
                 headingRowColor: MaterialStateProperty.resolveWith(
-                    (states) => Colors.lightBlue),
-                empty: const Center(child: Text('Belum ada data'),),
+                    (states) => Colors.indigo),
+                empty: const Center(
+                  child: Text('Belum ada data'),
+                ),
                 columns: const [
                   DataColumn2(
                     label: Text('No Transaksi'),
@@ -175,10 +177,17 @@ class HomeProgress extends GetView<HomeController> {
                 }));
           }
         } else if (snapshot.hasError) {
-          return const Center(child: Text('Belum ada data masuk'));
+          return Center(child: Text('${snapshot.error}'));
         }
-        return const Center(
-          child: CupertinoActivityIndicator(),
+        return Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              CupertinoActivityIndicator(),
+              SizedBox(width: 5),
+              Text('Sedang memuat ....')
+            ],
+          ),
         );
       },
     );

@@ -19,47 +19,117 @@ class MasterViewTabs extends GetView {
     return DefaultTabController(
         length: 6,
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            bottom: TabBar(
-              indicatorWeight: 7,
-              tabs: const [
-                Tab(
-                  icon: Icon(Icons.business_outlined),
-                  text: 'Master Cabang',
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView(
+              children: [
+                SizedBox(
+                  width: 300,
+                  height: 60,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: TabBar(
+                      isScrollable: true,
+                      labelPadding: const EdgeInsets.only(left: 10, right: 10),
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicator: BoxDecoration(
+                          color: Colors.indigo,
+                          borderRadius: BorderRadius.circular(15)),
+                      tabs: [
+                        SizedBox(
+                          height: 40,
+                          child: Row(
+                            children: const [
+                              Icon(Icons.home_work_rounded),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text('Master Cabang')
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          child: Row(
+                            children: const [
+                              Icon(Icons.supervised_user_circle_rounded),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text('Master Users')
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          child: Row(
+                            children: const [
+                              Icon(Icons.people_alt_outlined),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text('Master Karyawan')
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          child: Row(
+                            children: const [
+                              Icon(Icons.leaderboard_rounded),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text('Master Level')
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          child: Row(
+                            children: const [
+                              Icon(Icons.local_taxi_rounded),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text('Master Kendaraan')
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          child: Row(
+                            children: const [
+                              Icon(Icons.miscellaneous_services_rounded),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text('Master Services')
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                Tab(
-                  icon: Icon(Icons.people_alt_outlined),
-                  text: 'Master Users',
-                ),
-                Tab(
-                  icon: Icon(Icons.people_alt_outlined),
-                  text: 'Master Karyawan',
-                ),
-                Tab(
-                  icon: Icon(Icons.card_membership_outlined),
-                  text: 'Master Level',
-                ),
-                Tab(
-                  icon: Icon(Icons.car_rental),
-                  text: 'Master Kendaraan',
-                ),
-                Tab(
-                  icon: Icon(Icons.miscellaneous_services_rounded),
-                  text: 'Master Services',
+                const Divider(),
+                SizedBox(
+                  width: 300,
+                  height: 500,
+                  child: TabBarView(children: [
+                    MasterCabang(kode, level),
+                    MasterUsers(kode, level),
+                    MasterKaryawan(kode, level),
+                    MasterLevel(),
+                    MasterKendaraan(),
+                    ServicesView(),
+                  ]),
                 ),
               ],
-              isScrollable: Get.mediaQuery.size.width <= 1100 ? true : false,
             ),
           ),
-          body: TabBarView(children: [
-            MasterCabang(kode, level),
-            MasterUsers(kode, level),
-            MasterKaryawan(kode, level),
-            MasterLevel(),
-            MasterKendaraan(),
-            ServicesView(),
-          ]),
         ));
   }
 }

@@ -44,12 +44,13 @@ class HomeFinish extends GetView<HomeController> {
             dataTrx.map((e) => finished.add(e)).toList();
             return PaginatedDataTable2(
                 headingRowColor: MaterialStateProperty.resolveWith(
-                    (states) => Colors.lightBlue),
+                    (states) => Colors.indigo),
                 showFirstLastButtons: true,
                 columnSpacing: 10,
                 horizontalMargin: 8,
                 minWidth: 800,
                 rowsPerPage: 20,
+                fixedLeftColumns: 1,
                 empty: const Center(
                   child: Text('Belum ada data'),
                 ),
@@ -100,7 +101,16 @@ class HomeFinish extends GetView<HomeController> {
         } else if (snapshot.hasError) {
           return const Center(child: Text('Belum ada data masuk'));
         }
-        return const Center(child: CupertinoActivityIndicator());
+        return Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              CupertinoActivityIndicator(),
+              SizedBox(width: 5),
+              Text('Sedang memuat ....')
+            ],
+          ),
+        );
       },
     );
   }

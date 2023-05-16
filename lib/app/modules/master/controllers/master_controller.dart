@@ -35,24 +35,44 @@ class MasterController extends GetxController {
     {"id": 1, "jenis": "Motor"},
     {"id": 2, "jenis": "Mobil"}
   ];
-  TextEditingController email = TextEditingController();
-
-  TextEditingController nama = TextEditingController();
-
-  TextEditingController persentase = TextEditingController();
-  TextEditingController namaMerk = TextEditingController();
-  TextEditingController namaLevel = TextEditingController();
-
-  TextEditingController namaCabang = TextEditingController();
-  TextEditingController kotaCabang = TextEditingController();
-  TextEditingController alamatCabang = TextEditingController();
-  TextEditingController telpCabang = TextEditingController();
-  String? kode;
+  late TextEditingController email;
+  late TextEditingController nama;
+  late TextEditingController persentase;
+  late TextEditingController namaMerk;
+  late TextEditingController namaLevel;
+  late TextEditingController namaCabang;
+  late TextEditingController kotaCabang;
+  late TextEditingController alamatCabang;
+  late TextEditingController telpCabang;
+  // String? kode;
 
   @override
   void onInit() {
     super.onInit();
     getFutureCabang();
+    email = TextEditingController();
+    nama = TextEditingController();
+    persentase = TextEditingController();
+    namaMerk = TextEditingController();
+    namaLevel = TextEditingController();
+    namaCabang = TextEditingController();
+    kotaCabang = TextEditingController();
+    alamatCabang = TextEditingController();
+    telpCabang = TextEditingController();
+  }
+
+  @override
+  void onClose() {
+    email.dispose();
+    nama.dispose();
+    persentase.dispose();
+    namaMerk.dispose();
+    namaLevel.dispose();
+    namaCabang.dispose();
+    kotaCabang.dispose();
+    alamatCabang.dispose();
+    telpCabang.dispose();
+    super.dispose();
   }
 
   Stream<List<Cabang>> getCabang(kode, level) async* {
@@ -124,18 +144,42 @@ class MasterController extends GetxController {
         body: id);
   }
 
-  addCabang(data) async {
+  addCabang(kodeCabang) async {
+    var data = {
+      "kode": kodeCabang,
+      "nama": namaCabang.text,
+      "kota": kotaCabang.text,
+      "alamat": alamatCabang.text,
+      "telp": telpCabang.text,
+      "sts": "add"
+    };
     var response = await http.post(
         Uri.parse(
             "https://saputracarwash.online/api/cabang/addupdate_cabang.php"),
         body: data);
+    alamatCabang.clear();
+    namaCabang.clear();
+    kotaCabang.clear();
+    telpCabang.clear();
   }
 
-  updateDataCabang(data) async {
+  updateDataCabang(kode) async {
+    var data = {
+      "kode": kode,
+      "nama": namaCabang.text,
+      "kota": kotaCabang.text,
+      "alamat": alamatCabang.text,
+      "telp": telpCabang.text,
+      "sts": "update"
+    };
     var response = await http.post(
         Uri.parse(
             "https://saputracarwash.online/api/cabang/addupdate_cabang.php"),
         body: data);
+    namaCabang.clear();
+    kotaCabang.clear();
+    alamatCabang.clear();
+    telpCabang.clear();
   }
 
   Stream<List<Level>> getLevel(id) async* {

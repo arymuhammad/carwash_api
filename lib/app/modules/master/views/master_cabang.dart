@@ -32,7 +32,7 @@ class MasterCabang extends GetView<MasterController> {
                   showBottomBorder: true,
                   headingTextStyle: const TextStyle(color: Colors.white),
                   headingRowColor: MaterialStateProperty.resolveWith(
-                      (states) => Colors.lightBlue),
+                      (states) => Colors.indigo),
                   columns: const [
                     DataColumn2(label: Text('Kode '), fixedWidth: 50
                         // size: ColumnSize.S,
@@ -40,7 +40,7 @@ class MasterCabang extends GetView<MasterController> {
                     DataColumn(
                       label: Text('Cabang'),
                     ),
-                    DataColumn2(label: Text('Kota'), fixedWidth: 70),
+                    DataColumn2(label: Text('Kota'), fixedWidth: 90),
                     DataColumn(
                       label: Text('Alamat'),
                     ),
@@ -128,7 +128,7 @@ class MasterCabang extends GetView<MasterController> {
                             icon: const Icon(
                               Icons.edit_note_sharp,
                               size: 30,
-                              color: Colors.lightBlue,
+                              color: Colors.indigo,
                             ),
                             splashRadius: 20,
                           ),
@@ -171,7 +171,7 @@ class MasterCabang extends GetView<MasterController> {
                             icon: const Icon(
                               Icons.delete,
                               size: 30,
-                              color: Colors.lightBlue,
+                              color: Colors.indigo,
                             ),
                             splashRadius: 20,
                           ),
@@ -183,8 +183,15 @@ class MasterCabang extends GetView<MasterController> {
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
-          return const Center(
-            child: CupertinoActivityIndicator(),
+          return Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                CupertinoActivityIndicator(),
+                SizedBox(width: 5),
+                Text('Sedang memuat ....')
+              ],
+            ),
           );
         },
       ),
@@ -209,104 +216,102 @@ class MasterCabang extends GetView<MasterController> {
                 Expanded(
                     flex: 5,
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                      padding: const EdgeInsets.fromLTRB(12, 15, 12, 0),
                       child: const Text(
                         "Nama Cabang",
-                        style: TextStyle(fontSize: 17),
+                        style: TextStyle(fontSize: 16),
                       ),
                     )),
                 Expanded(
                   flex: 8,
                   child: SizedBox(
-                      height: 20,
-                      child: Text(nama, style: const TextStyle(fontSize: 17))),
+                      height: 35,
+                      width: 76,
+                      child: TextFormField(
+                          textAlignVertical: TextAlignVertical.top,
+                          controller: masterC.namaCabang..text = nama,
+                          // maxLines: 2,
+                          style: const TextStyle(fontSize: 15))),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 5,
-            ),
+            // const SizedBox(
+            //   height: 5,
+            // ),
             Row(
               children: <Widget>[
                 Expanded(
                     flex: 5,
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                      padding: const EdgeInsets.fromLTRB(12, 15, 12, 0),
                       child: const Text(
                         "Kota",
-                        style: TextStyle(fontSize: 17),
+                        style: TextStyle(fontSize: 16),
                       ),
                     )),
                 Expanded(
                   flex: 8,
                   child: SizedBox(
-                      height: 20,
-                      child: Text(kota, style: const TextStyle(fontSize: 17))),
+                      height: 35,
+                      width: 76,
+                      child: TextFormField(
+                          textAlignVertical: TextAlignVertical.top,
+                          controller: masterC.kotaCabang..text = kota,
+                          // maxLines: 2,
+                          style: const TextStyle(fontSize: 15))),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 5,
-            ),
+            // const SizedBox(
+            //   height: 5,
+            // ),
             Row(
               children: <Widget>[
                 Expanded(
                     flex: 5,
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                      padding: const EdgeInsets.fromLTRB(12, 15, 12, 0),
                       child: const Text(
                         "Alamat",
-                        style: TextStyle(fontSize: 17),
+                        style: TextStyle(fontSize: 16),
                       ),
                     )),
                 Expanded(
                   flex: 8,
                   child: SizedBox(
-                      height: 110,
+                      height: 35,
                       width: 76,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          TextFormField(
-                              controller: masterC.alamatCabang..text = alamat,
-                              maxLines: 3,
-                              style: const TextStyle(fontSize: 17)),
-                        ],
-                      )),
+                      child: TextFormField(
+                          textAlignVertical: TextAlignVertical.top,
+                          controller: masterC.alamatCabang..text = alamat,
+                          // maxLines: 2,
+                          style: const TextStyle(fontSize: 15))),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 5,
-            ),
+            // const SizedBox(
+            //   height: 5,
+            // ),
             Row(
               children: <Widget>[
                 Expanded(
                     flex: 5,
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                      padding: const EdgeInsets.fromLTRB(12, 15, 12, 0),
                       child: const Text(
                         "No Telpon",
-                        style: TextStyle(fontSize: 17),
+                        style: TextStyle(fontSize: 16),
                       ),
                     )),
                 Expanded(
                   flex: 8,
                   child: SizedBox(
-                      height: 48,
+                      height: 50,
                       width: 46,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          TextFormField(
-                              controller: masterC.telpCabang..text = telpon,
-                              style: const TextStyle(fontSize: 17)),
-                        ],
-                      )),
+                      child: TextFormField(
+                          textAlignVertical: TextAlignVertical.bottom,
+                          controller: masterC.telpCabang..text = telpon,
+                          style: const TextStyle(fontSize: 15))),
                 ),
               ],
             ),
@@ -315,7 +320,7 @@ class MasterCabang extends GetView<MasterController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Container(
-                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
                     child: ElevatedButton(
                       onPressed: () async {
                         if (masterC.namaCabang.text == "") {
@@ -342,21 +347,9 @@ class MasterCabang extends GetView<MasterController> {
                           masterC.telpCabang.text = masterC.telpCabang.text;
                         }
 
-                        var data = {
-                          "kode": kode,
-                          "nama": masterC.namaCabang.text,
-                          "kota": masterC.kotaCabang.text,
-                          "alamat": masterC.alamatCabang.text,
-                          "telp": masterC.telpCabang.text,
-                          "sts": "update"
-                        };
-                        await masterC.updateDataCabang(data);
+                        await masterC.updateDataCabang(kode);
                         showDefaultDialog2(
                             "Sukses", "Data Cabang berhasil diperbarui");
-                        masterC.namaCabang.clear();
-                        masterC.kotaCabang.clear();
-                        masterC.alamatCabang.clear();
-                        masterC.telpCabang.clear();
                       },
                       child: const Text(
                         'Update',
@@ -445,22 +438,11 @@ class MasterCabang extends GetView<MasterController> {
                         showSnackbar('Error', 'nama cabang tidak boleh kosong');
                       } else {
                         var kodeCabang = '00${masterC.noUrut.value}';
-                        var data = {
-                          "kode": kodeCabang,
-                          "nama": masterC.namaCabang.text,
-                          "kota": masterC.kotaCabang.text,
-                          "alamat": masterC.alamatCabang.text,
-                          "telp": masterC.telpCabang.text,
-                          "sts": "add"
-                        };
 
-                        await masterC.addCabang(data);
+                        await masterC.addCabang(kodeCabang);
                         showDefaultDialog2(
                             "Sukses", "Cabang baru berhasil ditambahkan");
-                        masterC.alamatCabang.clear();
-                        masterC.namaCabang.clear();
-                        masterC.kotaCabang.clear();
-                        masterC.telpCabang.clear();
+
                         masterC.noUrut++;
                       }
                     },

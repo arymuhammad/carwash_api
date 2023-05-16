@@ -39,7 +39,7 @@ void main() async {
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
-    theme: ThemeData(fontFamily: 'Nunito'),
+    theme: ThemeData(fontFamily: 'Nunito', primarySwatch: Colors.indigo, canvasColor: Color.fromARGB(239, 180, 189, 199)),
     title: "Saputra Car Wash Online",
     home: Obx(() => auth.isLogin.value
         ? kIsWeb

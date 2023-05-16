@@ -40,6 +40,7 @@ class LaporanController extends GetxController {
   Future<List<Laporan>> getSummary(dateAwal, dateAkhir, idJenis, cabang) async {
     var response = await BaseClient().get("https://saputracarwash.online/api",
         "/laporan/get_laporan.php?date1=$dateAwal&date2=$dateAkhir&id_jenis=$idJenis&cabang=$cabang");
+    // print("https://saputracarwash.online/api/laporan/get_laporan.php?date1=$dateAwal&date2=$dateAkhir&id_jenis=$idJenis&cabang=$cabang");
     List<dynamic> dataLaporan = json.decode(response)['rows'];
     List<Laporan> laporan =
         dataLaporan.map((e) => Laporan.fromJson(e)).toList();
