@@ -26,7 +26,7 @@ class SummaryLaporan extends GetView {
       var date = startOfMonth.add(Duration(days: i));
       dates.add(date);
     }
-    print(now.month);
+    // print(now.month);
     return ListView(
       children: [
         Row(
@@ -43,7 +43,7 @@ class SummaryLaporan extends GetView {
                     prefixIcon: Icon(Icons.calendar_month_sharp),
                     hintText: 'Pilih Periode',
                     border: OutlineInputBorder()),
-                format: DateFormat("yyyy-MM-dd"),
+                format: DateFormat("MMMM"),
                 onShowPicker: (context, currentValue) {
                   return showDatePicker(
                       context: context,

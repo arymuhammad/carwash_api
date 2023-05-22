@@ -27,6 +27,7 @@ dependencies:
   ota_update: 4.0.2
   flutter_speed_dial: 6.2.0
   shared_preferences: 2.0.15
+  month_year_picker: 0.3.0+1
   flutter: 
     sdk: flutter
 
