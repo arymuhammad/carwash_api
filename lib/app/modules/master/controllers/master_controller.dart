@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:carwash/app/helper/service_api.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -25,7 +26,7 @@ class MasterController extends GetxController {
   var noUrut = 1.obs;
   var kodeUser = 0.obs;
   var cabang = <Cabang>[].obs;
-  var userData = <User>[].obs;
+  // var userData = <User>[].obs;
   var karyawan = <Karyawan>[].obs;
   var level = <Level>[].obs;
   final bool running = true;
@@ -78,70 +79,74 @@ class MasterController extends GetxController {
   Stream<List<Cabang>> getCabang(kode, level) async* {
     while (running) {
       await Future.delayed(const Duration(seconds: 1));
-      var response = await BaseClient().get('https://saputracarwash.online/api',
-          '/cabang/get_cabang.php?kode=$kode&level=$level');
-      List<dynamic> dtcabang = json.decode(response)['rows'];
-      List<Cabang> dtCabang = dtcabang.map((e) => Cabang.fromJson(e)).toList();
-      cabang.value = dtCabang;
-      yield dtCabang;
+      // var response = await BaseClient().get('https://saputracarwash.online/api',
+      //     '/cabang/get_cabang.php?kode=$kode&level=$level');
+      // List<dynamic> dtcabang = json.decode(response)['rows'];
+      // List<Cabang> dtCabang = dtcabang.map((e) => Cabang.fromJson(e)).toList();
+      // cabang.value = dtCabang;
+      Stream<List<Cabang>> dtcabang = ServiceApi().getDataCabang(kode, level);
+      yield* dtcabang;
     }
   }
 
   Future<List<Cabang>> getFutureCabang() async {
-    var response = await BaseClient()
-        .get('https://saputracarwash.online/api', '/cabang/get_cabang.php');
-    List<dynamic> dtcabang = json.decode(response)['rows'];
-    List<Cabang> dtCabang = dtcabang.map((e) => Cabang.fromJson(e)).toList();
-    cabang.value = dtCabang;
-    return dtCabang;
+    // var response = await BaseClient()
+    //     .get('https://saputracarwash.online/api', '/cabang/get_cabang.php');
+    // List<dynamic> dtcabang = json.decode(response)['rows'];
+    // List<Cabang> dtCabang = dtcabang.map((e) => Cabang.fromJson(e)).toList();
+    final response = await ServiceApi().getCabang();
+    cabang.value = response;
+    return response;
   }
 
   Stream<List<User>> getUsers(kode, level) async* {
     while (running) {
       await Future.delayed(const Duration(seconds: 1));
-      var response = await BaseClient().get('https://saputracarwash.online/api',
-          '/user/get_user_data.php?kode=$kode&level=$level');
-      List<dynamic> dtUser = json.decode(response)['rows'];
-      List<User> users = dtUser.map((e) => User.fromJson(e)).toList();
-      userData.value = users;
-      yield users;
+      // var response = await BaseClient().get('https://saputracarwash.online/api',
+      //     '/user/get_user_data.php?kode=$kode&level=$level');
+      // List<dynamic> dtUser = json.decode(response)['rows'];
+      // List<User> users = dtUser.map((e) => User.fromJson(e)).toList();
+      Stream<List<User>> users = ServiceApi().getAllUser(kode, level);
+      // userData.value = users;
+      yield* users;
     }
   }
 
   Future<List<User>> futureUsers(kode) async {
-    var response = await BaseClient().get('https://saputracarwash.online/api',
-        '/user/get_user_data.php?kode=$kode');
-    List<dynamic> dtUser = json.decode(response)['rows'];
-    List<User> users = dtUser.map((e) => User.fromJson(e)).toList();
-    userData.value = users;
-    return users;
+    // var response = await BaseClient().get('https://saputracarwash.online/api',
+    //     '/user/get_user_data.php?kode=$kode');
+    // List<dynamic> dtUser = json.decode(response)['rows'];
+    // List<User> users = dtUser.map((e) => User.fromJson(e)).toList();
+    // userData.value = users;
+    final response = await ServiceApi().getUserFuture(kode);
+    return response;
   }
 
   Stream<List<Karyawan>> getKaryawan(kode, level) async* {
     while (running) {
       await Future.delayed(const Duration(seconds: 1));
-      var response = await BaseClient().get('https://saputracarwash.online/api',
-          '/master/get_karyawan.php?cabang=$kode&level=$level');
-      List<dynamic> dtKaryawan = json.decode(response)['rows'];
-      List<Karyawan> emp = dtKaryawan.map((e) => Karyawan.fromJson(e)).toList();
-      karyawan.value = emp;
-      yield emp;
+      // var response = await BaseClient().get('https://saputracarwash.online/api',
+      //     '/master/get_karyawan.php?cabang=$kode&level=$level');
+      // List<dynamic> dtKaryawan = json.decode(response)['rows'];
+      // List<Karyawan> emp = dtKaryawan.map((e) => Karyawan.fromJson(e)).toList();
+      // karyawan.value = emp;
+      Stream<List<Karyawan>> emp = ServiceApi().getDataKaryawan(kode, level);
+      yield* emp;
     }
   }
 
   Future<List<Karyawan>> futureKaryawan(kode) async {
-    var response = await BaseClient().get('https://saputracarwash.online/api',
-        '/master/get_karyawan.php?cabang=$kode');
-    List<dynamic> dtKaryawan = json.decode(response)['rows'];
-    List<Karyawan> emp = dtKaryawan.map((e) => Karyawan.fromJson(e)).toList();
-    karyawan.value = emp;
-    return emp;
+    // var response = await BaseClient().get('https://saputracarwash.online/api',
+    //     '/master/get_karyawan.php?cabang=$kode');
+    // List<dynamic> dtKaryawan = json.decode(response)['rows'];
+    // List<Karyawan> emp = dtKaryawan.map((e) => Karyawan.fromJson(e)).toList();
+    final response = await ServiceApi().getKaryawanFuture(kode);
+    // karyawan.value = emp;
+    return response;
   }
 
   deleteCabang(id) async {
-    var response = await http.post(
-        Uri.parse("https://saputracarwash.online/api/cabang/delete_cabang.php"),
-        body: id);
+    await ServiceApi().deleteCabang(id);
   }
 
   addCabang(kodeCabang) async {
@@ -153,10 +158,7 @@ class MasterController extends GetxController {
       "telp": telpCabang.text,
       "sts": "add"
     };
-    var response = await http.post(
-        Uri.parse(
-            "https://saputracarwash.online/api/cabang/addupdate_cabang.php"),
-        body: data);
+    await ServiceApi().addCabang(data);
     alamatCabang.clear();
     namaCabang.clear();
     kotaCabang.clear();
@@ -172,10 +174,7 @@ class MasterController extends GetxController {
       "telp": telpCabang.text,
       "sts": "update"
     };
-    var response = await http.post(
-        Uri.parse(
-            "https://saputracarwash.online/api/cabang/addupdate_cabang.php"),
-        body: data);
+    await ServiceApi().addCabang(data);
     namaCabang.clear();
     kotaCabang.clear();
     alamatCabang.clear();
@@ -185,127 +184,102 @@ class MasterController extends GetxController {
   Stream<List<Level>> getLevel(id) async* {
     while (running) {
       await Future.delayed(const Duration(seconds: 1));
-      var response = await BaseClient().get(
-          "https://saputracarwash.online/api", "/master/get_level.php?id=$id");
-      List<dynamic> dtLevel = json.decode(response)['rows'];
-      List<Level> data = dtLevel.map((e) => Level.fromJson(e)).toList();
-      level.value = data;
-      yield data;
+      // var response = await BaseClient().get(
+      //     "https://saputracarwash.online/api", "/master/get_level.php?id=$id");
+      // List<dynamic> dtLevel = json.decode(response)['rows'];
+      // List<Level> data = dtLevel.map((e) => Level.fromJson(e)).toList();
+      // level.value = data;
+      Stream<List<Level>> data = ServiceApi().getLevelById(id);
+      yield* data;
     }
   }
 
   Future<List<Level>> getFutureLevel(id) async {
-    var response = await BaseClient().get(
-        "https://saputracarwash.online/api", "/master/get_level.php?id=$id");
-    List<dynamic> dtLevel = json.decode(response)['rows'];
-    List<Level> data = dtLevel.map((e) => Level.fromJson(e)).toList();
-    level.value = data;
-    return data;
+    // var response = await BaseClient().get(
+    //     "https://saputracarwash.online/api", "/master/get_level.php?id=$id");
+    // List<dynamic> dtLevel = json.decode(response)['rows'];
+    // List<Level> data = dtLevel.map((e) => Level.fromJson(e)).toList();
+    // level.value = data;
+    final response = await ServiceApi().getLevelFutureById(id);
+    return response;
   }
 
   Stream<List<Kendaraan>> getKendaraan() async* {
     while (running) {
-      Future.delayed(const Duration(seconds: 1));
-      var response = await BaseClient().get(
-          "https://saputracarwash.online/api", "/master/get_kendaraan.php");
-      List<dynamic> dtLevel = json.decode(response)['rows'];
-      List<Kendaraan> data = dtLevel.map((e) => Kendaraan.fromJson(e)).toList();
-      yield data;
+      await Future.delayed(const Duration(seconds: 1));
+      // var response = await BaseClient().get(
+      //     "https://saputracarwash.online/api", "/master/get_kendaraan.php");
+      // List<dynamic> dtLevel = json.decode(response)['rows'];
+      // List<Kendaraan> data = dtLevel.map((e) => Kendaraan.fromJson(e)).toList();
+      Stream<List<Kendaraan>> data = ServiceApi().getDataKendaraan();
+      yield* data;
     }
   }
 
   Stream<List<Services>> getServices() async* {
     while (running) {
-      Future.delayed(const Duration(seconds: 1));
-      var response = await BaseClient().get(
-          "https://saputracarwash.online/api", "/master/get_services.php?id=");
-      List<dynamic> dtLevel = json.decode(response)['rows'];
-      List<Services> data = dtLevel.map((e) => Services.fromJson(e)).toList();
-      yield data;
+      await Future.delayed(const Duration(seconds: 1));
+      // var response = await BaseClient().get(
+      //     "https://saputracarwash.online/api", "/master/get_services.php?id=");
+      // List<dynamic> dtLevel = json.decode(response)['rows'];
+      // List<Services> data = dtLevel.map((e) => Services.fromJson(e)).toList();
+      Stream<List<Services>> data = ServiceApi().getServices();
+      yield* data;
     }
   }
 
-  Stream<List<Services>> getFutureServices() async* {
-    while (running) {
-      Future.delayed(const Duration(seconds: 1));
-      var response = await BaseClient().get(
-          "https://saputracarwash.online/api", "/master/get_services.php?id=");
-      List<dynamic> dtLevel = json.decode(response)['rows'];
-      List<Services> data = dtLevel.map((e) => Services.fromJson(e)).toList();
-      yield data;
-    }
-  }
+  // Stream<List<Services>> getFutureServices() async* {
+  //   while (running) {
+  //     await Future.delayed(const Duration(seconds: 1));
+  //     var response = await BaseClient().get(
+  //         "https://saputracarwash.online/api", "/master/get_services.php?id=");
+  //     List<dynamic> dtLevel = json.decode(response)['rows'];
+  //     List<Services> data = dtLevel.map((e) => Services.fromJson(e)).toList();
+  //     yield data;
+  //   }
+  // }
 
   deleteUser(id) async {
-    await http.post(
-        Uri.parse("https://saputracarwash.online/api/master/delete_user.php"),
-        body: id);
+    await ServiceApi().deleteUser(id);
   }
 
   deleteKaryawan(id) async {
-    await http.post(
-        Uri.parse(
-            "https://saputracarwash.online/api/master/delete_karyawan.php"),
-        body: id);
+    await ServiceApi().deleteKaryawan(id);
   }
 
   addKaryawan(data) async {
-    await http.post(
-        Uri.parse(
-            "https://saputracarwash.online/api/master/addupdate_karyawan.php"),
-        body: data);
+    await ServiceApi().addKaryawan(data);
   }
 
   updateKaryawan(data) async {
-    await http.post(
-        Uri.parse(
-            "https://saputracarwash.online/api/master/addupdate_karyawan.php"),
-        body: data);
+    await ServiceApi().addKaryawan(data);
   }
 
   addUser(data) async {
-    var response = await http.post(
-        Uri.parse(
-            "https://saputracarwash.online/api/master/addupdate_user.php"),
-        body: data);
+    await ServiceApi().addUser(data);
   }
 
   deleteLevel(id) async {
-    var response = await http.post(
-        Uri.parse("https://saputracarwash.online/api/master/delete_level.php"),
-        body: id);
+    await ServiceApi().deleteLevel(id);
   }
 
   addLevel(data) async {
-    var response = await http.post(
-        Uri.parse(
-            "https://saputracarwash.online/api/master/addupdate_level.php"),
-        body: data);
+    await ServiceApi().addLevel(data);
   }
 
-  deleteMerk(data) async {
-    var response = await http.post(
-        Uri.parse("https://saputracarwash.online/api/merk/delete_merk.php"),
-        body: data);
+  deleteMerk(id) async {
+    await ServiceApi().deleteMerk(id);
   }
 
   addService(data) async {
-    var response = await http.post(
-        Uri.parse(
-            "https://saputracarwash.online/api/master/addupdate_services.php"),
-        body: data);
+    await ServiceApi().addServices(data);
   }
 
-  deleteService(data) async {
-    var response = await http.post(
-        Uri.parse(
-            "https://saputracarwash.online/api/master/delete_services.php"),
-        body: data);
+  deleteService(id) async {
+    await ServiceApi().deleteServices(id);
   }
 
   addUpdateMerk(data) async {
-    var response = await http.post(
-        Uri.parse("https://saputracarwash.online/api/merk/addupdate_merk.php"),
-        body: data);
+    await ServiceApi().addMerk(data);
   }
 }

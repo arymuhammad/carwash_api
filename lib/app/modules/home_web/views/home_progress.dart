@@ -208,7 +208,7 @@ class HomeProgress extends GetView<HomeController> {
     await flutterTts.setPitch(1.0);
     await flutterTts.setSpeechRate(0.9);
     await assetsAudioPlayer.open(
-      Audio("assets/audio/Airport.mp3"),
+      Audio("assets/audio/airport.mp3"),
       showNotification: true,
       autoStart: true,
     );
@@ -219,7 +219,7 @@ class HomeProgress extends GetView<HomeController> {
       Future.delayed(const Duration(milliseconds: 1800), () async {
         await playSoundEnglish(jenis, text);
         await assetsAudioPlayer.open(
-          Audio("assets/audio/Airport.mp3"),
+          Audio("assets/audio/airport.mp3"),
           showNotification: true,
           autoStart: true,
         );
@@ -294,7 +294,7 @@ class HomeProgress extends GetView<HomeController> {
     await flutterTts.speak("Semoga selamat sampai tujuan");
 
     await assetsAudioPlayer.open(
-      Audio("assets/audio/Airport.mp3"),
+      Audio("assets/audio/airport.mp3"),
       showNotification: true,
       autoStart: true,
     );

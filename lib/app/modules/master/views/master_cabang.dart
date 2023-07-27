@@ -28,6 +28,7 @@ class MasterCabang extends GetView<MasterController> {
               return DataTable2(
                   columnSpacing: 1,
                   horizontalMargin: 8,
+                  dataRowHeight: 50,
                   minWidth: 600,
                   showBottomBorder: true,
                   headingTextStyle: const TextStyle(color: Colors.white),
@@ -70,7 +71,7 @@ class MasterCabang extends GetView<MasterController> {
                       DataCell(Text(data[index].kota!)),
                       DataCell(Text(data[index].alamat! != ""
                           ? data[index].alamat!
-                          : "alamat belum di isi")),
+                          : "alamat belum di isi", maxLines: 2, overflow: TextOverflow.ellipsis,)),
                       DataCell(Text(data[index].telp! != ""
                           ? data[index].telp!
                           : "Telpon belum di isi")),
@@ -85,7 +86,7 @@ class MasterCabang extends GetView<MasterController> {
 
                               return Text(users.isNotEmpty
                                   ? users.join(', ')
-                                  : "Belum ada user");
+                                  : "Belum ada user", maxLines: 2, overflow: TextOverflow.ellipsis,);
                             } else if (snapshot.hasError) {
                               return Text('${snapshot.error}');
                             }
@@ -105,7 +106,7 @@ class MasterCabang extends GetView<MasterController> {
 
                               return Text(karyawans.isNotEmpty
                                   ? karyawans.join(', ')
-                                  : "Belum ada karyawan");
+                                  : "Belum ada karyawan", maxLines: 2, overflow: TextOverflow.ellipsis,);
                             } else if (snapshot.hasError) {
                               return Text('${snapshot.error}');
                             }

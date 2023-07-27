@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:carwash/app/helper/service_api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -23,13 +24,15 @@ class LoginController extends GetxController {
 
   Future<Login> login(username, password) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var response = await BaseClient().get('https://saputracarwash.online/api',
-        '/user/login.php?username=$username&password=$password');
+    // var response = await BaseClient().get('https://saputracarwash.online/api',
+    //     '/user/login.php?username=$username&password=$password');
 
-    dynamic users = json.decode(response)['rows'];
+    // dynamic users = json.decode(response)['rows'];
 
-    Login dtUser = Login.fromJson(users);
-    dataUser.value = dtUser;
+    // Login dtUser = Login.fromJson(users);
+    final response = await ServiceApi().login(username, password);
+    dataUser.value = response;
+    
     if (dataUser.value.sukses != 0) {
       kodeCabang.value = dataUser.value.kodeCabang!;
       kodeUser.value = dataUser.value.kodeUser!;
@@ -69,7 +72,7 @@ class LoginController extends GetxController {
       }
     }
 
-    return dtUser;
+    return response;
   }
 
   logout() async {

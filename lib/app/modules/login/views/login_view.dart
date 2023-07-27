@@ -44,10 +44,11 @@ class LoginView extends GetView<LoginController> {
         // backgroundColor: Colors.lightBlue,
         body: Container(
           decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/bg.jpg'),
-                  fit: BoxFit.cover,
-                  filterQuality: FilterQuality.high)),
+              // image: DecorationImage(
+              //     image: AssetImage('assets/bg.jpg'),
+              //     fit: BoxFit.cover,
+              //     filterQuality: FilterQuality.high),
+              color: Color.fromARGB(239, 180, 189, 199)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

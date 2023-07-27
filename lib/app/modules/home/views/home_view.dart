@@ -126,8 +126,8 @@ class HomeView extends GetView<HomeController> {
                                                   const BoxDecoration(
                                         image: DecorationImage(
                                             image:
-                                                AssetImage('assets/menu.png'),
-                                            fit: BoxFit.fitWidth),
+                                                AssetImage('assets/menu2.jpeg'),
+                                            fit: BoxFit.fill),
                                       ))),
                                     ],
                                   );

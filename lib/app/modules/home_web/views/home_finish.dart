@@ -3,6 +3,7 @@ import 'package:barcode_widget/barcode_widget.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -16,7 +17,7 @@ import '../controllers/home_web_controller.dart';
 
 class HomeFinish extends GetView<HomeController> {
   HomeFinish(this.namaCabang, this.kodeCabang, this.username, this.alamatCabang,
-      this.kotaCabang,
+      this.telp, this.kotaCabang,
       {super.key});
 
   final homeC = Get.put(HomeWebController());
@@ -25,6 +26,7 @@ class HomeFinish extends GetView<HomeController> {
   final String kodeCabang;
   final String username;
   final String alamatCabang;
+  final String telp;
   final String kotaCabang;
 
   var date = DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -94,8 +96,8 @@ class HomeFinish extends GetView<HomeController> {
                       label: Text('Action',
                           style: TextStyle(color: Colors.white))),
                 ],
-                source: DataFinished(
-                    namaCabang, kodeCabang, username, alamatCabang, kotaCabang,
+                source: DataFinished(namaCabang, kodeCabang, username,
+                    alamatCabang, telp, kotaCabang,
                     dtFinished: finished));
           }
         } else if (snapshot.hasError) {
@@ -122,6 +124,7 @@ class DataFinished extends DataTableSource {
     this.kode,
     this.user,
     this.alamat,
+    this.telp,
     this.kota, {
     required List<Trx> dtFinished,
   })  : _trx = dtFinished,
@@ -131,6 +134,7 @@ class DataFinished extends DataTableSource {
   final String kode;
   final String user;
   final String alamat;
+  final String telp;
   final String kota;
   final homeC = Get.put(HomeWebController());
 
@@ -160,7 +164,10 @@ class DataFinished extends DataTableSource {
               if (snapshot.hasData) {
                 var srv = snapshot.data!;
                 return Text(
-                    srv.map((e) => e.serviceName!).join(', ').toString());
+                  srv.map((e) => e.serviceName!).join(', ').toString(),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                );
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
@@ -469,22 +476,100 @@ class DataFinished extends DataTableSource {
                       )),
                   Expanded(
                     flex: 8,
-                    child: SizedBox(
-                      height: 50,
-                      child: TextField(
-                        textAlignVertical: TextAlignVertical.top,
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: NumberFormat.simpleCurrency(
-                                    locale: 'in', decimalDigits: 0)
-                                .format(homeC.totalHarga.value)
-                                .toString(),
-                            hintStyle: const TextStyle(color: Colors.black)),
-                        cursorHeight: 20,
-                        style: const TextStyle(fontSize: 20),
-                        readOnly: true,
-                      ),
+                    child: Obx(
+                      () => SizedBox(
+                          height: 50,
+                          child: homeC.totalSetelahDisc.value == 0
+                              ? TextField(
+                                  textAlignVertical: TextAlignVertical.top,
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: NumberFormat.simpleCurrency(
+                                              locale: 'in', decimalDigits: 0)
+                                          .format(homeC.totalHarga.value)
+                                          .toString(),
+                                      hintStyle:
+                                          const TextStyle(color: Colors.black)),
+                                  cursorHeight: 20,
+                                  style: const TextStyle(fontSize: 20),
+                                  readOnly: true,
+                                )
+                              : Row(
+                                  children: [
+                                    RichText(
+                                      text: TextSpan(
+                                          text: NumberFormat.simpleCurrency(
+                                                  locale: 'in',
+                                                  decimalDigits: 0)
+                                              .format(homeC.totalHarga.value)
+                                              .toString(),
+                                          style: const TextStyle(
+                                              decoration:
+                                                  TextDecoration.lineThrough,
+                                              color: Colors.grey,
+                                              fontSize: 20)),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    SizedBox(
+                                      width: 150,
+                                      child: TextField(
+                                        textAlignVertical:
+                                            TextAlignVertical.top,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            hintText:
+                                                NumberFormat.simpleCurrency(
+                                                        locale: 'in',
+                                                        decimalDigits: 0)
+                                                    .format(homeC
+                                                        .totalSetelahDisc.value)
+                                                    .toString(),
+                                            hintStyle: const TextStyle(
+                                                color: Colors.black)),
+                                        cursorHeight: 20,
+                                        style: const TextStyle(fontSize: 20),
+                                        readOnly: true,
+                                      ),
+                                    )
+                                  ],
+                                )),
                     ),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                      flex: 5,
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                        child: const Text(
+                          "Diskon",
+                          style: TextStyle(fontSize: 17),
+                        ),
+                      )),
+                  Expanded(
+                    flex: 8,
+                    child: SizedBox(
+                        height: 50,
+                        child: TextField(
+                          controller: homeC.diskon,
+                          decoration: InputDecoration(
+                              suffixIcon: const Icon(Icons.percent),
+                              contentPadding: const EdgeInsets.all(8),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20))),
+                          onChanged: (data) {
+                            // homeC.disc.value = data;
+                            // print(homeC.disc.value);
+                            homeC.discount();
+                            // print(homeC.totalSetelahDisc.value);
+                          },
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        )),
                   ),
                 ],
               ),
@@ -550,6 +635,9 @@ class DataFinished extends DataTableSource {
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20))),
                         keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         onChanged: (value) {
                           homeC.pembayaran(value);
                         },
@@ -604,7 +692,12 @@ class DataFinished extends DataTableSource {
                         var dataTrx = {
                           "notrx": noTrx,
                           "paid": "1",
-                          "grandTotal": homeC.totalHarga.value.toString(),
+                          "total": homeC.totalHarga.value.toString(),
+                          "diskon":
+                              homeC.diskon.text != "" ? homeC.diskon.text : "0",
+                          "grandTotal": homeC.totalSetelahDisc.value != 0
+                              ? homeC.totalSetelahDisc.value.toString()
+                              : homeC.totalHarga.value.toString(),
                           "bayar": homeC.bayar.text,
                           "kembali": homeC.kembali.value.toString(),
                           "payment": homeC.paySelected.value,
@@ -617,6 +710,7 @@ class DataFinished extends DataTableSource {
                           "kasir": kasir,
                           "cabang": cabang,
                           "alamat": alamat,
+                          "telp": telp,
                           "kota": kota,
                           "no_trx": noTrx,
                           "tanggal": DateFormat('dd/MM/yyyy HH:mm:ss')
@@ -627,6 +721,8 @@ class DataFinished extends DataTableSource {
                           "harga": harga.join('\n'),
                           "petugas": petugas,
                           "grand_total": homeC.totalHarga.value,
+                          "total_setelah_diskon": homeC.totalSetelahDisc.value,
+                          "diskon": homeC.diskon.text,
                           "pembayaran": homeC.paySelected.value,
                           "bayar": homeC.byr,
                           "kembali": homeC.kembali.value
@@ -637,6 +733,8 @@ class DataFinished extends DataTableSource {
                         homeC.paySelected.value = "";
                         homeC.kembali.value = 0;
                         homeC.bayar.clear();
+                        homeC.diskon.text = "";
+                        homeC.totalSetelahDisc.value = 0;
                         Get.back();
                         Get.back();
                       },
@@ -646,6 +744,8 @@ class DataFinished extends DataTableSource {
                         homeC.paySelected.value = "";
                         homeC.kembali.value = 0;
                         homeC.bayar.clear();
+                        homeC.diskon.text = "";
+                        homeC.totalSetelahDisc.value = 0;
                         Get.back();
                       },
                       child: const Text('Batal')),
@@ -669,11 +769,8 @@ class DataFinished extends DataTableSource {
     await flutterTts.setVolume(1.0);
     await flutterTts.setPitch(1.0);
     await flutterTts.setSpeechRate(0.9);
-    await assetsAudioPlayer.open(
-      Audio("assets/audio/Airport.mp3"),
-      showNotification: true,
-      autoStart: true,
-    );
+    await AssetsAudioPlayer.newPlayer().open(Audio("assets/audio/airport.mp3"),
+        forceOpen: true, autoStart: true);
     Future.delayed(const Duration(milliseconds: 1800), () async {
       await flutterTts
           .speak('Di informasikan, kepada pemilik $jK, dengan nomor polisi');
@@ -681,7 +778,7 @@ class DataFinished extends DataTableSource {
       Future.delayed(const Duration(milliseconds: 1800), () async {
         await playSoundEnglish(jenis, text);
         await assetsAudioPlayer.open(
-          Audio("assets/audio/Airport.mp3"),
+          Audio("assets/audio/airport.mp3"),
           showNotification: true,
           autoStart: true,
         );
@@ -713,20 +810,64 @@ class DataFinished extends DataTableSource {
     await flutterTts.setVolume(1.0);
     await flutterTts.setPitch(1.0);
     await flutterTts.setSpeechRate(0.9);
-    await flutterTts.speak(nopol[0].toString());
-    await flutterTts.speak(nopol[2].toString());
-    await flutterTts.speak(nopol[3].toString());
-    await flutterTts.speak(nopol[4].toString());
-    await flutterTts.speak(nopol[5].toString());
-    await flutterTts.speak(nopol[7].toString());
-    await flutterTts.speak(nopol[8].toString());
     if (nopol.length > 10) {
       // print(nopol.length);
+      await flutterTts.speak(nopol[0].toString());
+      await flutterTts.speak(nopol[1].toString());
+      await flutterTts.speak(nopol[3].toString());
+      await flutterTts.speak(nopol[4].toString());
+      await flutterTts.speak(nopol[5].toString());
+      await flutterTts.speak(nopol[6].toString());
+      await flutterTts.speak(nopol[8].toString());
       await flutterTts.speak(nopol[9].toString());
       await flutterTts.speak(nopol[10].toString());
       await playNext();
-    } else if (nopol.length > 9) {
-      await flutterTts.speak(nopol[9].toString());
+    } else if (nopol.length == 10) {
+      int underscoreIndex = nopol.indexOf('-');
+      // print(nopol.length);
+      // print(underscoreIndex);
+      // print(nopol.join('').toString()[underscoreIndex]);
+      if (underscoreIndex == 2) {
+        await flutterTts.speak(nopol[0].toString());
+        await flutterTts.speak(nopol[1].toString());
+        await flutterTts.speak(nopol[3].toString());
+        await flutterTts.speak(nopol[4].toString());
+        await flutterTts.speak(nopol[5].toString());
+        await flutterTts.speak(nopol[6].toString());
+        await flutterTts.speak(nopol[8].toString());
+        await flutterTts.speak(nopol[9].toString());
+        await playNext();
+      } else {
+        await flutterTts.speak(nopol[0].toString());
+        await flutterTts.speak(nopol[2].toString());
+        await flutterTts.speak(nopol[3].toString());
+        await flutterTts.speak(nopol[4].toString());
+        await flutterTts.speak(nopol[5].toString());
+        await flutterTts.speak(nopol[7].toString());
+        await flutterTts.speak(nopol[8].toString());
+        await flutterTts.speak(nopol[9].toString());
+        await playNext();
+      }
+    } else if (nopol.length == 9) {
+      // print(nopol.length);
+      await flutterTts.speak(nopol[0].toString());
+      await flutterTts.speak(nopol[2].toString());
+      await flutterTts.speak(nopol[3].toString());
+      await flutterTts.speak(nopol[4].toString());
+      await flutterTts.speak(nopol[5].toString());
+      await flutterTts.speak(nopol[7].toString());
+      await flutterTts.speak(nopol[8].toString());
+      // await flutterTts.speak(nopol[9].toString());
+      await playNext();
+    } else if (nopol.length == 8) {
+      // print(nopol.length);
+      await flutterTts.speak(nopol[0].toString());
+      await flutterTts.speak(nopol[2].toString());
+      await flutterTts.speak(nopol[3].toString());
+      await flutterTts.speak(nopol[4].toString());
+      await flutterTts.speak(nopol[5].toString());
+      await flutterTts.speak(nopol[7].toString());
+      await flutterTts.speak(nopol[8].toString());
       await playNext();
     } else {
       await playNext();
@@ -756,7 +897,7 @@ class DataFinished extends DataTableSource {
     await flutterTts.speak("Semoga selamat sampai tujuan");
 
     await assetsAudioPlayer.open(
-      Audio("assets/audio/Airport.mp3"),
+      Audio("assets/audio/airport.mp3"),
       showNotification: true,
       autoStart: true,
     );

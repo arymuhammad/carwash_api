@@ -19,7 +19,7 @@ class ServicesView extends GetView<ServicesController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
-        stream: masterC.getFutureServices(),
+        stream: masterC.getServices(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var data = snapshot.data!;
@@ -203,8 +203,8 @@ class DataService extends DataTableSource {
                           children: [
                             ElevatedButton(
                                 onPressed: () async {
-                                  var idMerk = {"id": _data.id!};
-                                  await masterC.deleteService(idMerk);
+                                  var idService = {"id": _data.id!};
+                                  await masterC.deleteService(idService);
                                   showDefaultDialog2(
                                       "Sukses", "Data berhasil dihapus");
                                 },

@@ -6,13 +6,14 @@ import 'home_progress.dart';
 
 class HomeViewTabs extends GetView {
   const HomeViewTabs(this.namaCabang, this.kodeCabang, this.username,
-      this.alamatCabang, this.kotaCabang,
+      this.alamatCabang,this.telp, this.kotaCabang,
       {super.key});
 
   final String namaCabang;
   final String kodeCabang;
   final String username;
   final String alamatCabang;
+  final String telp;
   final String kotaCabang;
 
   @override
@@ -73,7 +74,7 @@ class HomeViewTabs extends GetView {
                   height: 500,
                   child: TabBarView(children: [
                     HomeProgress(kodeCabang),
-                    HomeFinish(namaCabang, kodeCabang, username, alamatCabang,
+                    HomeFinish(namaCabang, kodeCabang, username, alamatCabang, telp,
                         kotaCabang),
                   ]),
                 ),

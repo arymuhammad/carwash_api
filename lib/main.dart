@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/modules/home/views/home_add.dart';
@@ -39,12 +40,15 @@ void main() async {
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
-    theme: ThemeData(fontFamily: 'Nunito', primarySwatch: Colors.indigo, canvasColor: Color.fromARGB(239, 180, 189, 199)),
+    theme: ThemeData(
+        fontFamily: 'Nunito',
+        primarySwatch: Colors.indigo,
+        canvasColor: const Color.fromARGB(239, 180, 189, 199)),
     title: "Saputra Car Wash Online",
     home: Obx(() => auth.isLogin.value
         ? kIsWeb
             ?
-            //  HomeView(kodeCabang: auth.kodeCabang.value)
+            // HomeView(kodeCabang: auth.kodeCabang.value)
             HomeWebView(
                 kodeCabang: auth.kodeCabang.value,
                 username: auth.userName.value)
@@ -54,6 +58,9 @@ void main() async {
                 level: auth.levelUser.value,
               )
         : LoginView()),
+    localizationsDelegates: const [
+      MonthYearPickerLocalizations.delegate,
+    ],
     getPages: AppPages.routes,
   ));
 }

@@ -73,29 +73,49 @@ class PrintKasirState extends State<PrintKasir> {
           return pw
               .Column(mainAxisAlignment: pw.MainAxisAlignment.start, children: [
             // pw.Image(image),
-            pw.Text('Saputra Car Wash'),
+            pw.Text('${dataPrint!["cabang"]}',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
             pw.Text('Profesional Auto Detailing'),
             pw.Text('${dataPrint!["kota"]}'),
             pw.SizedBox(height: 35),
             pw.Row(children: [
-              pw.Expanded(flex: 1, child: pw.Text('No Trx')),
-              pw.Expanded(flex: 3, child: pw.Text(' : ${dataPrint!["no_trx"]}'))
-            ]),
-            pw.Row(children: [
-              pw.Expanded(flex: 1, child: pw.Text('Tanggal')),
               pw.Expanded(
-                  flex: 3, child: pw.Text(' : ${dataPrint!["tanggal"]}'))
+                  flex: 1,
+                  child: pw.Text('No Trx',
+                      style: const pw.TextStyle(fontSize: 9))),
+              pw.Expanded(
+                  flex: 3,
+                  child: pw.Text(' : ${dataPrint!["no_trx"]}',
+                      style: const pw.TextStyle(fontSize: 9)))
             ]),
             pw.Row(children: [
-              pw.Expanded(flex: 1, child: pw.Text('Kasir')),
-              pw.Expanded(flex: 3, child: pw.Text(' : ${dataPrint!["kasir"]}'))
+              pw.Expanded(
+                  flex: 1,
+                  child: pw.Text('Tanggal',
+                      style: const pw.TextStyle(fontSize: 9))),
+              pw.Expanded(
+                  flex: 3,
+                  child: pw.Text(' : ${dataPrint!["tanggal"]}',
+                      style: const pw.TextStyle(fontSize: 9)))
             ]),
-            pw.SizedBox(height: 25),
+            pw.Row(children: [
+              pw.Expanded(
+                  flex: 1,
+                  child:
+                      pw.Text('Kasir', style: const pw.TextStyle(fontSize: 9))),
+              pw.Expanded(
+                  flex: 3,
+                  child: pw.Text(' : ${dataPrint!["kasir"]}',
+                      style: const pw.TextStyle(fontSize: 9)))
+            ]),
+            pw.SizedBox(height: 20),
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('${dataPrint!["kendaraan"]}'),
-                  pw.Text('${dataPrint!["nopol"]}'),
+                  pw.Text('${dataPrint!["kendaraan"]}',
+                      style: const pw.TextStyle(fontSize: 9)),
+                  pw.Text('${dataPrint!["nopol"]}',
+                      style: const pw.TextStyle(fontSize: 9)),
                 ]),
             pw.SizedBox(height: 15),
             pw.Row(
@@ -104,64 +124,106 @@ class PrintKasirState extends State<PrintKasir> {
                 children: [
                   pw.Expanded(
                     flex: 1,
-                    child: pw.Text(
-                      'Petugas',
-                    ),
+                    child: pw.Text('Petugas',
+                        style: const pw.TextStyle(fontSize: 9)),
                   ),
                   pw.Expanded(
-                      flex: 3, child: pw.Text(' : ${dataPrint!["petugas"]}')),
+                      flex: 3,
+                      child: pw.Text(' : ${dataPrint!["petugas"]}',
+                          style: const pw.TextStyle(fontSize: 9))),
                 ]),
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text(
-                    'Services',
-                  ),
-                  pw.Text(
-                    'Total',
-                  ),
+                  pw.Text('Services', style: const pw.TextStyle(fontSize: 9)),
+                  pw.Text('Total', style: const pw.TextStyle(fontSize: 9)),
                 ]),
             pw.Divider(),
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text(dataPrint!["service_name"]),
-                  pw.Text(dataPrint!["harga"]),
+                  pw.Text(dataPrint!["service_name"],
+                      style: const pw.TextStyle(fontSize: 9)),
+                  pw.Text(dataPrint!["harga"],
+                      style: const pw.TextStyle(fontSize: 9)),
                 ]),
             pw.Divider(),
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Grand Total'),
-                  pw.Text(NumberFormat.simpleCurrency(
-                          locale: 'in', decimalDigits: 0)
-                      .format(dataPrint!["grand_total"])
-                      .toString()),
+                  pw.Text('Diskon', style: const pw.TextStyle(fontSize: 9)),
+                  pw.Text(
+                      '${dataPrint!["diskon"] != "" ? dataPrint!["diskon"] : 0}%',
+                      style: const pw.TextStyle(fontSize: 9)),
                 ]),
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Bayar'),
-                  pw.Text(NumberFormat.simpleCurrency(
-                          locale: 'in', decimalDigits: 0)
-                      .format(dataPrint!["bayar"])
-                      .toString()),
+                  pw.Text('Grand Total',
+                      style: const pw.TextStyle(fontSize: 9)),
+                  pw.Row(children: [
+                    pw.RichText(
+                        text: pw.TextSpan(
+                            text: NumberFormat.simpleCurrency(
+                                    locale: 'in', decimalDigits: 0)
+                                .format(dataPrint!["grand_total"])
+                                .toString(),
+                            style: pw.TextStyle(
+                                decoration:
+                                    dataPrint!["total_setelah_diskon"] > 0
+                                        ? pw.TextDecoration.lineThrough
+                                        : pw.TextDecoration.none,
+                                color: dataPrint!["total_setelah_diskon"] > 0
+                                    ? PdfColors.grey
+                                    : PdfColors.black,
+                                fontSize: 9))),
+                    pw.SizedBox(
+                        width: dataPrint!["total_setelah_diskon"] > 0 ? 3 : 0),
+                    dataPrint!["total_setelah_diskon"] > 0
+                        ? pw.Text(
+                            NumberFormat.simpleCurrency(
+                                    locale: 'in', decimalDigits: 0)
+                                .format(dataPrint!["total_setelah_diskon"])
+                                .toString(),
+                            style: const pw.TextStyle(fontSize: 9))
+                        : pw.Container(),
+                  ])
+                ]),
+
+            pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text('Bayar', style: const pw.TextStyle(fontSize: 9)),
+                  pw.Text(
+                      NumberFormat.simpleCurrency(
+                              locale: 'in', decimalDigits: 0)
+                          .format(dataPrint!["bayar"])
+                          .toString(),
+                      style: const pw.TextStyle(fontSize: 9)),
                 ]),
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Kembali'),
-                  pw.Text(NumberFormat.simpleCurrency(
-                          locale: 'in', decimalDigits: 0)
-                      .format(dataPrint!["kembali"])
-                      .toString()),
+                  pw.Text('Kembali', style: const pw.TextStyle(fontSize: 9)),
+                  pw.Text(
+                      NumberFormat.simpleCurrency(
+                              locale: 'in', decimalDigits: 0)
+                          .format(dataPrint!["kembali"])
+                          .toString(),
+                      style: const pw.TextStyle(fontSize: 9)),
                 ]),
             pw.SizedBox(height: 15),
-            pw.Text(dataPrint!["pembayaran"]),
+            pw.Text(dataPrint!["pembayaran"],
+                style: const pw.TextStyle(fontSize: 9)),
             pw.SizedBox(height: 25),
-            pw.Text('-- Terima Kasih --'),
+            pw.Text('-- Terima Kasih --',
+                style: const pw.TextStyle(fontSize: 9)),
             pw.SizedBox(height: 15),
-            pw.Text(dataPrint!["alamat"], textAlign: pw.TextAlign.center),
+            pw.Text(dataPrint!["alamat"],
+                style: const pw.TextStyle(fontSize: 9),
+                textAlign: pw.TextAlign.center),
+            pw.Text(dataPrint!["telp"], style: const pw.TextStyle(fontSize: 9))
+
             // pw.Text(dataPrint!["kota"]),
             // }
           ]); // Center

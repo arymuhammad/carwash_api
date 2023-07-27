@@ -1,39 +1,40 @@
 name: carwash
-version: 1.0.0+1
+version: 3.10.1
 publish_to: none
 description: Mobile Car Wash Online.
 environment: 
-  sdk: '>=2.19.0-171.0.dev <3.0.0'
+  sdk: '>=2.19.2 <3.0.0'
 
 dependencies: 
   barcode_widget: ^2.0.3
   cupertino_icons: ^1.0.2
   data_table_2: ^2.3.7
-  easy_sidemenu: ^0.4.0
+  easy_sidemenu: 0.4.0
   flutter_tts: ^3.5.3
-  fluttertoast: ^8.0.9
+  fluttertoast: ^8.2.1
   get: 4.6.5
   http: ^0.13.5
   intl: ^0.17.0
-  lottie: 1.4.3
+  lottie: ^2.3.2
   path_provider: ^2.0.11
-  bluetooth_print: ^3.0.1
+  bluetooth_print: ^4.3.0
   multiselect_formfield: ^0.1.7
   datetime_picker_formfield: ^2.0.1
-  crypto: 3.0.2
+  crypto: ^3.0.3
   printing: ^5.9.3
   pdf: ^3.8.4
   assets_audio_player: ^3.0.5
-  ota_update: 4.0.2
-  flutter_speed_dial: 6.2.0
-  shared_preferences: 2.0.15
-  month_year_picker: 0.3.0+1
+  
+  ota_update: ^4.0.3
+  flutter_speed_dial: ^6.3.0
+  shared_preferences: ^2.1.1
+  month_year_picker: 0.2.0+4
   flutter: 
     sdk: flutter
 
 dev_dependencies: 
   flutter_lints: ^2.0.0
-  flutter_launcher_icons: ^0.10.0
+  flutter_launcher_icons: ^0.13.1
   flutter_test: 
     sdk: flutter
 
@@ -64,5 +65,6 @@ flutter:
         - asset: assets/font/nunito/Nunito-Regular.ttf
   assets: 
     - assets/
+    - assets/audio/
   uses-material-design: true
 

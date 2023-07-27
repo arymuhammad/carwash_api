@@ -16,7 +16,7 @@ class HomeWebView extends GetView<HomeWebController> {
   HomeWebView({super.key, this.kodeCabang, this.username});
   final String? kodeCabang;
   final String? username;
-  PageController page = PageController(initialPage: 0, keepPage: false);
+
   final homeC = Get.put(HomeWebController());
   final loginC = Get.put(LoginController());
   final lapC = Get.put(LaporanController());
@@ -36,7 +36,7 @@ class HomeWebView extends GetView<HomeWebController> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SideMenu(
-                    controller: page,
+                    controller: homeC.page,
                     style: SideMenuStyle(
                         openSideMenuWidth: 230,
                         displayMode: SideMenuDisplayMode.auto,
@@ -181,16 +181,18 @@ class HomeWebView extends GetView<HomeWebController> {
                                         child: Text(
                                       'OWNER',
                                       style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.white),
+                                          fontSize: 20, color: Colors.white),
                                     ))
                                   ])),
+                    onDisplayModeChanged: (mode) {
+                      print(mode);
+                    },
                     items: [
                       SideMenuItem(
                         priority: 0,
                         title: 'Beranda',
                         onTap: () {
-                          page.jumpToPage(0);
+                          homeC.page.jumpToPage(0);
                         },
                         icon: const Icon(Icons.home_rounded),
                       ),
@@ -199,7 +201,7 @@ class HomeWebView extends GetView<HomeWebController> {
                         title: 'Data Master',
                         onTap: () {
                           if (snapshot.data![0].level != "3") {
-                            page.jumpToPage(1);
+                            homeC.page.jumpToPage(1);
                           } else {
                             Get.defaultDialog(
                                 title: 'Info',
@@ -213,12 +215,12 @@ class HomeWebView extends GetView<HomeWebController> {
                         priority: 2,
                         title: 'Laporan',
                         onTap: () {
-                          page.jumpToPage(2);
+                          homeC.page.jumpToPage(2);
                         },
                         icon: const Icon(Icons.assignment),
                       ),
                       SideMenuItem(
-                        priority: 4,
+                        priority: 3,
                         title: 'Log Out',
                         onTap: () {
                           showDialog(
@@ -274,13 +276,14 @@ class HomeWebView extends GetView<HomeWebController> {
                   ),
                   Expanded(
                     child: PageView(
-                      controller: page,
+                      controller: homeC.page,
                       children: [
                         HomeViewTabs(
                             snapshot.data![0].namaCabang!,
                             snapshot.data![0].kodeCabang!,
                             username!,
                             snapshot.data![0].alamat!,
+                            snapshot.data![0].telp!,
                             snapshot.data![0].kota!),
                         MasterViewTabs(snapshot.data![0].kodeCabang!,
                             snapshot.data![0].idLevel!),
