@@ -185,7 +185,7 @@ class HomeWebView extends GetView<HomeWebController> {
                                     ))
                                   ])),
                     onDisplayModeChanged: (mode) {
-                      print(mode);
+                      // print(mode);
                     },
                     items: [
                       SideMenuItem(

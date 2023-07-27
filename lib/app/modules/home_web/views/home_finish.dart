@@ -454,6 +454,7 @@ class DataFinished extends DataTableSource {
   checkOut(kasir, noTrx, kodeCabang, tanggal, noPol, kendaraan, masuk, service,
       harga, petugas) {
     Get.defaultDialog(
+      barrierDismissible: false,
         radius: 5,
         title: 'Pembayaran',
         content: SizedBox(
