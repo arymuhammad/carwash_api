@@ -22,7 +22,7 @@ class MasterUsers extends GetView<MasterController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<List<User>>(
+      body: StreamBuilder(
         stream: masterC.getUsers(kode, level),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -158,16 +158,16 @@ class MasterUsers extends GetView<MasterController> {
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
-           return Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              CupertinoActivityIndicator(),
-              SizedBox(width: 5),
-              Text('Sedang memuat ....')
-            ],
-          ),
-        );
+          return Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                CupertinoActivityIndicator(),
+                SizedBox(width: 5),
+                Text('Sedang memuat ....')
+              ],
+            ),
+          );
         },
       ),
       floatingActionButton: FloatingActionButton(

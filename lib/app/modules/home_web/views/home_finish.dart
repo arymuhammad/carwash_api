@@ -538,42 +538,42 @@ class DataFinished extends DataTableSource {
                   ),
                 ],
               ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                      flex: 5,
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                        child: const Text(
-                          "Diskon",
-                          style: TextStyle(fontSize: 17),
-                        ),
-                      )),
-                  Expanded(
-                    flex: 8,
-                    child: SizedBox(
-                        height: 50,
-                        child: TextField(
-                          controller: homeC.diskon,
-                          decoration: InputDecoration(
-                              suffixIcon: const Icon(Icons.percent),
-                              contentPadding: const EdgeInsets.all(8),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20))),
-                          onChanged: (data) {
-                            // homeC.disc.value = data;
-                            // print(homeC.disc.value);
-                            homeC.discount();
-                            // print(homeC.totalSetelahDisc.value);
-                          },
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                        )),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: <Widget>[
+              //     Expanded(
+              //         flex: 5,
+              //         child: Container(
+              //           padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+              //           child: const Text(
+              //             "Diskon",
+              //             style: TextStyle(fontSize: 17),
+              //           ),
+              //         )),
+              //     Expanded(
+              //       flex: 8,
+              //       child: SizedBox(
+              //           height: 50,
+              //           child: TextField(
+              //             controller: homeC.diskon,
+              //             decoration: InputDecoration(
+              //                 suffixIcon: const Icon(Icons.percent),
+              //                 contentPadding: const EdgeInsets.all(8),
+              //                 border: OutlineInputBorder(
+              //                     borderRadius: BorderRadius.circular(20))),
+              //             onChanged: (data) {
+              //               // homeC.disc.value = data;
+              //               // print(homeC.disc.value);
+                            // homeC.discount();
+              //               // print(homeC.totalSetelahDisc.value);
+              //             },
+              //             keyboardType: TextInputType.number,
+              //             inputFormatters: [
+              //               FilteringTextInputFormatter.digitsOnly
+              //             ],
+              //           )),
+              //     ),
+              //   ],
+              // ),
               Row(
                 children: <Widget>[
                   Expanded(
@@ -694,8 +694,9 @@ class DataFinished extends DataTableSource {
                           "notrx": noTrx,
                           "paid": "1",
                           "total": homeC.totalHarga.value.toString(),
-                          "diskon":
-                              homeC.diskon.text != "" ? homeC.diskon.text : "0",
+                          // remove diskon 
+                          // "diskon":
+                          //     homeC.diskon.text != "" ? homeC.diskon.text : "0",
                           "grandTotal": homeC.totalSetelahDisc.value != 0
                               ? homeC.totalSetelahDisc.value.toString()
                               : homeC.totalHarga.value.toString(),
@@ -723,7 +724,8 @@ class DataFinished extends DataTableSource {
                           "petugas": petugas,
                           "grand_total": homeC.totalHarga.value,
                           "total_setelah_diskon": homeC.totalSetelahDisc.value,
-                          "diskon": homeC.diskon.text,
+                          // remove diskon
+                          // "diskon": homeC.diskon.text,
                           "pembayaran": homeC.paySelected.value,
                           "bayar": homeC.byr,
                           "kembali": homeC.kembali.value

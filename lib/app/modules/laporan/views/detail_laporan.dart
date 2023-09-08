@@ -13,10 +13,14 @@ import '../controllers/laporan_controller.dart';
 import 'drawer.dart';
 
 class DetailLaporan extends GetView {
-  DetailLaporan(this.cabang, this.level, {super.key});
+  DetailLaporan(this.cabang, this.level, this.nama, this.alamat, this.telp, this.kota, {super.key});
 
   final String cabang;
   final String level;
+  final String nama;
+  final String alamat;
+  final String telp;
+  final String kota;
   final lapC = Get.put(LaporanController());
   final masterC = Get.put(MasterController());
 
@@ -59,7 +63,7 @@ class DetailLaporan extends GetView {
                                 // isDense: true,
                                 onChanged: (String? data) async {
                                   // print(lst);
-                                  showLoading();
+                                  showLoading("Loadind data...");
                                   lapC.selectedCabang.value = data!;
                                   await lapC.getSummary(
                                       lapC.date1.value != ""
@@ -500,6 +504,10 @@ class DetailLaporan extends GetView {
                                                                   c ==
                                                                   srvc[i].id!);
                                                           var dataItem = {
+                                                            "cabang":nama,
+                                                            "alamat":alamat,
+                                                            "telp":telp,
+                                                            "kota":kota,
                                                             "startDate": lapC
                                                                         .date1
                                                                         .value !=

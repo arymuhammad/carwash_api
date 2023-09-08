@@ -40,19 +40,19 @@ showDefaultDialog2(title, message) {
       confirmTextColor: Colors.white);
 }
 
-showLoading() {
+showLoading(msg) {
   Get.defaultDialog(
       barrierDismissible: false,
       title: '',
       content: Column(
-        children: const [
-          Center(
+        children:  [
+          const Center(
             child: CircularProgressIndicator(),
           ),
-          SizedBox(
+          const SizedBox(
             height: 8,
           ),
-          Text('Loading data...')
+          Text(msg)
         ],
       ));
 }

@@ -291,7 +291,11 @@ class HomeWebView extends GetView<HomeWebController> {
                             snapshot.data![0].kodeCabang! != ""
                                 ? snapshot.data![0].kodeCabang!
                                 : "",
-                            snapshot.data![0].idLevel!),
+                            snapshot.data![0].idLevel!,
+                            snapshot.data![0].namaCabang!,
+                            snapshot.data![0].alamat!,
+                            snapshot.data![0].telp!,
+                            snapshot.data![0].kota!),
                       ],
                     ),
                   )

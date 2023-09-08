@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ota_update/ota_update.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../helper/app_exceptions.dart';
 import '../../../helper/base_client.dart';
@@ -43,6 +44,7 @@ class HomeController extends GetxController {
   var kotaCabang = "";
   var noPolisi = [];
   var listnopol = [];
+  var downloadProgress = 0.0.obs;
   String? kode;
   String? level;
   String? id;
@@ -61,7 +63,7 @@ class HomeController extends GetxController {
     super.onInit();
     getCabang(kode, level);
     getMerkById(id);
-    getTrx(kode, kode, date);
+    getTrx(kode, date);
     getKaryawan(kode);
   }
 
@@ -83,11 +85,11 @@ class HomeController extends GetxController {
     return dtMerk;
   }
 
-  Stream<List<TrxCount>> getTrx(kodeCabang, kodeUser, date) async* {
+  Stream<List<TrxCount>> getTrx(kodeCabang, date) async* {
     while (running) {
       await Future.delayed(const Duration(seconds: 1));
       var response = await BaseClient().get('https://saputracarwash.online/api',
-          '/transaksi/get_trx.php?kode_cabang=$kodeCabang&kode_user=$kodeUser&tanggal=$date');
+          '/transaksi/get_trx.php?kode_cabang=$kodeCabang&tanggal=$date');
       List<dynamic> trx = json.decode(response)['rows'];
       List<TrxCount> dtTrx = trx.map((e) => TrxCount.fromJson(e)).toList();
       dataTrx.value = dtTrx;
@@ -126,32 +128,44 @@ class HomeController extends GetxController {
           title: 'UPDATE APP',
           radius: 5,
           barrierDismissible: false,
+          onWillPop: () async {
+            return false;
+          },
           content: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Divider(),
-              Text('Mengunduh Pembaruan'),
-              Text('Harap Menunggu'),
-              SizedBox(
-                height: 10,
+            children: [
+              const Divider(),
+              const Text('Mengunduh Pembaruan'),
+              Obx(
+                () => Text('${(downloadProgress.value).toInt()}%'),
               ),
-              LinearProgressIndicator(
-                minHeight: 10,
+              const SizedBox(
+                height: 5,
               ),
-              SizedBox(
+              Obx(
+                () => LinearPercentIndicator(
+                    lineHeight: 10.0,
+                    percent: downloadProgress.value / 100,
+                    backgroundColor: Colors.grey[220],
+                    progressColor: Colors.blue,
+                    barRadius: const Radius.circular(5)),
+              ),
+              const SizedBox(
                 height: 5,
               ),
             ],
           ));
       OtaUpdate()
           .execute(
-        'http://103.112.139.155/apk/carwash.apk',
+        'http://103.156.15.60/apk/carwash.apk',
         destinationFilename: 'carwash.apk',
       )
           .listen(
         (OtaEvent event) {
-          currentEvent = event;
+          downloadProgress.value = double.parse(event.value!);
         },
+        // onError: errorHandle(Error()),
+        onDone: () => Get.back(),
       );
       // ignore: avoid_catches_without_on_clauses, empty_catches
     } catch (e) {}

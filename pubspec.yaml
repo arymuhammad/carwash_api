@@ -24,7 +24,7 @@ dependencies:
   printing: ^5.9.3
   pdf: ^3.8.4
   assets_audio_player: ^3.0.5
-  
+  percent_indicator: ^4.2.3
   ota_update: ^4.0.3
   flutter_speed_dial: ^6.3.0
   shared_preferences: ^2.1.1

@@ -46,7 +46,7 @@ class DrawerView extends GetView {
                 children: [
                   OutlinedButton(
                       onPressed: () async {
-                        showLoading();
+                        showLoading("Loading data...");
                         await lapC.getSummary(
                             lapC.date1.value = lapC.dateNow1,
                             lapC.date2.value = lapC.dateNow2,
@@ -67,7 +67,7 @@ class DrawerView extends GetView {
                       )),
                   OutlinedButton(
                       onPressed: () async {
-                        showLoading();
+                        showLoading("Loading data...");
                         await lapC.getSummary(
                             lapC.date1.value = DateFormat('yyyy-MM-dd')
                                 .format(DateTime.parse(lapC.dateNow1)
@@ -92,7 +92,7 @@ class DrawerView extends GetView {
                           style: TextStyle(fontSize: 11))),
                   OutlinedButton(
                       onPressed: () async {
-                        showLoading();
+                        showLoading("Loading data...");
                         var d = DateTime.now();
                         var weekDay = d.weekday;
                         var firstDayOfWeek =
@@ -121,7 +121,7 @@ class DrawerView extends GetView {
                           style: TextStyle(fontSize: 11))),
                   OutlinedButton(
                       onPressed: () async {
-                        showLoading();
+                        showLoading("Loading data...");
                         var d = DateTime.now();
                         var weekDay = d.weekday;
                         var firstDayOfWeek =
@@ -150,7 +150,7 @@ class DrawerView extends GetView {
                           style: TextStyle(fontSize: 11))),
                   OutlinedButton(
                       onPressed: () async {
-                        showLoading();
+                        showLoading("Loading data...");
                         var d = DateTime.now();
                         var firstDayOfMonth = DateTime.utc(d.year, d.month, 1);
                         var day = d.difference(firstDayOfMonth);
@@ -180,7 +180,7 @@ class DrawerView extends GetView {
                           style: TextStyle(fontSize: 11))),
                   OutlinedButton(
                       onPressed: () async {
-                        showLoading();
+                        showLoading("Loading data...");
                         var d = DateTime.now();
                         var firstDayOfMonth = DateTime.utc(d.year, d.month, 1);
                         var day = d.difference(firstDayOfMonth);
@@ -210,7 +210,7 @@ class DrawerView extends GetView {
                           style: TextStyle(fontSize: 11))),
                   OutlinedButton(
                       onPressed: () async {
-                        showLoading();
+                        showLoading("Loading data...");
                         var d = DateTime.now();
                         var year = DateTime.utc(d.year, 1, 1);
                         var days = d.difference(year);
@@ -242,7 +242,7 @@ class DrawerView extends GetView {
                           style: TextStyle(fontSize: 11))),
                   OutlinedButton(
                       onPressed: () async {
-                        showLoading();
+                        showLoading("Loading data...");
                         var d = DateTime.now();
                         var year = DateTime.utc(d.year - 1, 1, 1);
                         var days = d.difference(year);
@@ -337,7 +337,7 @@ class DrawerView extends GetView {
                     showDefaultDialog("Perhatian",
                         "Tanggal awal harus lebih kecil dari tanggal akhir");
                   } else {
-                    showLoading();
+                    showLoading("Loading data...");
                     lapC.date1.value = lapC.dateInputAwal.text;
                     lapC.date2.value = lapC.dateInputAkhir.text;
                     await lapC.getSummary(

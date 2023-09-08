@@ -45,7 +45,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.LAPORAN,
-      page: () => LaporanView("",""),
+      page: () => LaporanView("","","","","",""),
       binding: LaporanBinding(),
     ),
     GetPage(

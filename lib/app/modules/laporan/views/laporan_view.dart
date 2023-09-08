@@ -16,10 +16,16 @@ import '../controllers/laporan_controller.dart';
 import 'drawer.dart';
 
 class LaporanView extends GetView<LaporanController> {
-  LaporanView(this.cabang, this.level, {super.key});
+  LaporanView(
+      this.cabang, this.level, this.nama, this.alamat, this.telp, this.kota,
+      {super.key});
 
   final String cabang;
   final String level;
+  final String nama;
+  final String alamat;
+  final String telp;
+  final String kota;
   final lapC = Get.put(LaporanController());
   final masterC = Get.put(MasterController());
   TextEditingController dateInputAwal = TextEditingController();
@@ -85,7 +91,7 @@ class LaporanView extends GetView<LaporanController> {
                   height: 500,
                   child: TabBarView(children: [
                     SummaryLaporan(),
-                    DetailLaporan(cabang, level)
+                    DetailLaporan(cabang, level, nama, alamat, telp, kota)
                     // MasterUsers(kode, level),
                     // MasterKaryawan(kode, level),
                     // MasterLevel(),

@@ -14,7 +14,7 @@ import '../model/trx_model.dart';
 import '../model/user_model.dart';
 
 class ServiceApi {
-  var baseUrl = "http://localhost/api/";
+  var baseUrl = "https://saputracarwash.online/api/";
 
   login(username, password) async {
     try {
@@ -150,7 +150,7 @@ class ServiceApi {
     }
   }
 
-  getLevelFutureById(id) async* {
+  getLevelFutureById(id) async {
     try {
       final response =
           await http.get(Uri.parse('${baseUrl}master/get_level.php?id=$id'));
@@ -159,8 +159,7 @@ class ServiceApi {
         case 200:
           List<dynamic> result = json.decode(response.body)['rows'];
           List<Level> data = result.map((e) => Level.fromJson(e)).toList();
-          yield data;
-          break;
+          return data;
         default:
           throw Exception(response.reasonPhrase);
       }
@@ -169,7 +168,7 @@ class ServiceApi {
     }
   }
 
-  getAllUser(kode, level) async* {
+  Stream<List<User>> getAllUser(kode, level) async* {
     try {
       final response = await http.get(Uri.parse(
           '${baseUrl}user/get_user_data.php?kode=$kode&level=$level'));

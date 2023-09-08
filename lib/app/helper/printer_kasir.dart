@@ -75,8 +75,10 @@ class PrintKasirState extends State<PrintKasir> {
             // pw.Image(image),
             pw.Text('${dataPrint!["cabang"]}',
                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-            pw.Text('Profesional Auto Detailing'),
-            pw.Text('${dataPrint!["kota"]}'),
+            pw.Text('Profesional Auto Detailing',
+                style: const pw.TextStyle(fontSize: 9)),
+            pw.Text('${dataPrint!["kota"]}',
+                style: const pw.TextStyle(fontSize: 9)),
             pw.SizedBox(height: 35),
             pw.Row(children: [
               pw.Expanded(
@@ -148,14 +150,15 @@ class PrintKasirState extends State<PrintKasir> {
                       style: const pw.TextStyle(fontSize: 9)),
                 ]),
             pw.Divider(),
-            pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pw.Text('Diskon', style: const pw.TextStyle(fontSize: 9)),
-                  pw.Text(
-                      '${dataPrint!["diskon"] != "" ? dataPrint!["diskon"] : 0}%',
-                      style: const pw.TextStyle(fontSize: 9)),
-                ]),
+            // remove diskon
+            // pw.Row(
+            //     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       pw.Text('Diskon', style: const pw.TextStyle(fontSize: 9)),
+            //       pw.Text(
+            //           '${dataPrint!["diskon"] != "" ? dataPrint!["diskon"] : 0}%',
+            //           style: const pw.TextStyle(fontSize: 9)),
+            //     ]),
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
@@ -252,70 +255,89 @@ class PrintKasirState extends State<PrintKasir> {
       pw.Page(
         pageFormat: PdfPageFormat.roll80,
         build: (pw.Context context) {
-          return pw.Column(
-              mainAxisAlignment: pw.MainAxisAlignment.start,
-              children: [
-                pw.Text('Saputra Car Wash'),
-                pw.Text('Profesional Auto Detailing'),
-                pw.SizedBox(height: 35),
-                pw.Row(children: [
-                  pw.Expanded(flex: 2, child: pw.Text('Start Date')),
-                  pw.Expanded(
-                      flex: 3,
-                      child: pw.Text(
-                          ' : ${item![0]["startDate"]} at ${DateFormat('HH:mm').format(DateTime.now()).toString()}'))
+          return pw
+              .Column(mainAxisAlignment: pw.MainAxisAlignment.start, children: [
+            pw.Text('${item![0]["cabang"]}',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+            pw.Text('Profesional Auto Detailing',
+                style: const pw.TextStyle(fontSize: 9)),
+            pw.Text('${item![0]["kota"]}',
+                style: const pw.TextStyle(fontSize: 9)),
+            pw.SizedBox(height: 35),
+            pw.Row(children: [
+              pw.Expanded(flex: 2, child: pw.Text('Start Date',
+                style: const pw.TextStyle(fontSize: 9))),
+              pw.Expanded(
+                  flex: 3,
+                  child: pw.Text(
+                      ' : ${item![0]["startDate"]} at ${DateFormat('HH:mm').format(DateTime.now()).toString()}',
+                style: const pw.TextStyle(fontSize: 9)))
+            ]),
+            pw.Row(children: [
+              pw.Expanded(flex: 2, child: pw.Text('End Date',
+                style: const pw.TextStyle(fontSize: 9))),
+              pw.Expanded(
+                  flex: 3,
+                  child: pw.Text(
+                      ' : ${item![0]["endDate"]} at ${DateFormat('HH:mm').format(DateTime.now()).toString()}',
+                style: const pw.TextStyle(fontSize: 9)))
+            ]),
+            pw.Row(children: [
+              pw.Expanded(flex: 2, child: pw.Text('Sold Item',
+                style: const pw.TextStyle(fontSize: 9))),
+              pw.Expanded(flex: 3, child: pw.Text(' : ${item![0]["totalQty"]}',
+                style: const pw.TextStyle(fontSize: 9)))
+            ]),
+            pw.SizedBox(height: 10),
+            pw.Text('------------------------------------------------',
+                style: const pw.TextStyle(fontSize: 9)),
+            pw.Text('ORDER DETAIL',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
+            pw.Text('------------------------------------------------',
+                style: const pw.TextStyle(fontSize: 9)),
+            pw.SizedBox(height: 10),
+            pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text('SOLD ITEM',
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
+                  pw.Text('TOTAL',
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9))
                 ]),
-                pw.Row(children: [
-                  pw.Expanded(flex: 2, child: pw.Text('End Date')),
-                  pw.Expanded(
-                      flex: 3,
-                      child: pw.Text(
-                          ' : ${item![0]["endDate"]} at ${DateFormat('HH:mm').format(DateTime.now()).toString()}'))
+            pw.SizedBox(height: 5),
+            pw.ListView.builder(
+                itemCount: item!.length,
+                itemBuilder: (ctx, idx) {
+                  return pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text('${item![idx]["jenis"]}',
+                style: const pw.TextStyle(fontSize: 9)),
+                        pw.Text(
+                            '(${item![idx]["qty"]}) ${NumberFormat.simpleCurrency(locale: 'id', decimalDigits: 0).format(int.parse(item![idx]["harga"]) * item![idx]["qty"])}',
+                style: const pw.TextStyle(fontSize: 9)),
+                      ]);
+                }),
+            pw.SizedBox(height: 15),
+            pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text('TOTAL AMOUNT',
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
+                  pw.Text(
+                      ' ${NumberFormat.simpleCurrency(locale: 'id', decimalDigits: 0).format(int.parse(item![0]["totalHarga"]))}',
+                style: const pw.TextStyle(fontSize: 9)),
                 ]),
-                pw.Row(children: [
-                  pw.Expanded(flex: 2, child: pw.Text('Sold Item')),
-                  pw.Expanded(
-                      flex: 3, child: pw.Text(' : ${item![0]["totalQty"]}'))
-                ]),
-                pw.SizedBox(height: 10),
-                pw.Text('------------------------------------------------'),
-                pw.Text('ORDER DETAIL',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.Text('------------------------------------------------'),
-                pw.SizedBox(height: 10),
-                pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Text('SOLD ITEM',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      pw.Text('TOTAL',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold))
-                    ]),
-                pw.SizedBox(height: 5),
-                pw.ListView.builder(
-                    itemCount: item!.length,
-                    itemBuilder: (ctx, idx) {
-                      return pw.Row(
-                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                          children: [
-                            pw.Text('${item![idx]["jenis"]}'),
-                            pw.Text(
-                                '(${item![idx]["qty"]}) ${NumberFormat.simpleCurrency(locale: 'id', decimalDigits: 0).format(int.parse(item![idx]["harga"]) * item![idx]["qty"])}'),
-                          ]);
-                    }),
-                pw.SizedBox(height: 15),
-                pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Text('TOTAL AMOUNT',
-                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      pw.Text(
-                          ' ${NumberFormat.simpleCurrency(locale: 'id', decimalDigits: 0).format(int.parse(item![0]["totalHarga"]))}'),
-                    ]),
-                pw.SizedBox(height: 25),
-                pw.Text('-- Terima Kasih --'),
-              ]);
+            pw.SizedBox(height: 25),
+            pw.Text('-- Terima Kasih --',
+                style: const pw.TextStyle(fontSize: 9)),
+            pw.SizedBox(height: 15),
+            pw.Text(item![0]["alamat"],
+                style: const pw.TextStyle(fontSize: 9),
+                textAlign: pw.TextAlign.center),
+            pw.Text(item![0]["telp"], style: const pw.TextStyle(fontSize: 9))
+          ]);
         },
       ),
     ); // Page
