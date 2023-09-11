@@ -27,7 +27,7 @@ class LaporanController extends GetxController {
   var qty = 1;
   var now = DateTime.now().obs;
   var dates = [].obs;
-  final DateFormat formatter = DateFormat('dd MMMM yyyy');
+  final DateFormat formatter = DateFormat.yMMMd();
 
   @override
   void onInit() {
