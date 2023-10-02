@@ -561,8 +561,8 @@ class DataFinished extends DataTableSource {
               //                 border: OutlineInputBorder(
               //                     borderRadius: BorderRadius.circular(20))),
               //             onChanged: (data) {
-              //               // homeC.disc.value = data;
-              //               // print(homeC.disc.value);
+                            // homeC.disc.value = data;
+                            // print(homeC.disc.value);
                             // homeC.discount();
               //               // print(homeC.totalSetelahDisc.value);
               //             },

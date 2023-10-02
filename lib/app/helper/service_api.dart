@@ -14,7 +14,7 @@ import '../model/trx_model.dart';
 import '../model/user_model.dart';
 
 class ServiceApi {
-  var baseUrl = "http://localhost/api/";
+  var baseUrl = "https://saputracarwash.online/api/";
 
   login(username, password) async {
     try {

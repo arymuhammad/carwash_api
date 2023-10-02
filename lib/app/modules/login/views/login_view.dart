@@ -41,20 +41,18 @@ class LoginView extends GetView<LoginController> {
         return willLeave;
       },
       child: Scaffold(
-        // backgroundColor: Colors.lightBlue,
         body: Container(
           decoration: const BoxDecoration(
-              // image: DecorationImage(
-              //     image: AssetImage('assets/bg.jpg'),
-              //     fit: BoxFit.cover,
-              //     filterQuality: FilterQuality.high),
               color: Color.fromARGB(239, 180, 189, 199)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ClipOval(
-                // borderRadius: BorderRadius.circular(10.0),
-                child: Image.asset('assets/logo.png'),
+              const SizedBox(
+                height: 150,
+                width: 150,
+                child: CircleAvatar(
+                  backgroundImage: AssetImage('assets/new_logo.jpg'),
+                ),
               ),
               Center(
                   child: AlertDialog(

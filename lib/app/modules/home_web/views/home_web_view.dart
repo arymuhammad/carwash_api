@@ -63,10 +63,14 @@ class HomeWebView extends GetView<HomeWebController> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 username != ""
-                                    ? const CircleAvatar(
-                                        backgroundColor: Colors.grey,
-                                        backgroundImage:
-                                            AssetImage('assets/logo.png'),
+                                    ? const SizedBox(
+                                        height: 65,
+                                        width: 65,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.grey,
+                                          backgroundImage:
+                                              AssetImage('assets/new_logo.jpg'),
+                                        ),
                                       )
                                     : Container(),
                                 const SizedBox(
