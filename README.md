@@ -1,6 +1,6 @@
 # flutter_carwash
 
-A new Flutter project.
+aplikasi carwash.
 
 ## Getting Started
 
