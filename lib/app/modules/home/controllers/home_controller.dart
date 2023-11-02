@@ -68,7 +68,7 @@ class HomeController extends GetxController {
   }
 
   Future<List<Cabang>> getCabang(kode, level) async {
-    var response = await BaseClient().get('https://saputracarwash.online/api',
+    var response = await BaseClient().get('https://saputraauto.my.id/api',
         '/cabang/get_cabang.php?kode=$kode&level=$level');
     List<dynamic> cabang = json.decode(response)['rows'];
     List<Cabang> dtCabang = cabang.map((e) => Cabang.fromJson(e)).toList();
@@ -77,7 +77,7 @@ class HomeController extends GetxController {
   }
 
   Future<List<Merk>> getMerkById(jenis) async {
-    var response = await BaseClient().get('https://saputracarwash.online/api',
+    var response = await BaseClient().get('https://saputraauto.my.id/api',
         '/merk/get_merk.php?id_jenis=$jenis');
     List<dynamic> merk = json.decode(response)['rows'];
     List<Merk> dtMerk = merk.map((e) => Merk.fromJson(e)).toList();
@@ -88,7 +88,7 @@ class HomeController extends GetxController {
   Stream<List<TrxCount>> getTrx(kodeCabang, date) async* {
     while (running) {
       await Future.delayed(const Duration(seconds: 1));
-      var response = await BaseClient().get('https://saputracarwash.online/api',
+      var response = await BaseClient().get('https://saputraauto.my.id/api',
           '/transaksi/get_trx.php?kode_cabang=$kodeCabang&tanggal=$date');
       List<dynamic> trx = json.decode(response)['rows'];
       List<TrxCount> dtTrx = trx.map((e) => TrxCount.fromJson(e)).toList();
@@ -100,7 +100,7 @@ class HomeController extends GetxController {
   Stream<List<Trx>> getDatatrx(kodeCabang, date, status, idJenis) async* {
     while (running) {
       await Future.delayed(const Duration(seconds: 1));
-      var response = await BaseClient().get("https://saputracarwash.online/api",
+      var response = await BaseClient().get("https://saputraauto.my.id/api",
           "/transaksi/getTrxStatus.php?kode_cabang=$kodeCabang&tanggal=$date&status=$status&id_jenis=$idJenis");
       List<dynamic> trx = json.decode(response)['rows'];
       List<Trx> dtTrx = trx.map((e) => Trx.fromJson(e)).toList();
@@ -118,7 +118,7 @@ class HomeController extends GetxController {
 
   submitData(data) async {
     await http.post(
-        Uri.parse('https://saputracarwash.online/api/transaksi/input_trx.php'),
+        Uri.parse('https://saputraauto.my.id/api/transaksi/input_trx.php'),
         body: data);
   }
 
@@ -174,7 +174,7 @@ class HomeController extends GetxController {
   Stream<List<Karyawan>> getKaryawan(kode) async* {
     while (running) {
       Future.delayed(const Duration(seconds: 1));
-      var response = await BaseClient().get('https://saputracarwash.online/api',
+      var response = await BaseClient().get('https://saputraauto.my.id/api',
           '/master/get_karyawan.php?cabang=$kode');
       List<dynamic> dtKaryawan = json.decode(response)['rows'];
       List<Karyawan> karyawan =

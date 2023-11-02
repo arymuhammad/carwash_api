@@ -38,9 +38,9 @@ class HomeWebController extends GetxController {
 
   @override
   void onInit() {
-    // sideMenu.addListener((index) {
-    //   page.jumpToPage(index);
-    // });
+  // sideMenu.addListener((index) {
+  //   page.jumpToPage(index);
+  // });
     super.onInit();
     servicesById(idService);
   }

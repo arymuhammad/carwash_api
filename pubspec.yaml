@@ -12,9 +12,9 @@ dependencies:
   easy_sidemenu: 0.4.0
   flutter_tts: ^3.5.3
   fluttertoast: ^8.2.1
-  get: 4.6.5
-  http: ^0.13.5
-  intl: ^0.17.0
+  get: ^4.6.6
+  http: ^1.1.0
+  intl: ^0.18.1
   lottie: ^2.3.2
   path_provider: ^2.0.11
   bluetooth_print: ^4.3.0
@@ -25,15 +25,15 @@ dependencies:
   pdf: ^3.8.4
   assets_audio_player: ^3.0.5
   percent_indicator: ^4.2.3
-  ota_update: ^4.0.3
-  flutter_speed_dial: ^6.3.0
+  ota_update: ^5.1.0
+  flutter_speed_dial: ^7.0.0
   shared_preferences: ^2.1.1
-  month_year_picker: 0.2.0+4
+  month_year_picker: ^0.3.0+1
   flutter: 
     sdk: flutter
 
 dev_dependencies: 
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.0
   flutter_launcher_icons: ^0.13.1
   flutter_test: 
     sdk: flutter

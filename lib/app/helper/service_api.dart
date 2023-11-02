@@ -14,7 +14,7 @@ import '../model/trx_model.dart';
 import '../model/user_model.dart';
 
 class ServiceApi {
-  var baseUrl = "https://saputracarwash.online/api/";
+  var baseUrl = "https://saputraauto.my.id/api/";
 
   login(username, password) async {
     try {

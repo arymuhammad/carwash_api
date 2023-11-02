@@ -48,10 +48,10 @@ void main() async {
     home: Obx(() => auth.isLogin.value
         ? kIsWeb
             ?
-            // HomeView(kodeCabang: auth.kodeCabang.value)
-            HomeWebView(
-                kodeCabang: auth.kodeCabang.value,
-                username: auth.userName.value)
+            HomeView(kodeCabang: auth.kodeCabang.value)
+            // HomeWebView(
+            //     kodeCabang: auth.kodeCabang.value,
+            //     username: auth.userName.value)
             : HomeAdd(
                 kodeCabang: auth.kodeCabang.value,
                 kodeUser: auth.kodeUser.value,
