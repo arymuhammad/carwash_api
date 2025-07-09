@@ -1,0 +1,2 @@
+D:/apps/flutter_carwash/android/app/.cxx/RelWithDebInfo/4s4b4r2k/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/apps/flutter_carwash/android/app/.cxx/RelWithDebInfo/4s4b4r2k/armeabi-v7a/CMakeFiles/rebuild_cache.dir

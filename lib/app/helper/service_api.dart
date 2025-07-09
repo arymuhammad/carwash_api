@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:carwash/app/model/lap_kafe_model.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/cabang_model.dart';
@@ -14,12 +15,17 @@ import '../model/trx_model.dart';
 import '../model/user_model.dart';
 
 class ServiceApi {
-  var baseUrl = "https://saputraauto.my.id/api/";
-
+  // var baseUrl = "https://saputraauto.my.id/api/";
+  // var baseUrl = "https://saputracarwash.web.id/api/";
+  var baseUrl = "http://localhost/saputra/api/";
   login(username, password) async {
     try {
-      final response = await http.get(Uri.parse(
-          '${baseUrl}user/login.php?username=$username&password=$password'));
+      final response = await http.get(
+        Uri.parse(
+          '${baseUrl}user/login.php?username=$username&password=$password',
+        ),
+      );
+      // print('${baseUrl}user/login.php?username=$username&password=$password');
       switch (response.statusCode) {
         case 200:
           dynamic users = json.decode(response.body)['rows'];
@@ -35,8 +41,11 @@ class ServiceApi {
 
   Stream<List<Trx>> getDatatrxToday(cabang, date, status) async* {
     try {
-      final response = await http.get(Uri.parse(
-          '${baseUrl}transaksi/getTrxStatus.php?kode_cabang=$cabang&tanggal=$date&status=$status&id_jenis='));
+      final response = await http.get(
+        Uri.parse(
+          '${baseUrl}transaksi/getTrxStatus.php?kode_cabang=$cabang&tanggal=$date&status=$status&id_jenis=',
+        ),
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -52,17 +61,18 @@ class ServiceApi {
     }
   }
 
-  Stream<List<Cabang>> getDataCabang(kode, level) async* {
+  Future<List<Cabang>> getDataCabang(kode, level) async {
     try {
       final response = await http.get(
-          Uri.parse('${baseUrl}cabang/get_cabang.php?kode=$kode&level=$level'));
+        Uri.parse('${baseUrl}cabang/get_cabang.php?kode=$kode&level=$level'),
+      );
 
       switch (response.statusCode) {
         case 200:
           List<dynamic> result = json.decode(response.body)['rows'];
           List<Cabang> data = result.map((e) => Cabang.fromJson(e)).toList();
-          yield data;
-          break;
+          return data;
+          // break;
         default:
           throw Exception(response.reasonPhrase);
       }
@@ -73,8 +83,11 @@ class ServiceApi {
 
   Stream<List<Karyawan>> getDataKaryawan(kode, level) async* {
     try {
-      final response = await http.get(Uri.parse(
-          '${baseUrl}master/get_karyawan.php?cabang=$kode&level=$level'));
+      final response = await http.get(
+        Uri.parse(
+          '${baseUrl}master/get_karyawan.php?cabang=$kode&level=$level',
+        ),
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -93,8 +106,9 @@ class ServiceApi {
 
   Stream<List<Level>> getLevelById(id) async* {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}master/get_level.php?id=$id'));
+      final response = await http.get(
+        Uri.parse('${baseUrl}master/get_level.php?id=$id'),
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -112,8 +126,9 @@ class ServiceApi {
 
   Stream<List<Kendaraan>> getDataKendaraan() async* {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}master/get_kendaraan.php'));
+      final response = await http.get(
+        Uri.parse('${baseUrl}master/get_kendaraan.php'),
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -132,8 +147,9 @@ class ServiceApi {
 
   Stream<List<Services>> getServices() async* {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}master/get_services.php?id='));
+      final response = await http.get(
+        Uri.parse('${baseUrl}master/get_services.php?id='),
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -152,8 +168,9 @@ class ServiceApi {
 
   getLevelFutureById(id) async {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}master/get_level.php?id=$id'));
+      final response = await http.get(
+        Uri.parse('${baseUrl}master/get_level.php?id=$id'),
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -170,8 +187,9 @@ class ServiceApi {
 
   Stream<List<User>> getAllUser(kode, level) async* {
     try {
-      final response = await http.get(Uri.parse(
-          '${baseUrl}user/get_user_data.php?kode=$kode&level=$level'));
+      final response = await http.get(
+        Uri.parse('${baseUrl}user/get_user_data.php?kode=$kode&level=$level'),
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -190,7 +208,8 @@ class ServiceApi {
   getUser(username) async {
     try {
       final response = await http.get(
-          Uri.parse('${baseUrl}user/get_user_data.php?username=$username'));
+        Uri.parse('${baseUrl}user/get_user_data.php?username=$username'),
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -207,8 +226,9 @@ class ServiceApi {
 
   getUserFuture(kode) async {
     try {
-      final response = await http
-          .get(Uri.parse('${baseUrl}user/get_user_data.php?kode=$kode'));
+      final response = await http.get(
+        Uri.parse('${baseUrl}user/get_user_data.php?kode=$kode'),
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -225,8 +245,9 @@ class ServiceApi {
 
   getKaryawanFuture(kode) async {
     try {
-      final response = await http
-          .get(Uri.parse('${baseUrl}master/get_karyawan.php?cabang=$kode'));
+      final response = await http.get(
+        Uri.parse('${baseUrl}master/get_karyawan.php?cabang=$kode'),
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -242,34 +263,53 @@ class ServiceApi {
     }
   }
 
+  insertDataKafe(data) async {
+    await http.post(
+      Uri.parse("${baseUrl}transaksi/insertDataKafe.php"),
+      body: data,
+    );
+  }
+
   updateDataPembayaran(data) async {
-    await http.post(Uri.parse("${baseUrl}transaksi/updateData.php"),
-        body: data);
+    await http.post(
+      Uri.parse("${baseUrl}transaksi/updateData.php"),
+      body: data,
+    );
   }
 
   addCabang(data) async {
-    await http.post(Uri.parse("${baseUrl}cabang/addupdate_cabang.php"),
-        body: data);
+    await http.post(
+      Uri.parse("${baseUrl}cabang/addupdate_cabang.php"),
+      body: data,
+    );
   }
 
   addKaryawan(data) async {
-    await http.post(Uri.parse("${baseUrl}master/addupdate_karyawan.php"),
-        body: data);
+    await http.post(
+      Uri.parse("${baseUrl}master/addupdate_karyawan.php"),
+      body: data,
+    );
   }
 
   addUser(data) async {
-    await http.post(Uri.parse("${baseUrl}master/addupdate_user.php"),
-        body: data);
+    await http.post(
+      Uri.parse("${baseUrl}master/addupdate_user.php"),
+      body: data,
+    );
   }
 
   addLevel(data) async {
-    await http.post(Uri.parse("${baseUrl}master/addupdate_level.php"),
-        body: data);
+    await http.post(
+      Uri.parse("${baseUrl}master/addupdate_level.php"),
+      body: data,
+    );
   }
 
   addServices(data) async {
-    await http.post(Uri.parse("${baseUrl}master/addupdate_services.php"),
-        body: data);
+    await http.post(
+      Uri.parse("${baseUrl}master/addupdate_services.php"),
+      body: data,
+    );
   }
 
   addMerk(data) async {
@@ -285,8 +325,10 @@ class ServiceApi {
   }
 
   deleteKaryawan(id) async {
-    await http.post(Uri.parse("${baseUrl}master/delete_karyawan.php"),
-        body: id);
+    await http.post(
+      Uri.parse("${baseUrl}master/delete_karyawan.php"),
+      body: id,
+    );
   }
 
   deleteLevel(id) async {
@@ -298,15 +340,36 @@ class ServiceApi {
   }
 
   deleteServices(id) async {
-    await http.post(Uri.parse("${baseUrl}master/delete_services.php"),
-        body: id);
+    await http.post(
+      Uri.parse("${baseUrl}master/delete_services.php"),
+      body: id,
+    );
   }
 
   getServicesById(idService) async {
     try {
-      final response = await http
-          .get(Uri.parse('${baseUrl}master/get_services.php?id=$idService'));
+      final response = await http.get(
+        Uri.parse('${baseUrl}master/get_services.php?id=$idService'),
+      );
+      switch (response.statusCode) {
+        case 200:
+          List<dynamic> result = json.decode(response.body)['rows'];
+          List<Services> data =
+              result.map((e) => Services.fromJson(e)).toList();
+          return data;
+        default:
+          throw Exception(response.reasonPhrase);
+      }
+    } on SocketException catch (_) {
+      rethrow;
+    }
+  }
 
+  getServicesByType(String type) async {
+    try {
+      final response = await http.get(
+        Uri.parse('${baseUrl}master/get_services.php?jenis=$type'),
+      );
       switch (response.statusCode) {
         case 200:
           List<dynamic> result = json.decode(response.body)['rows'];
@@ -323,8 +386,11 @@ class ServiceApi {
 
   getSummaryReport(dateAwal, dateAkhir, idJenis, cabang) async {
     try {
-      final response = await http.get(Uri.parse(
-          '${baseUrl}laporan/get_laporan.php?date1=$dateAwal&date2=$dateAkhir&id_jenis=$idJenis&cabang=$cabang'));
+      final response = await http.get(
+        Uri.parse(
+          '${baseUrl}laporan/get_laporan.php?date1=$dateAwal&date2=$dateAkhir&id_jenis=$idJenis&cabang=$cabang',
+        ),
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -341,13 +407,34 @@ class ServiceApi {
 
   getCabang() async {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}cabang/get_cabang.php'));
+      final response = await http.get(
+        Uri.parse('${baseUrl}cabang/get_cabang.php'),
+      );
 
       switch (response.statusCode) {
         case 200:
           List<dynamic> result = json.decode(response.body)['rows'];
           List<Cabang> data = result.map((e) => Cabang.fromJson(e)).toList();
+          return data;
+        default:
+          throw Exception(response.reasonPhrase);
+      }
+    } on SocketException catch (_) {
+      rethrow;
+    }
+  }
+
+  getLaporanKafe(String kodeCabang, String date1, String date2) async {
+    try {
+      var response = await http.get(
+        Uri.parse(
+          '${baseUrl}transaksi/laporan_kafe.php?kode_cabang=$kodeCabang&tgl1=$date1&tgl2=$date2',
+        ),
+      );
+      switch (response.statusCode) {
+        case 200:
+          List<dynamic> result = json.decode(response.body)['rows'];
+          List<LapKafe> data = result.map((e) => LapKafe.fromJson(e)).toList();
           return data;
         default:
           throw Exception(response.reasonPhrase);

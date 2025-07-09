@@ -3,34 +3,39 @@ version: 3.10.1
 publish_to: none
 description: Mobile Car Wash Online.
 environment: 
-  sdk: '>=2.19.2 <3.0.0'
+  sdk: 3.7.2
 
 dependencies: 
   barcode_widget: ^2.0.3
   cupertino_icons: ^1.0.2
   data_table_2: ^2.3.7
-  easy_sidemenu: 0.4.0
-  flutter_tts: ^3.5.3
+  easy_sidemenu: ^0.7.1
+  flutter_tts: 4.2.3
   fluttertoast: ^8.2.1
   get: ^4.6.6
-  http: ^1.1.0
-  intl: ^0.18.1
+  http: ^0.13.3
+  intl: ^0.19.0
   lottie: ^2.3.2
   path_provider: ^2.0.11
   bluetooth_print: ^4.3.0
+  # bluetooth_print_urovo: 4.2.4
   multiselect_formfield: ^0.1.7
   datetime_picker_formfield: ^2.0.1
   crypto: ^3.0.3
   printing: ^5.9.3
   pdf: ^3.8.4
-  assets_audio_player: ^3.0.5
+  assets_audio_player: 3.1.1
   percent_indicator: ^4.2.3
   ota_update: ^5.1.0
   flutter_speed_dial: ^7.0.0
   shared_preferences: ^2.1.1
-  month_year_picker: ^0.3.0+1
+  month_year_picker: 0.4.0+1
+  flutter_typeahead: ^4.6.2
   flutter: 
     sdk: flutter
+  collection: ^1.18.0
+  eventsource: 0.4.0
+  hugeicons: ^0.0.11
 
 dev_dependencies: 
   flutter_lints: ^3.0.0

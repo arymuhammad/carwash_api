@@ -77,6 +77,10 @@ class PrintKasirState extends State<PrintKasir> {
                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
             pw.Text('Profesional Auto Detailing',
                 style: const pw.TextStyle(fontSize: 9)),
+            pw.Text(dataPrint!["telp"], style: const pw.TextStyle(fontSize: 9)),
+            pw.Text(dataPrint!["alamat"],
+                style: const pw.TextStyle(fontSize: 9),
+                textAlign: pw.TextAlign.center),
             pw.Text('${dataPrint!["kota"]}',
                 style: const pw.TextStyle(fontSize: 9)),
             pw.SizedBox(height: 35),
@@ -110,34 +114,39 @@ class PrintKasirState extends State<PrintKasir> {
                   child: pw.Text(' : ${dataPrint!["kasir"]}',
                       style: const pw.TextStyle(fontSize: 9)))
             ]),
-            pw.SizedBox(height: 20),
-            pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pw.Text('${dataPrint!["kendaraan"]}',
-                      style: const pw.TextStyle(fontSize: 9)),
-                  pw.Text('${dataPrint!["nopol"]}',
-                      style: const pw.TextStyle(fontSize: 9)),
-                ]),
+            pw.SizedBox(height: dataPrint!["kendaraan"] != "" ? 20 : 0),
+            dataPrint!["kendaraan"] != ""
+                ? pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                        pw.Text('${dataPrint!["kendaraan"]}',
+                            style: const pw.TextStyle(fontSize: 9)),
+                        pw.Text('${dataPrint!["nopol"]}',
+                            style: const pw.TextStyle(fontSize: 9)),
+                      ])
+                : pw.Container(),
             pw.SizedBox(height: 15),
-            pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.start,
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Expanded(
-                    flex: 1,
-                    child: pw.Text('Petugas',
-                        style: const pw.TextStyle(fontSize: 9)),
-                  ),
-                  pw.Expanded(
-                      flex: 3,
-                      child: pw.Text(' : ${dataPrint!["petugas"]}',
-                          style: const pw.TextStyle(fontSize: 9))),
-                ]),
+            dataPrint!["kendaraan"] != ""
+                ? pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.start,
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                        pw.Expanded(
+                          flex: 1,
+                          child: pw.Text('Petugas',
+                              style: const pw.TextStyle(fontSize: 9)),
+                        ),
+                        pw.Expanded(
+                            flex: 3,
+                            child: pw.Text(' : ${dataPrint!["petugas"]}',
+                                style: const pw.TextStyle(fontSize: 9))),
+                      ])
+                : pw.Container(),
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Services', style: const pw.TextStyle(fontSize: 9)),
+                  pw.Text(dataPrint!["kendaraan"] != "" ? "Services" : "Menu",
+                      style: const pw.TextStyle(fontSize: 9)),
                   pw.Text('Total', style: const pw.TextStyle(fontSize: 9)),
                 ]),
             pw.Divider(),
@@ -222,10 +231,15 @@ class PrintKasirState extends State<PrintKasir> {
             pw.Text('-- Terima Kasih --',
                 style: const pw.TextStyle(fontSize: 9)),
             pw.SizedBox(height: 15),
-            pw.Text(dataPrint!["alamat"],
-                style: const pw.TextStyle(fontSize: 9),
-                textAlign: pw.TextAlign.center),
-            pw.Text(dataPrint!["telp"], style: const pw.TextStyle(fontSize: 9))
+
+            pw.Text('kami siap melayani komplain ditempat',
+                style: const pw.TextStyle(fontSize: 9)),
+            pw.Text('area Saputra Carwash',
+                style: const pw.TextStyle(fontSize: 9)),
+            pw.Text('kami tidak menerima komplain apabila sudah',
+                style: const pw.TextStyle(fontSize: 9)),
+            pw.Text('meninggalkan area Saputra Carwash',
+                style: const pw.TextStyle(fontSize: 9))
 
             // pw.Text(dataPrint!["kota"]),
             // }
@@ -265,34 +279,43 @@ class PrintKasirState extends State<PrintKasir> {
                 style: const pw.TextStyle(fontSize: 9)),
             pw.SizedBox(height: 35),
             pw.Row(children: [
-              pw.Expanded(flex: 2, child: pw.Text('Start Date',
-                style: const pw.TextStyle(fontSize: 9))),
+              pw.Expanded(
+                  flex: 2,
+                  child: pw.Text('Start Date',
+                      style: const pw.TextStyle(fontSize: 9))),
               pw.Expanded(
                   flex: 3,
                   child: pw.Text(
                       ' : ${item![0]["startDate"]} at ${DateFormat('HH:mm').format(DateTime.now()).toString()}',
-                style: const pw.TextStyle(fontSize: 9)))
+                      style: const pw.TextStyle(fontSize: 9)))
             ]),
             pw.Row(children: [
-              pw.Expanded(flex: 2, child: pw.Text('End Date',
-                style: const pw.TextStyle(fontSize: 9))),
+              pw.Expanded(
+                  flex: 2,
+                  child: pw.Text('End Date',
+                      style: const pw.TextStyle(fontSize: 9))),
               pw.Expanded(
                   flex: 3,
                   child: pw.Text(
                       ' : ${item![0]["endDate"]} at ${DateFormat('HH:mm').format(DateTime.now()).toString()}',
-                style: const pw.TextStyle(fontSize: 9)))
+                      style: const pw.TextStyle(fontSize: 9)))
             ]),
             pw.Row(children: [
-              pw.Expanded(flex: 2, child: pw.Text('Sold Item',
-                style: const pw.TextStyle(fontSize: 9))),
-              pw.Expanded(flex: 3, child: pw.Text(' : ${item![0]["totalQty"]}',
-                style: const pw.TextStyle(fontSize: 9)))
+              pw.Expanded(
+                  flex: 2,
+                  child: pw.Text('Sold Item',
+                      style: const pw.TextStyle(fontSize: 9))),
+              pw.Expanded(
+                  flex: 3,
+                  child: pw.Text(' : ${item![0]["totalQty"]}',
+                      style: const pw.TextStyle(fontSize: 9)))
             ]),
             pw.SizedBox(height: 10),
             pw.Text('------------------------------------------------',
                 style: const pw.TextStyle(fontSize: 9)),
             pw.Text('ORDER DETAIL',
-                style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
+                style:
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
             pw.Text('------------------------------------------------',
                 style: const pw.TextStyle(fontSize: 9)),
             pw.SizedBox(height: 10),
@@ -300,9 +323,11 @@ class PrintKasirState extends State<PrintKasir> {
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
                   pw.Text('SOLD ITEM',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
+                      style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold, fontSize: 9)),
                   pw.Text('TOTAL',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9))
+                      style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold, fontSize: 9))
                 ]),
             pw.SizedBox(height: 5),
             pw.ListView.builder(
@@ -312,10 +337,10 @@ class PrintKasirState extends State<PrintKasir> {
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         pw.Text('${item![idx]["jenis"]}',
-                style: const pw.TextStyle(fontSize: 9)),
+                            style: const pw.TextStyle(fontSize: 9)),
                         pw.Text(
                             '(${item![idx]["qty"]}) ${NumberFormat.simpleCurrency(locale: 'id', decimalDigits: 0).format(int.parse(item![idx]["harga"]) * item![idx]["qty"])}',
-                style: const pw.TextStyle(fontSize: 9)),
+                            style: const pw.TextStyle(fontSize: 9)),
                       ]);
                 }),
             pw.SizedBox(height: 15),
@@ -324,10 +349,11 @@ class PrintKasirState extends State<PrintKasir> {
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.Text('TOTAL AMOUNT',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9)),
+                      style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold, fontSize: 9)),
                   pw.Text(
                       ' ${NumberFormat.simpleCurrency(locale: 'id', decimalDigits: 0).format(int.parse(item![0]["totalHarga"]))}',
-                style: const pw.TextStyle(fontSize: 9)),
+                      style: const pw.TextStyle(fontSize: 9)),
                 ]),
             pw.SizedBox(height: 25),
             pw.Text('-- Terima Kasih --',

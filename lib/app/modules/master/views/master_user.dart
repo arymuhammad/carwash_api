@@ -7,8 +7,8 @@ import 'package:data_table_2/data_table_2.dart';
 
 // import '../../home/controllers/auth_controller.dart';
 import '../../../model/level_model.dart';
-import '../../../model/user_model.dart';
 import '../controllers/master_controller.dart';
+
 
 class MasterUsers extends GetView<MasterController> {
   MasterUsers(this.kode, this.level, {super.key});
@@ -412,8 +412,8 @@ class MasterUsers extends GetView<MasterController> {
               },
             ),
             const SizedBox(height: 5),
-            StreamBuilder(
-              stream: masterC.getCabang(kode, level),
+            FutureBuilder(
+              future: masterC.getCabang(kode, level),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Obx(

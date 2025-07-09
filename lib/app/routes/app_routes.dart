@@ -12,6 +12,7 @@ abstract class Routes {
   static const LAPORAN = _Paths.LAPORAN;
   static const MASTER = _Paths.MASTER;
   static const LAPORAN_KEUANGAN = _Paths.LAPORAN_KEUANGAN;
+  static const KASIR = _Paths.KASIR;
 }
 
 abstract class _Paths {
@@ -25,4 +26,6 @@ abstract class _Paths {
   static const LAPORAN = '/laporan';
   static const MASTER = '/master';
   static const LAPORAN_KEUANGAN = '/laporan-keuangan';
+  static const KASIR = '/kasir';
+  static const ADJUST_PRESENCE = '/adjust-presence';
 }

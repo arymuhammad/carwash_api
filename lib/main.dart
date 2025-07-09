@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'app/data/utils/device/web_material_scroll.dart';
+import 'app/model/login_model.dart';
 import 'app/modules/home/views/home_add.dart';
 import 'app/modules/home/views/home_view.dart';
 import 'app/modules/home_web/views/home_web_view.dart';
@@ -15,52 +19,47 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var status = prefs.getBool('is_login') ?? false;
-  var kC = prefs.getString("kode_cabang") ?? "";
-  var kU = prefs.getString("kode_user") ?? "";
-  var username = prefs.getString("username") ?? "";
-  var levels = prefs.getString("level") ?? "";
+  var userDataLogin = prefs.getString('userDataLogin') ?? "";
   final auth = Get.put(LoginController());
+
   if (auth.isLogin.value == false) {
     auth.isLogin.value = status;
   }
-  if (auth.kodeCabang.value == "") {
-    auth.kodeCabang.value = kC;
-  }
-  if (auth.kodeUser.value == "") {
-    auth.kodeUser.value = kU;
-  }
-
-  if (auth.userName.value == "") {
-    auth.userName.value = username;
+  if (auth.logUser.value.username == null) {
+    auth.logUser.value =
+        userDataLogin != ""
+            ? Login.fromJson(jsonDecode(userDataLogin))
+            : Login();
   }
 
-  if (auth.levelUser.value == "") {
-    auth.levelUser.value = levels;
-  }
-
-  runApp(GetMaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(
+  runApp(
+    GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: false,
         fontFamily: 'Nunito',
         primarySwatch: Colors.indigo,
-        canvasColor: const Color.fromARGB(239, 180, 189, 199)),
-    title: "Saputra Car Wash Online",
-    home: Obx(() => auth.isLogin.value
-        ? kIsWeb
-            ?
-            HomeView(kodeCabang: auth.kodeCabang.value)
-            // HomeWebView(
-            //     kodeCabang: auth.kodeCabang.value,
-            //     username: auth.userName.value)
-            : HomeAdd(
-                kodeCabang: auth.kodeCabang.value,
-                kodeUser: auth.kodeUser.value,
-                level: auth.levelUser.value,
-              )
-        : LoginView()),
-    localizationsDelegates: const [
-      MonthYearPickerLocalizations.delegate,
-    ],
-    getPages: AppPages.routes,
-  ));
+        canvasColor: const Color.fromARGB(239, 180, 189, 199),
+      ),
+      title: "Saputra Car Wash",
+      scrollBehavior: MyCustomScrollBehavior(),
+      home: Obx(
+        () =>
+            auth.isLogin.value
+                ? kIsWeb
+                    ?
+                    // HomeView(userData: auth.logUser.value)
+                    HomeWebView(userData: auth.logUser.value)
+                    : HomeAdd(
+                      userData: auth.logUser.value,
+                      // kodeCabang: auth.kodeCabang.value,
+                      // kodeUser: auth.kodeUser.value,
+                      // level: auth.levelUser.value,
+                    )
+                : LoginView(),
+      ),
+      localizationsDelegates: const [MonthYearPickerLocalizations.delegate],
+      getPages: AppPages.routes,
+    ),
+  );
 }

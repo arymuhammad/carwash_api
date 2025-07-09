@@ -156,8 +156,8 @@ class MasterKaryawan extends GetView<MasterController> {
             const SizedBox(
               height: 5,
             ),
-            StreamBuilder(
-              stream: masterC.getCabang(cabang, level),
+            FutureBuilder(
+              future: masterC.getCabang(cabang, level),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Obx(
@@ -257,8 +257,8 @@ class MasterKaryawan extends GetView<MasterController> {
             const SizedBox(
               height: 5,
             ),
-            StreamBuilder(
-              stream: masterC.getCabang(kode, level),
+            FutureBuilder(
+              future: masterC.getCabang(kode, level),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Obx(

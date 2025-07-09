@@ -1,11 +1,9 @@
-import 'dart:convert';
 
 import 'package:carwash/app/helper/service_api.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../helper/base_client.dart';
 import '../../../model/cabang_model.dart';
 import '../../../model/karyawan_model.dart';
 import '../../../model/kendaraan_model.dart';
@@ -76,17 +74,17 @@ class MasterController extends GetxController {
     super.dispose();
   }
 
-  Stream<List<Cabang>> getCabang(kode, level) async* {
-    while (running) {
-      await Future.delayed(const Duration(seconds: 1));
+  Future<List<Cabang>> getCabang(kode, level) async {
+    // while (running) {
+      // await Future.delayed(const Duration(seconds: 5));
       // var response = await BaseClient().get('https://saputracarwash.online/api',
       //     '/cabang/get_cabang.php?kode=$kode&level=$level');
       // List<dynamic> dtcabang = json.decode(response)['rows'];
       // List<Cabang> dtCabang = dtcabang.map((e) => Cabang.fromJson(e)).toList();
       // cabang.value = dtCabang;
-      Stream<List<Cabang>> dtcabang = ServiceApi().getDataCabang(kode, level);
-      yield* dtcabang;
-    }
+      return await ServiceApi().getDataCabang(kode, level);
+      // return dtcabang;
+    // }
   }
 
   Future<List<Cabang>> getFutureCabang() async {
@@ -101,7 +99,7 @@ class MasterController extends GetxController {
 
   Stream<List<User>> getUsers(kode, level) async* {
     while (running) {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds:5));
       // var response = await BaseClient().get('https://saputracarwash.online/api',
       //     '/user/get_user_data.php?kode=$kode&level=$level');
       // List<dynamic> dtUser = json.decode(response)['rows'];
@@ -124,7 +122,7 @@ class MasterController extends GetxController {
 
   Stream<List<Karyawan>> getKaryawan(kode, level) async* {
     while (running) {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 5));
       // var response = await BaseClient().get('https://saputracarwash.online/api',
       //     '/master/get_karyawan.php?cabang=$kode&level=$level');
       // List<dynamic> dtKaryawan = json.decode(response)['rows'];
@@ -183,7 +181,7 @@ class MasterController extends GetxController {
 
   Stream<List<Level>> getLevel(id) async* {
     while (running) {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds:5));
       // var response = await BaseClient().get(
       //     "https://saputracarwash.online/api", "/master/get_level.php?id=$id");
       // List<dynamic> dtLevel = json.decode(response)['rows'];
@@ -206,7 +204,7 @@ class MasterController extends GetxController {
 
   Stream<List<Kendaraan>> getKendaraan() async* {
     while (running) {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 5));
       // var response = await BaseClient().get(
       //     "https://saputracarwash.online/api", "/master/get_kendaraan.php");
       // List<dynamic> dtLevel = json.decode(response)['rows'];
@@ -218,7 +216,7 @@ class MasterController extends GetxController {
 
   Stream<List<Services>> getServices() async* {
     while (running) {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 5));
       // var response = await BaseClient().get(
       //     "https://saputracarwash.online/api", "/master/get_services.php?id=");
       // List<dynamic> dtLevel = json.decode(response)['rows'];

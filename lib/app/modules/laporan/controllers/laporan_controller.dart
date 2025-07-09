@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:carwash/app/helper/service_api.dart';
+import 'package:carwash/app/model/cabang_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../../helper/base_client.dart';
 import '../../../model/laporan_model.dart';
 import '../../../model/services_model.dart';
 
@@ -29,25 +27,70 @@ class LaporanController extends GetxController {
   var dates = [].obs;
   final DateFormat formatter = DateFormat.yMMMd();
 
+  var cabang = <Cabang>[].obs; // Pastikan ini diisi dari MasterController
+  var summaryCache =
+      <String, Map<String, int>>{}.obs; // cabang -> tanggal -> total
+  // Map untuk menyimpan status loading per cabang dan tanggal
+  var loadingStatus = <String, Map<String, bool>>{}.obs;
+
   @override
   void onInit() {
-    var startOfMonth = DateTime(now.value.year, now.value.month, 1);
-    for (int i = 0; i <= now.value.day - 1; i++) {
-      var date = startOfMonth.add(Duration(days: i));
-      dates.add(date);
-    }
     super.onInit();
+    getPeriode();
     dateInputAwal = TextEditingController();
     dateInputAkhir = TextEditingController();
     datePeriode = TextEditingController();
+    // Contoh: setelah cabang dan dates siap, panggil fetchAllSummary
+    ever(cabang, (_) {
+      if (cabang.isNotEmpty && dates.isNotEmpty) {
+        fetchAllSummary();
+      }
+    });
   }
 
   @override
   void onClose() {
-    super.dispose();
     dateInputAwal.dispose();
     dateInputAkhir.dispose();
     datePeriode.dispose();
+    super.onClose();
+  }
+
+  Future<void> fetchAllSummary() async {
+    summaryCache.clear();
+    loadingStatus.clear();
+
+    for (var c in cabang) {
+      summaryCache[c.kodeCabang!] = {};
+      loadingStatus[c.kodeCabang!] = {};
+
+      for (var date in dates) {
+        String dateStr = DateFormat('yyyy-MM-dd').format(date);
+        loadingStatus[c.kodeCabang]![dateStr] = true;
+        loadingStatus.refresh();
+        int total = await getSummarySingle(dateStr, c.kodeCabang!);
+        summaryCache[c.kodeCabang]![dateStr] = total;
+        loadingStatus[c.kodeCabang]![dateStr] = false;
+        
+        
+        summaryCache.refresh();
+        loadingStatus.refresh();
+      }
+    }
+  }
+
+  Future<int> getSummarySingle(String date, String kodeCabang) async {
+    try {
+      List<Laporan> laporanList = await getSummary(date, date, 0, kodeCabang);
+      int total = 0;
+      for (var laporan in laporanList) {
+        total += int.tryParse(laporan.grandTotal ?? '0') ?? 0;
+      }
+      return total;
+    } catch (e) {
+      print('Error getSummarySingle: $e');
+      return 0;
+    }
   }
 
   Future<List<Laporan>> getSummary(dateAwal, dateAkhir, idJenis, cabang) async {
@@ -58,8 +101,12 @@ class LaporanController extends GetxController {
     // List<dynamic> dataLaporan = json.decode(response)['rows'];
     // List<Laporan> laporan =
     //     dataLaporan.map((e) => Laporan.fromJson(e)).toList();
-    final response = await ServiceApi()
-        .getSummaryReport(dateAwal, dateAkhir, idJenis, cabang);
+    final response = await ServiceApi().getSummaryReport(
+      dateAwal,
+      dateAkhir,
+      idJenis,
+      cabang,
+    );
     report.value = response;
     return response;
   }
@@ -75,11 +122,12 @@ class LaporanController extends GetxController {
   }
 
   getPeriode() {
-    var startOfMonth = DateTime(now.value.year, now.value.month + 1, 0);
-    for (int i = 0; i <= startOfMonth.day - 1; i++) {
-      var dateNew = now.value.add(Duration(days: i));
+    dates.clear(); // clear list
+    var startOfMonth = DateTime(now.value.year, now.value.month, 1);
+    var endOfMonth = DateTime(now.value.year, now.value.month + 1, 0);
+    for (int i = 0; i < endOfMonth.day; i++) {
+      var dateNew = startOfMonth.add(Duration(days: i));
       dates.add(dateNew);
-      // print(now);
     }
   }
 }

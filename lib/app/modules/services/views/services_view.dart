@@ -10,11 +10,11 @@ import '../../master/controllers/master_controller.dart';
 import '../controllers/services_controller.dart';
 
 class ServicesView extends GetView<ServicesController> {
-  ServicesView({Key? key}) : super(key: key);
+  ServicesView({super.key});
 
   final masterC = Get.put(MasterController());
-  TextEditingController namaService = TextEditingController();
-  TextEditingController harga = TextEditingController();
+  final TextEditingController namaService = TextEditingController();
+  final TextEditingController harga = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

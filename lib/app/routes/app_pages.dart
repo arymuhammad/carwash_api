@@ -1,9 +1,10 @@
 import 'package:get/get.dart';
-
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/home_web/bindings/home_web_binding.dart';
 import '../modules/home_web/views/home_web_view.dart';
+import '../modules/kasir/bindings/kasir_binding.dart';
+import '../modules/kasir/views/kasir_view.dart';
 import '../modules/laporan/bindings/laporan_binding.dart';
 import '../modules/laporan/views/laporan_view.dart';
 import '../modules/laporan_keuangan/bindings/laporan_keuangan_binding.dart';
@@ -45,18 +46,31 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.LAPORAN,
-      page: () => LaporanView("","","","","",""),
+      page: () => LaporanView("", "", "", "", "", ""),
       binding: LaporanBinding(),
     ),
     GetPage(
       name: _Paths.MASTER,
-      page: () => MasterViewTabs("", ""),
+      page: () => const MasterViewTabs("", ""),
       binding: MasterBinding(),
     ),
     GetPage(
       name: _Paths.LAPORAN_KEUANGAN,
       page: () => const LaporanKeuanganView(),
       binding: LaporanKeuanganBinding(),
+    ),
+    GetPage(
+      name: _Paths.KASIR,
+      page: () => KasirView(
+        namaCabang: "",
+        username: "",
+        kodeCabang: "",
+        userId: "",
+        alamat: "",
+        telp: "",
+        kota: "",
+      ),
+      binding: KasirBinding(),
     ),
   ];
 }

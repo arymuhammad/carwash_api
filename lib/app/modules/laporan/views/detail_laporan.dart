@@ -13,7 +13,9 @@ import '../controllers/laporan_controller.dart';
 import 'drawer.dart';
 
 class DetailLaporan extends GetView {
-  DetailLaporan(this.cabang, this.level, this.nama, this.alamat, this.telp, this.kota, {super.key});
+  DetailLaporan(
+      this.cabang, this.level, this.nama, this.alamat, this.telp, this.kota,
+      {super.key});
 
   final String cabang;
   final String level;
@@ -95,10 +97,10 @@ class DetailLaporan extends GetView {
                   } else if (snapshot.hasError) {
                     return Text('${snapshot.error}');
                   }
-                  return Center(
+                  return const Center(
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                         CupertinoActivityIndicator(),
                         SizedBox(width: 5),
                         Text('Sedang memuat ....')
@@ -197,14 +199,14 @@ class DetailLaporan extends GetView {
                                 )),
                           ),
                           const Divider(),
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text('TOP ITEMS',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold)),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),),
                               ),
                             ],
                           ),
@@ -222,6 +224,7 @@ class DetailLaporan extends GetView {
                                   headingRowColor:
                                       MaterialStateProperty.resolveWith(
                                           (states) => Colors.indigo),
+                                          headingRowHeight:35,
                                   columns: const [
                                     DataColumn(
                                       label: Text('Unit'),
@@ -239,7 +242,7 @@ class DetailLaporan extends GetView {
                                       DataCell(
                                           Text(index == 0 ? 'Motor' : 'Mobil',
                                               style: const TextStyle(
-                                                fontSize: 15,
+                                                fontSize: 14,
                                               ))),
                                       DataCell(Obx(
                                         () => FutureBuilder(
@@ -318,7 +321,7 @@ class DetailLaporan extends GetView {
                                                             .format(totalSales)
                                                             .toString(),
                                                         style: const TextStyle(
-                                                          fontSize: 15,
+                                                          fontSize: 15, fontWeight: FontWeight.bold
                                                         )),
                                                   ],
                                                 );
@@ -337,13 +340,13 @@ class DetailLaporan extends GetView {
                             ),
                           ),
                           const Divider(),
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text('SERVICES SUMMARY',
                                     style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold)),
                               )
                             ],
@@ -379,6 +382,7 @@ class DetailLaporan extends GetView {
                                                                 (states) =>
                                                                     Colors
                                                                         .indigo),
+                                                                        headingRowHeight:35,
                                                     columns: const [
                                                       DataColumn2(
                                                         label: Text('Services'),
@@ -397,7 +401,7 @@ class DetailLaporan extends GetView {
                                                             '${srvc[index].serviceName}',
                                                             style:
                                                                 const TextStyle(
-                                                              fontSize: 15,
+                                                              fontSize: 14,
                                                             ))),
                                                         DataCell(Obx(
                                                           () => FutureBuilder(
@@ -455,6 +459,9 @@ class DetailLaporan extends GetView {
                                                                     children: [
                                                                       Text(
                                                                         '${NumberFormat.simpleCurrency(locale: 'id', decimalDigits: 0).format(int.parse(srvc[index].harga!))} x ${qty.length}',
+                                                                        style: const TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.bold),
                                                                       ),
                                                                       const SizedBox(
                                                                         width:
@@ -464,11 +471,9 @@ class DetailLaporan extends GetView {
                                                                           NumberFormat.simpleCurrency(locale: 'id', decimalDigits: 0).format(int.parse(srvc[index].harga!) *
                                                                               lapC
                                                                                   .qty),
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            fontSize:
-                                                                                15,
-                                                                          ))
+                                                                          style: const TextStyle(
+                                                                              fontSize: 15,
+                                                                              fontWeight: FontWeight.bold))
                                                                     ],
                                                                   );
                                                                 } else if (snapshot
@@ -504,10 +509,10 @@ class DetailLaporan extends GetView {
                                                                   c ==
                                                                   srvc[i].id!);
                                                           var dataItem = {
-                                                            "cabang":nama,
-                                                            "alamat":alamat,
-                                                            "telp":telp,
-                                                            "kota":kota,
+                                                            "cabang": nama,
+                                                            "alamat": alamat,
+                                                            "telp": telp,
+                                                            "kota": kota,
                                                             "startDate": lapC
                                                                         .date1
                                                                         .value !=
@@ -569,12 +574,12 @@ class DetailLaporan extends GetView {
                                                             : Colors.indigo,
                                                     minimumSize:
                                                         const Size(45, 45)),
-                                                child: Row(
+                                                child: const Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
                                                   mainAxisSize:
                                                       MainAxisSize.min,
-                                                  children: const [
+                                                  children: [
                                                     Icon(Icons.print_outlined),
                                                     SizedBox(
                                                       width: 5,
@@ -612,359 +617,6 @@ class DetailLaporan extends GetView {
         onPressed: () => _key.currentState!.openEndDrawer(),
         child: const Icon(Icons.filter_list_rounded),
       ),
-
-      // SpeedDial(
-      //     elevation: 8,
-      //     overlayOpacity: 0,
-      //     icon: Icons.calendar_month_outlined,
-      //     activeIcon: Icons.close,
-      //     activeBackgroundColor: Colors.lightBlue,
-      //     // backgroundColor: const Color.fromARGB(255, 29, 30, 32),
-      //     children: [
-      //       SpeedDialChild(
-      //         label: 'Custom Date',
-      //         labelBackgroundColor: Colors.blue,
-      //         labelStyle: const TextStyle(color: Colors.white),
-      //         backgroundColor: Colors.blue,
-      //         onTap: () {
-      //           searchDialog();
-      //         },
-      //       ),
-      //       SpeedDialChild(
-      //         label: 'Last Year',
-      //         labelBackgroundColor: Colors.blue,
-      //         labelStyle: const TextStyle(color: Colors.white),
-      //         backgroundColor: Colors.blue,
-      //         onTap: () async {
-      //           Get.defaultDialog(
-      //               barrierDismissible: false,
-      //               title: '',
-      //               content: Column(
-      //                 children: const [
-      //                   Center(
-      //                     child: CircularProgressIndicator(),
-      //                   ),
-      //                   SizedBox(
-      //                     height: 8,
-      //                   ),
-      //                   Text('Loading data...')
-      //                 ],
-      //               ));
-      //           var d = DateTime.now();
-      //           var year = DateTime.utc(d.year - 1, 1, 1);
-      //           var days = d.difference(year);
-      //           var firstDayOfWeek = d.subtract(Duration(days: days.inDays));
-      //           var lastDayOfWeek =
-      //               d.subtract(Duration(days: days.inDays - 364));
-      //           await lapC.getSummary(
-      //               lapC.date1.value = DateFormat('yyyy-MM-dd')
-      //                   .format(firstDayOfWeek)
-      //                   .toString(),
-      //               lapC.date2.value = DateFormat('yyyy-MM-dd')
-      //                   .format(lastDayOfWeek)
-      //                   .toString(),
-      //               0,
-      //               level == "1"
-      //                   ? lapC.selectedCabang.isNotEmpty
-      //                       ? lapC.selectedCabang.value
-      //                       : ""
-      //                   : cabang);
-      //           Future.delayed(const Duration(seconds: 1), () {
-      //             Get.back();
-      //           });
-      //         },
-      //       ),
-      //       SpeedDialChild(
-      //         label: 'This Year',
-      //         labelBackgroundColor: Colors.blue,
-      //         labelStyle: const TextStyle(color: Colors.white),
-      //         backgroundColor: Colors.blue,
-      //         onTap: () async {
-      //           Get.defaultDialog(
-      //               barrierDismissible: false,
-      //               title: '',
-      //               content: Column(
-      //                 children: const [
-      //                   Center(
-      //                     child: CircularProgressIndicator(),
-      //                   ),
-      //                   SizedBox(
-      //                     height: 8,
-      //                   ),
-      //                   Text('Loading data...')
-      //                 ],
-      //               ));
-      //           var d = DateTime.now();
-      //           var year = DateTime.utc(d.year, 1, 1);
-      //           var days = d.difference(year);
-      //           var firstDayOfWeek = d.subtract(Duration(days: days.inDays));
-      //           var lastDayOfWeek = d.subtract(Duration(
-      //             days: d.day - 31,
-      //           ));
-      //           await lapC.getSummary(
-      //               lapC.date1.value = DateFormat('yyyy-MM-dd')
-      //                   .format(firstDayOfWeek)
-      //                   .toString(),
-      //               lapC.date2.value = DateFormat('yyyy-MM-dd')
-      //                   .format(lastDayOfWeek)
-      //                   .toString(),
-      //               0,
-      //               level == "1"
-      //                   ? lapC.selectedCabang.isNotEmpty
-      //                       ? lapC.selectedCabang.value
-      //                       : ""
-      //                   : cabang);
-      //           Future.delayed(const Duration(seconds: 1), () {
-      //             Get.back();
-      //           });
-      //         },
-      //       ),
-      //       SpeedDialChild(
-      //         label: 'Last Month',
-      //         labelBackgroundColor: Colors.blue,
-      //         labelStyle: const TextStyle(color: Colors.white),
-      //         backgroundColor: Colors.blue,
-      //         onTap: () async {
-      //           Get.defaultDialog(
-      //               barrierDismissible: false,
-      //               title: '',
-      //               content: Column(
-      //                 children: const [
-      //                   Center(
-      //                     child: CircularProgressIndicator(),
-      //                   ),
-      //                   SizedBox(
-      //                     height: 8,
-      //                   ),
-      //                   Text('Loading data...')
-      //                 ],
-      //               ));
-      //           var d = DateTime.now();
-      //           var firstDayOfMonth = DateTime.utc(d.year, d.month, 1);
-      //           var day = d.difference(firstDayOfMonth);
-      //           var firstDayOfWeek =
-      //               d.subtract(Duration(days: day.inDays + 30));
-      //           var lastDayOfWeek = d.subtract(Duration(days: day.inDays + 1));
-      //           await lapC.getSummary(
-      //               lapC.date1.value = DateFormat('yyyy-MM-dd')
-      //                   .format(firstDayOfWeek)
-      //                   .toString(),
-      //               lapC.date2.value = DateFormat('yyyy-MM-dd')
-      //                   .format(lastDayOfWeek)
-      //                   .toString(),
-      //               0,
-      //               level == "1"
-      //                   ? lapC.selectedCabang.isNotEmpty
-      //                       ? lapC.selectedCabang.value
-      //                       : ""
-      //                   : cabang);
-      //           Future.delayed(const Duration(seconds: 1), () {
-      //             Get.back();
-      //           });
-      //         },
-      //       ),
-      //       SpeedDialChild(
-      //         label: 'This Month',
-      //         labelBackgroundColor: Colors.blue,
-      //         labelStyle: const TextStyle(color: Colors.white),
-      //         backgroundColor: Colors.blue,
-      //         onTap: () async {
-      //           Get.defaultDialog(
-      //               barrierDismissible: false,
-      //               title: '',
-      //               content: Column(
-      //                 children: const [
-      //                   Center(
-      //                     child: CircularProgressIndicator(),
-      //                   ),
-      //                   SizedBox(
-      //                     height: 8,
-      //                   ),
-      //                   Text('Loading data...')
-      //                 ],
-      //               ));
-      //           var d = DateTime.now();
-      //           var firstDayOfMonth = DateTime.utc(d.year, d.month, 1);
-      //           var day = d.difference(firstDayOfMonth);
-      //           var firstDayOfWeek = d.subtract(Duration(days: day.inDays));
-      //           var lastDayOfWeek = d.subtract(Duration(days: day.inDays - 29));
-      //           await lapC.getSummary(
-      //               lapC.date1.value = DateFormat('yyyy-MM-dd')
-      //                   .format(firstDayOfWeek)
-      //                   .toString(),
-      //               lapC.date2.value = DateFormat('yyyy-MM-dd')
-      //                   .format(lastDayOfWeek)
-      //                   .toString(),
-      //               0,
-      //               level == "1"
-      //                   ? lapC.selectedCabang.isNotEmpty
-      //                       ? lapC.selectedCabang.value
-      //                       : ""
-      //                   : cabang);
-      //           Future.delayed(const Duration(seconds: 1), () {
-      //             Get.back();
-      //           });
-      //         },
-      //       ),
-      //       SpeedDialChild(
-      //         label: 'Last Week',
-      //         labelBackgroundColor: Colors.blue,
-      //         labelStyle: const TextStyle(color: Colors.white),
-      //         backgroundColor: Colors.blue,
-      //         onTap: () async {
-      //           Get.defaultDialog(
-      //               barrierDismissible: false,
-      //               title: '',
-      //               content: Column(
-      //                 children: const [
-      //                   Center(
-      //                     child: CircularProgressIndicator(),
-      //                   ),
-      //                   SizedBox(
-      //                     height: 8,
-      //                   ),
-      //                   Text('Loading data...')
-      //                 ],
-      //               ));
-      //           var d = DateTime.now();
-      //           var weekDay = d.weekday;
-      //           var firstDayOfWeek = d.subtract(Duration(days: weekDay + 7));
-      //           var lastDayOfWeek = d.subtract(Duration(days: weekDay + 1));
-      //           await lapC.getSummary(
-      //               lapC.date1.value = DateFormat('yyyy-MM-dd')
-      //                   .format(firstDayOfWeek)
-      //                   .toString(),
-      //               lapC.date2.value = DateFormat('yyyy-MM-dd')
-      //                   .format(lastDayOfWeek)
-      //                   .toString(),
-      //               0,
-      //               level == "1"
-      //                   ? lapC.selectedCabang.isNotEmpty
-      //                       ? lapC.selectedCabang.value
-      //                       : ""
-      //                   : cabang);
-      //           Future.delayed(const Duration(seconds: 1), () {
-      //             Get.back();
-      //           });
-      //         },
-      //       ),
-      //       SpeedDialChild(
-      //         label: 'This Week',
-      //         labelBackgroundColor: Colors.blue,
-      //         labelStyle: const TextStyle(color: Colors.white),
-      //         backgroundColor: Colors.blue,
-      //         onTap: () async {
-      //           Get.defaultDialog(
-      //               barrierDismissible: false,
-      //               title: '',
-      //               content: Column(
-      //                 children: const [
-      //                   Center(
-      //                     child: CircularProgressIndicator(),
-      //                   ),
-      //                   SizedBox(
-      //                     height: 8,
-      //                   ),
-      //                   Text('Loading data...')
-      //                 ],
-      //               ));
-      //           var d = DateTime.now();
-      //           var weekDay = d.weekday;
-      //           var firstDayOfWeek = d.subtract(Duration(days: weekDay));
-      //           var lastDayOfWeek = d.subtract(Duration(days: weekDay - 6));
-      //           await lapC.getSummary(
-      //               lapC.date1.value = DateFormat('yyyy-MM-dd')
-      //                   .format(firstDayOfWeek)
-      //                   .toString(),
-      //               lapC.date2.value = DateFormat('yyyy-MM-dd')
-      //                   .format(lastDayOfWeek)
-      //                   .toString(),
-      //               0,
-      //               level == "1"
-      //                   ? lapC.selectedCabang.isNotEmpty
-      //                       ? lapC.selectedCabang.value
-      //                       : ""
-      //                   : cabang);
-      //           Future.delayed(const Duration(seconds: 1), () {
-      //             Get.back();
-      //           });
-      //         },
-      //       ),
-      //       SpeedDialChild(
-      //         label: 'Yesterday',
-      //         labelBackgroundColor: Colors.blue,
-      //         labelStyle: const TextStyle(color: Colors.white),
-      //         backgroundColor: Colors.blue,
-      //         onTap: () async {
-      //           Get.defaultDialog(
-      //               barrierDismissible: false,
-      //               title: '',
-      //               content: Column(
-      //                 children: const [
-      //                   Center(
-      //                     child: CircularProgressIndicator(),
-      //                   ),
-      //                   SizedBox(
-      //                     height: 8,
-      //                   ),
-      //                   Text('Loading data...')
-      //                 ],
-      //               ));
-      //           await lapC.getSummary(
-      //               lapC.date1.value = DateFormat('yyyy-MM-dd')
-      //                   .format(DateTime.parse(dateNow1)
-      //                       .add(const Duration(days: -1)))
-      //                   .toString(),
-      //               lapC.date2.value = DateFormat('yyyy-MM-dd')
-      //                   .format(DateTime.parse(dateNow2)
-      //                       .add(const Duration(days: -1)))
-      //                   .toString(),
-      //               0,
-      //               level == "1"
-      //                   ? lapC.selectedCabang.isNotEmpty
-      //                       ? lapC.selectedCabang.value
-      //                       : ""
-      //                   : cabang);
-      //           Future.delayed(const Duration(seconds: 1), () {
-      //             Get.back();
-      //           });
-      //         },
-      //       ),
-      //       SpeedDialChild(
-      //         label: 'Today',
-      //         labelBackgroundColor: Colors.blue,
-      //         labelStyle: const TextStyle(color: Colors.white),
-      //         backgroundColor: Colors.blue,
-      //         onTap: () async {
-      //           Get.defaultDialog(
-      //               barrierDismissible: false,
-      //               title: '',
-      //               content: Column(
-      //                 children: const [
-      //                   Center(
-      //                     child: CircularProgressIndicator(),
-      //                   ),
-      //                   SizedBox(
-      //                     height: 8,
-      //                   ),
-      //                   Text('Loading data...')
-      //                 ],
-      //               ));
-      //           await lapC.getSummary(
-      //               lapC.date1.value = dateNow1.toString(),
-      //               lapC.date2.value = dateNow2.toString(),
-      //               0,
-      //               level == "1"
-      //                   ? lapC.selectedCabang.isNotEmpty
-      //                       ? lapC.selectedCabang.value
-      //                       : ""
-      //                   : cabang);
-      //           Future.delayed(const Duration(seconds: 1), () {
-      //             Get.back();
-      //           });
-      //         },
-      //       ),
-      //     ]),
     );
   }
 }

@@ -15,8 +15,8 @@ class MasterCabang extends GetView<MasterController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
-        stream: masterC.getCabang(kode, level),
+      body: FutureBuilder(
+        future: masterC.getCabang(kode, level),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.connectionState == ConnectionState.waiting) {

@@ -8,8 +8,8 @@ import 'package:intl/intl.dart';
 
 class PrintSetting extends StatefulWidget {
   const PrintSetting({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   // ignore: no_logic_in_create_state

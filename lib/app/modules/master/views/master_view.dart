@@ -10,7 +10,7 @@ import 'master_level.dart';
 import 'master_user.dart';
 
 class MasterViewTabs extends GetView {
-  MasterViewTabs(this.kode, this.level, {super.key});
+  const MasterViewTabs(this.kode, this.level, {super.key});
 
   final String kode;
   final String level;
