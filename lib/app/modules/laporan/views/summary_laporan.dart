@@ -29,7 +29,21 @@ class SummaryLaporan extends GetView {
       if (masterC.cabang.isEmpty || lapC.summaryCache.isEmpty) {
         return const Center(child: CircularProgressIndicator());
       }
+      // Hitung grand total per tanggal dan total keseluruhan
+      Map<String, int> grandTotalPerDate = {};
+      int grandTotalAll = 0;
 
+      for (DateTime date in lapC.dates) {
+        String dateStr = DateFormat('yyyy-MM-dd').format(date);
+        int totalPerDate = 0;
+        for (var cabang in masterC.cabang) {
+          String kodeCabang = cabang.kodeCabang!;
+          int val = lapC.summaryCache[kodeCabang]?[dateStr] ?? 0;
+          totalPerDate += val;
+        }
+        grandTotalPerDate[dateStr] = totalPerDate;
+        grandTotalAll += totalPerDate;
+      }
       return ListView(
         children: [
           Row(
@@ -48,16 +62,18 @@ class SummaryLaporan extends GetView {
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (periode) {
-                     if (periode != null) {
-    lapC.now.value = periode;
-  } else {
-    // Jika periode dihapus (null), set ke bulan sekarang
-    final now = DateTime.now();
-    lapC.now.value = DateTime(now.year, now.month, 1);
-  }
-  lapC.getPeriode();
-  lapC.datePeriode.text = DateFormat("MMMM yyyy").format(lapC.now.value);
-  lapC.fetchAllSummary();
+                    if (periode != null) {
+                      lapC.now.value = periode;
+                    } else {
+                      // Jika periode dihapus (null), set ke bulan sekarang
+                      final now = DateTime.now();
+                      lapC.now.value = DateTime(now.year, now.month, 1);
+                    }
+                    lapC.getPeriode();
+                    lapC.datePeriode.text = DateFormat(
+                      "MMMM yyyy",
+                    ).format(lapC.now.value);
+                    lapC.fetchAllSummary();
                   },
                   format: DateFormat("MMMM yyyy"),
                   onShowPicker: (context, currentValue) {
@@ -99,47 +115,121 @@ class SummaryLaporan extends GetView {
                         child: Text(lapC.formatter.format(date)),
                       ),
                     ),
+                  const DataColumn(label: Text('TOTAL')),
                 ],
-                rows: List.generate(masterC.cabang.length, (i) {
-                  final kodeCabang = masterC.cabang[i].kodeCabang!;
-                  return DataRow(
-                    cells: [
-                      DataCell(Text('${masterC.cabang[i].namaCabang}')),
-                      for (DateTime date in lapC.dates)
+                rows: [
+                  ...List.generate(masterC.cabang.length, (i) {
+                    final kodeCabang = masterC.cabang[i].kodeCabang!;
+                    return DataRow(
+                      cells: [
+                        DataCell(Text('${masterC.cabang[i].namaCabang}')),
+                        for (DateTime date in lapC.dates)
+                          DataCell(
+                            Obx(() {
+                              String dateStr = DateFormat(
+                                'yyyy-MM-dd',
+                              ).format(date);
+                              bool isLoading =
+                                  lapC.loadingStatus[kodeCabang]?[dateStr] ??
+                                  true;
+                              int total =
+                                  lapC.summaryCache[kodeCabang]?[dateStr] ?? 0;
+
+                              if (isLoading) {
+                                return const Center(
+                                  child: SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return Text(
+                                  NumberFormat.simpleCurrency(
+                                    locale: 'in',
+                                    decimalDigits: 0,
+                                  ).format(total),
+                                );
+                              }
+                            }),
+                          ),
+                        // Total per cabang
                         DataCell(
                           Obx(() {
-                            String dateStr = DateFormat(
-                              'yyyy-MM-dd',
-                            ).format(date);
+                            int totalCabang = 0;
+                            for (DateTime date in lapC.dates) {
+                              String dateStr = DateFormat(
+                                'yyyy-MM-dd',
+                              ).format(date);
+                              totalCabang +=
+                                  lapC.summaryCache[kodeCabang]?[dateStr] ?? 0;
+                            }
                             bool isLoading =
-                                lapC.loadingStatus[kodeCabang]?[dateStr] ??
+                                lapC.loadingStatus[kodeCabang]?[lapC.dates.first
+                                    .toString()] ??
                                 true;
-                            int total =
-                                lapC.summaryCache[kodeCabang]?[dateStr] ?? 0;
-
-                            if (isLoading) {
-                              return const Center(
-                                child: SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                              );
-                            } else {
+                            // if (isLoading) {
+                            //   return const Center(
+                            //     child: SizedBox(
+                            //       width: 16,
+                            //       height: 16,
+                            //       child: CircularProgressIndicator(
+                            //         strokeWidth: 2,
+                            //       ),
+                            //     ),
+                            //   );
+                            // } else {
                               return Text(
                                 NumberFormat.simpleCurrency(
                                   locale: 'in',
                                   decimalDigits: 0,
-                                ).format(total),
+                                ).format(totalCabang),
                               );
-                            }
+                            // }
                           }),
                         ),
+                      ],
+                    );
+                  }),
+                  // Baris Grand Total
+                  DataRow(
+                    color: MaterialStateProperty.all(Colors.grey.shade300),
+                    cells: [
+                      const DataCell(
+                        Text(
+                          'GRAND TOTAL',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      for (DateTime date in lapC.dates)
+                        DataCell(
+                          Text(
+                            NumberFormat.simpleCurrency(
+                              locale: 'in',
+                              decimalDigits: 0,
+                            ).format(
+                              grandTotalPerDate[DateFormat(
+                                    'yyyy-MM-dd',
+                                  ).format(date)] ??
+                                  0,
+                            ),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      DataCell(
+                        Text(
+                          NumberFormat.simpleCurrency(
+                            locale: 'in',
+                            decimalDigits: 0,
+                          ).format(grandTotalAll),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ],
-                  );
-                }),
+                  ),
+                ],
               ),
             ),
           ),

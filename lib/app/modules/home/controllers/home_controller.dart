@@ -260,7 +260,7 @@ class HomeController extends GetxController {
 
     eventSource.onError.listen((error) {
       controller.addError('SSE error: $error');
-      eventSource.close();
+      // eventSource.close();
     });
 
     controller.onCancel = () {

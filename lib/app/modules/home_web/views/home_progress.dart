@@ -1,5 +1,6 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:carwash/app/modules/home_web/views/widget/play_sound_id.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,9 +47,9 @@ class HomeProgress extends GetView<HomeController> {
         );
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
-        // } 
-        // else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-        //   return const Center(child: Text('Belum ada data'));
+        } 
+        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('Belum ada data'));
         } else {
           final dataTrx = snapshot.data!;
           return DataTable2(
@@ -177,8 +178,8 @@ class HomeProgress extends GetView<HomeController> {
                                 };
                                 homeC.updateDataTrx(dataMulai);
 
-                                playSound(
-                                  dataTrx[index].idJenis!,
+                                playSoundID(
+                                  int.parse(dataTrx[index].idJenis!),
                                   dataTrx[index].nopol!,
                                 );
                               }
@@ -219,170 +220,170 @@ class HomeProgress extends GetView<HomeController> {
     );
   }
 
-  playSound(String jenis, String text) async {
-    var jK = "";
-    if (jenis == "1") {
-      jK = "Motor";
-    } else {
-      jK = "Mobil";
-    }
-    var nopol = text.split('');
-    // print(nopol);
-    await flutterTts.awaitSpeakCompletion(true);
-    await flutterTts.setLanguage("id-ID");
-    await flutterTts.setVolume(1.0);
-    await flutterTts.setPitch(1.0);
-    await flutterTts.setSpeechRate(0.9);
-    await assetsAudioPlayer.open(
-      Audio("assets/audio/airport.mp3"),
-      showNotification: true,
-      autoStart: true,
-    );
-    Future.delayed(const Duration(milliseconds: 1800), () async {
-      await flutterTts.speak(
-        'Di informasikan, kepada pemilik $jK, dengan nomor polisi',
-      );
-      await playNopol(nopol);
-      Future.delayed(const Duration(milliseconds: 1800), () async {
-        await playSoundEnglish(jenis, text);
-        await assetsAudioPlayer.open(
-          Audio("assets/audio/airport.mp3"),
-          showNotification: true,
-          autoStart: true,
-        );
-      });
-    });
-  }
+  // playSound(String jenis, String text) async {
+  //   var jK = "";
+  //   if (jenis == "1") {
+  //     jK = "Motor";
+  //   } else {
+  //     jK = "Mobil";
+  //   }
+  //   var nopol = text.split('');
+  //   // print(nopol);
+  //   await flutterTts.awaitSpeakCompletion(true);
+  //   await flutterTts.setLanguage("id-ID");
+  //   await flutterTts.setVolume(1.0);
+  //   await flutterTts.setPitch(1.0);
+  //   await flutterTts.setSpeechRate(0.9);
+  //   await assetsAudioPlayer.open(
+  //     Audio("assets/audio/airport.mp3"),
+  //     showNotification: true,
+  //     autoStart: true,
+  //   );
+  //   Future.delayed(const Duration(milliseconds: 1800), () async {
+  //     await flutterTts.speak(
+  //       'Di informasikan, kepada pemilik $jK, dengan nomor polisi',
+  //     );
+  //     await playNopol(nopol);
+  //     Future.delayed(const Duration(milliseconds: 1800), () async {
+  //       await playSoundEnglish(jenis, text);
+  //       await assetsAudioPlayer.open(
+  //         Audio("assets/audio/airport.mp3"),
+  //         showNotification: true,
+  //         autoStart: true,
+  //       );
+  //     });
+  //   });
+  // }
 
-  playSoundEnglish(String jenis, String text) async {
-    var jK = "";
-    if (jenis == "1") {
-      jK = "motorcycle";
-    } else {
-      jK = "Car";
-    }
-    var nopol = text.split('');
-    await flutterTts.awaitSpeakCompletion(true);
-    await flutterTts.setLanguage("en-GB");
-    await flutterTts.setVolume(1.0);
-    await flutterTts.setPitch(1.0);
-    await flutterTts.setSpeechRate(0.9);
-    await flutterTts.speak(
-      "Informed, to the owner of $jK, with a police number",
-    );
-    await playNopolEnglish(nopol);
-  }
+  // playSoundEnglish(String jenis, String text) async {
+  //   var jK = "";
+  //   if (jenis == "1") {
+  //     jK = "motorcycle";
+  //   } else {
+  //     jK = "Car";
+  //   }
+  //   var nopol = text.split('');
+  //   await flutterTts.awaitSpeakCompletion(true);
+  //   await flutterTts.setLanguage("en-GB");
+  //   await flutterTts.setVolume(1.0);
+  //   await flutterTts.setPitch(1.0);
+  //   await flutterTts.setSpeechRate(0.9);
+  //   await flutterTts.speak(
+  //     "Informed, to the owner of $jK, with a police number",
+  //   );
+  //   await playNopolEnglish(nopol);
+  // }
 
-  playNopol(List<String> nopol) async {
-    await flutterTts.awaitSpeakCompletion(true);
-    await flutterTts.setLanguage("id-ID");
-    await flutterTts.setVolume(1.0);
-    await flutterTts.setPitch(1.0);
-    await flutterTts.setSpeechRate(0.9);
-    if (nopol.length > 10) {
-      // print(nopol.length);
-      await flutterTts.speak(nopol[0].toString());
-      await flutterTts.speak(nopol[1].toString());
-      await flutterTts.speak(nopol[3].toString());
-      await flutterTts.speak(nopol[4].toString());
-      await flutterTts.speak(nopol[5].toString());
-      await flutterTts.speak(nopol[6].toString());
-      await flutterTts.speak(nopol[8].toString());
-      await flutterTts.speak(nopol[9].toString());
-      await flutterTts.speak(nopol[10].toString());
-      await playNext();
-    } else if (nopol.length == 10) {
-      int underscoreIndex = nopol.indexOf('-');
-      // print(nopol.length);
-      // print(underscoreIndex);
-      // print(nopol.join('').toString()[underscoreIndex]);
-      if (underscoreIndex == 2) {
-        await flutterTts.speak(nopol[0].toString());
-        await flutterTts.speak(nopol[1].toString());
-        await flutterTts.speak(nopol[3].toString());
-        await flutterTts.speak(nopol[4].toString());
-        await flutterTts.speak(nopol[5].toString());
-        await flutterTts.speak(nopol[6].toString());
-        await flutterTts.speak(nopol[8].toString());
-        await flutterTts.speak(nopol[9].toString());
-        await playNext();
-      } else {
-        await flutterTts.speak(nopol[0].toString());
-        await flutterTts.speak(nopol[2].toString());
-        await flutterTts.speak(nopol[3].toString());
-        await flutterTts.speak(nopol[4].toString());
-        await flutterTts.speak(nopol[5].toString());
-        await flutterTts.speak(nopol[7].toString());
-        await flutterTts.speak(nopol[8].toString());
-        await flutterTts.speak(nopol[9].toString());
-        await playNext();
-      }
-    } else if (nopol.length == 9) {
-      // print(nopol.length);
-      await flutterTts.speak(nopol[0].toString());
-      await flutterTts.speak(nopol[2].toString());
-      await flutterTts.speak(nopol[3].toString());
-      await flutterTts.speak(nopol[4].toString());
-      await flutterTts.speak(nopol[5].toString());
-      await flutterTts.speak(nopol[7].toString());
-      await flutterTts.speak(nopol[8].toString());
-      // await flutterTts.speak(nopol[9].toString());
-      await playNext();
-    } else if (nopol.length == 8) {
-      // print(nopol.length);
-      await flutterTts.speak(nopol[0].toString());
-      await flutterTts.speak(nopol[2].toString());
-      await flutterTts.speak(nopol[3].toString());
-      await flutterTts.speak(nopol[4].toString());
-      await flutterTts.speak(nopol[5].toString());
-      await flutterTts.speak(nopol[7].toString());
-      await flutterTts.speak(nopol[8].toString());
-      await playNext();
-    } else {
-      await playNext();
-    }
-  }
+  // playNopol(List<String> nopol) async {
+  //   await flutterTts.awaitSpeakCompletion(true);
+  //   await flutterTts.setLanguage("id-ID");
+  //   await flutterTts.setVolume(1.0);
+  //   await flutterTts.setPitch(1.0);
+  //   await flutterTts.setSpeechRate(0.9);
+  //   if (nopol.length > 10) {
+  //     // print(nopol.length);
+  //     await flutterTts.speak(nopol[0].toString());
+  //     await flutterTts.speak(nopol[1].toString());
+  //     await flutterTts.speak(nopol[3].toString());
+  //     await flutterTts.speak(nopol[4].toString());
+  //     await flutterTts.speak(nopol[5].toString());
+  //     await flutterTts.speak(nopol[6].toString());
+  //     await flutterTts.speak(nopol[8].toString());
+  //     await flutterTts.speak(nopol[9].toString());
+  //     await flutterTts.speak(nopol[10].toString());
+  //     await playNext();
+  //   } else if (nopol.length == 10) {
+  //     int underscoreIndex = nopol.indexOf('-');
+  //     // print(nopol.length);
+  //     // print(underscoreIndex);
+  //     // print(nopol.join('').toString()[underscoreIndex]);
+  //     if (underscoreIndex == 2) {
+  //       await flutterTts.speak(nopol[0].toString());
+  //       await flutterTts.speak(nopol[1].toString());
+  //       await flutterTts.speak(nopol[3].toString());
+  //       await flutterTts.speak(nopol[4].toString());
+  //       await flutterTts.speak(nopol[5].toString());
+  //       await flutterTts.speak(nopol[6].toString());
+  //       await flutterTts.speak(nopol[8].toString());
+  //       await flutterTts.speak(nopol[9].toString());
+  //       await playNext();
+  //     } else {
+  //       await flutterTts.speak(nopol[0].toString());
+  //       await flutterTts.speak(nopol[2].toString());
+  //       await flutterTts.speak(nopol[3].toString());
+  //       await flutterTts.speak(nopol[4].toString());
+  //       await flutterTts.speak(nopol[5].toString());
+  //       await flutterTts.speak(nopol[7].toString());
+  //       await flutterTts.speak(nopol[8].toString());
+  //       await flutterTts.speak(nopol[9].toString());
+  //       await playNext();
+  //     }
+  //   } else if (nopol.length == 9) {
+  //     // print(nopol.length);
+  //     await flutterTts.speak(nopol[0].toString());
+  //     await flutterTts.speak(nopol[2].toString());
+  //     await flutterTts.speak(nopol[3].toString());
+  //     await flutterTts.speak(nopol[4].toString());
+  //     await flutterTts.speak(nopol[5].toString());
+  //     await flutterTts.speak(nopol[7].toString());
+  //     await flutterTts.speak(nopol[8].toString());
+  //     // await flutterTts.speak(nopol[9].toString());
+  //     await playNext();
+  //   } else if (nopol.length == 8) {
+  //     // print(nopol.length);
+  //     await flutterTts.speak(nopol[0].toString());
+  //     await flutterTts.speak(nopol[2].toString());
+  //     await flutterTts.speak(nopol[3].toString());
+  //     await flutterTts.speak(nopol[4].toString());
+  //     await flutterTts.speak(nopol[5].toString());
+  //     await flutterTts.speak(nopol[7].toString());
+  //     await flutterTts.speak(nopol[8].toString());
+  //     await playNext();
+  //   } else {
+  //     await playNext();
+  //   }
+  // }
 
-  playNopolEnglish(List<String> nopol) async {
-    await flutterTts.awaitSpeakCompletion(true);
-    await flutterTts.setLanguage("en-GB");
-    await flutterTts.setVolume(1.0);
-    await flutterTts.setPitch(1.0);
-    await flutterTts.setSpeechRate(0.9);
-    //  print(await flutterTts.getVoices);
-    await flutterTts.speak(nopol.toString());
-    await playNextEnglish();
-  }
+  // playNopolEnglish(List<String> nopol) async {
+  //   await flutterTts.awaitSpeakCompletion(true);
+  //   await flutterTts.setLanguage("en-GB");
+  //   await flutterTts.setVolume(1.0);
+  //   await flutterTts.setPitch(1.0);
+  //   await flutterTts.setSpeechRate(0.9);
+  //   //  print(await flutterTts.getVoices);
+  //   await flutterTts.speak(nopol.toString());
+  //   await playNextEnglish();
+  // }
 
-  playNext() async {
-    await flutterTts.awaitSpeakCompletion(true);
-    await flutterTts.setLanguage("id-ID");
-    await flutterTts.setVolume(1.0);
-    await flutterTts.setPitch(1.0);
-    await flutterTts.setSpeechRate(0.9);
-    await flutterTts.speak("sudah selesai");
-    await flutterTts.speak("Silahkan melakukan pembayaran");
-    await flutterTts.speak("Periksa kembali barang bawaan anda");
-    await flutterTts.speak("Semoga selamat sampai tujuan");
+  // playNext() async {
+  //   await flutterTts.awaitSpeakCompletion(true);
+  //   await flutterTts.setLanguage("id-ID");
+  //   await flutterTts.setVolume(1.0);
+  //   await flutterTts.setPitch(1.0);
+  //   await flutterTts.setSpeechRate(0.9);
+  //   await flutterTts.speak("sudah selesai");
+  //   await flutterTts.speak("Silahkan melakukan pembayaran");
+  //   await flutterTts.speak("Periksa kembali barang bawaan anda");
+  //   await flutterTts.speak("Semoga selamat sampai tujuan");
 
-    await assetsAudioPlayer.open(
-      Audio("assets/audio/airport.mp3"),
-      showNotification: true,
-      autoStart: true,
-    );
-  }
+  //   await assetsAudioPlayer.open(
+  //     Audio("assets/audio/airport.mp3"),
+  //     showNotification: true,
+  //     autoStart: true,
+  //   );
+  // }
 
-  playNextEnglish() async {
-    await flutterTts.awaitSpeakCompletion(true);
-    await flutterTts.setLanguage("en-GB");
-    await flutterTts.setVolume(1.0);
-    await flutterTts.setPitch(1.0);
-    await flutterTts.setSpeechRate(0.9);
-    await flutterTts.speak("it's finished");
-    await flutterTts.speak("Please make payment");
-    await flutterTts.speak("Check your belongings again");
-    await flutterTts.speak("Have a safe trip.");
-  }
+  // playNextEnglish() async {
+  //   await flutterTts.awaitSpeakCompletion(true);
+  //   await flutterTts.setLanguage("en-GB");
+  //   await flutterTts.setVolume(1.0);
+  //   await flutterTts.setPitch(1.0);
+  //   await flutterTts.setSpeechRate(0.9);
+  //   await flutterTts.speak("it's finished");
+  //   await flutterTts.speak("Please make payment");
+  //   await flutterTts.speak("Check your belongings again");
+  //   await flutterTts.speak("Have a safe trip.");
+  // }
 
   editData(notrx, tanggal, nopol, kendaraan, masuk, service, petugas) {
     Get.defaultDialog(

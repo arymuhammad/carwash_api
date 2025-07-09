@@ -136,7 +136,7 @@ class DetailLaporan extends GetView {
                   var allData = [];
 
                   data.map((data) {
-                    totalIncome.add(int.parse(data.grandTotal!));
+                    totalIncome.add(int.parse(data.grandTotal!??'0'));
                   }).toList();
 
                   data.map((data) {

@@ -75,7 +75,7 @@ class HomeWebController extends GetxController {
   final FlutterTts flutterTts = FlutterTts();
   final assetsAudioPlayer = AssetsAudioPlayer();
 
-  
+
   @override
   void onInit() {
     // sideMenu.addListener((index) {
@@ -154,7 +154,7 @@ class HomeWebController extends GetxController {
 
     eventSource.onError.listen((error) {
       controller.addError('SSE error: $error');
-      eventSource.close();
+      // eventSource.close();
     });
 
     controller.onCancel = () {

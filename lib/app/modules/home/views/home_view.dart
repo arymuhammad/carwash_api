@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
+import '../../../model/trx_model.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -42,7 +42,7 @@ class HomeView extends GetView<HomeController> {
                   ),
                   const Divider(color: Colors.white, height: 8),
                   Expanded(
-                    child: StreamBuilder(
+                    child: StreamBuilder<List<Trx>>(
                       stream: homeC.getDatatrxSse(userData!.kodeCabang!, date, "3", 2),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -122,7 +122,7 @@ class HomeView extends GetView<HomeController> {
                 children: [
                   SizedBox(
                     height: Get.mediaQuery.size.height / 1,
-                    child: StreamBuilder(
+                    child: StreamBuilder<List<Trx>>(
                       stream: homeC.getDatatrxSse(userData!.kodeCabang!, date, 1, ""),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -219,7 +219,7 @@ class HomeView extends GetView<HomeController> {
                   ),
                   const Divider(color: Colors.white, height: 8),
                   Expanded(
-                    child: StreamBuilder(
+                    child: StreamBuilder<List<Trx>>(
                       stream: homeC.getDatatrxSse(userData!.kodeCabang!, date, "3", 1),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {

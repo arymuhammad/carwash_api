@@ -16,8 +16,8 @@ import '../model/user_model.dart';
 
 class ServiceApi {
   // var baseUrl = "https://saputraauto.my.id/api/";
-  // var baseUrl = "https://saputracarwash.web.id/api/";
-  var baseUrl = "http://localhost/saputra/api/";
+  var baseUrl = "https://saputracarwash.web.id/api/";
+  // var baseUrl = "http://localhost/saputra/api/";
   login(username, password) async {
     try {
       final response = await http.get(
